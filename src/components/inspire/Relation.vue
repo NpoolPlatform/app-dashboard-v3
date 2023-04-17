@@ -74,7 +74,7 @@
               </tr>
               <tr v-for='(_good,index) in props.row.Archivements' :key='index'>
                 <td class='name'>
-                  {{ _good?.CoinName }}
+                  {{ getDisplayNames(_good.GoodID)?.[4]? $t(getDisplayNames(_good.GoodID)?.[4] as string) : _good.CoinName }}
                 </td>
                 <td>{{ _good?.GoodID }}</td>
                 <td>
@@ -140,7 +140,7 @@
               </tr>
               <tr v-for='(_good,index) in props.row.Archivements' :key='index'>
                 <td class='name'>
-                  {{ _good?.CoinName }}
+                  {{ getDisplayNames(_good.GoodID)?.[4]? $t(getDisplayNames(_good.GoodID)?.[4] as string) : _good.CoinName }}
                 </td>
                 <td>{{ _good?.GoodID }}</td>
                 <td>
@@ -169,7 +169,7 @@
 import {
   PriceCoinName
 } from 'npool-cli-v2'
-import { formatTime, NotifyType, useAdminArchivementStore, useAdminUserStore, User, useAdminRegistrationStore, InvalidID, UserArchivement } from 'npool-cli-v4'
+import { formatTime, NotifyType, useAdminArchivementStore, useAdminUserStore, User, useAdminRegistrationStore, InvalidID, UserArchivement, useAdminAppGoodStore } from 'npool-cli-v4'
 import { getUsers } from 'src/api/user'
 import { computed, defineAsyncComponent, onMounted, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
@@ -231,6 +231,11 @@ const inviterArchivements = computed(() => {
 })
 
 const loading = ref(false)
+
+const good = useAdminAppGoodStore()
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const target = computed(() => (goodID: string) => good.getGoodByID(goodID))
+const getDisplayNames = computed(() => (goodID: string) => good.getGoodByID(goodID)?.DisplayNames)
 
 watch(curUserID, () => {
   if (curUserID.value === InvalidID) {
