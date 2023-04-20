@@ -350,7 +350,7 @@ const columns = [
 .price-coin-name
   font-size: 5px
 ::v-deep .name
-  max-width: 100px
+  max-width: 120px
   width: 100px
 ::v-deep .units
   width: 70px
