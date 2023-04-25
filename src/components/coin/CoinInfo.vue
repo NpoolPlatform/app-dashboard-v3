@@ -52,6 +52,7 @@
         <div><q-toggle dense v-model='target.ForPay' :label='$t("MSG_FOR_PAY")' /><span class='tip'>CoinForPay: {{ target.CoinForPay }}</span></div>
         <div><q-toggle dense v-model='target.Disabled' :label='$t("MSG_DISABLE")' /><span class='tip'>CoinDisabled: {{ target.CoinDisabled }}</span></div>
         <div><q-toggle dense v-model='target.Display' :label='$t("MSG_DISPLAY")' /></div>
+        <div><q-toggle dense v-model='target.NeedMemo' :label='$t("MSG_MEMO")' /></div>
       </q-card-section>
       <q-item class='row'>
         <LoadingButton loading :label='$t("MSG_SUBMIT")' @click='onSubmit' />
@@ -221,6 +222,7 @@ const updateTarget = computed(() => {
     DailyRewardAmount: target.value?.DailyRewardAmount?.length > 0 ? target.value?.DailyRewardAmount : undefined as unknown as string,
     Disabled: target.value?.Disabled,
     Display: target.value?.Display,
+    NeedMemo: target.value?.NeedMemo,
     MaxAmountPerWithdraw: target.value.MaxAmountPerWithdraw,
     DisplayIndex: target.value?.DisplayIndex
   }
