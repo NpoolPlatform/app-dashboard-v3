@@ -25,7 +25,6 @@
         <q-item-label>{{ $t('MSG_IN_SERVICE') }}: {{ good?.InService }}</q-item-label>
         <AppGoodSelector v-model:id='target.GoodID' />
         <AppUserSelector v-model:id='target.TargetUserID' />
-        <CoinPicker v-model:id='target.PaymentCoinID' hidden-disabled-coins />
         <q-input
           v-model='target.Units' :label='$t("MSG_PURCHASE_UNITS")' type='number' min='1'
           :max='maxUnits'
@@ -60,9 +59,9 @@ const OrderPage = defineAsyncComponent(() => import('src/components/billing/Orde
 const LoadingButton = defineAsyncComponent(() => import('src/components/button/LoadingButton.vue'))
 const AppGoodSelector = defineAsyncComponent(() => import('src/components/good/AppGoodSelector.vue'))
 const AppUserSelector = defineAsyncComponent(() => import('src/components/user/AppUserSelector.vue'))
-const CoinPicker = defineAsyncComponent(() => import('src/components/coin/CoinPicker.vue'))
 
 const coin = useAdminAppCoinStore()
+const coins = computed(() => coin.AppCoins.AppCoins)
 
 const appGood = useAdminAppGoodStore()
 const good = computed(() => appGood.getGoodByID(target.value?.GoodID))
@@ -72,6 +71,16 @@ const target = ref({
   OrderType: OrderType.Offline,
   Units: '1'
 } as CreateUserOrderRequest)
+
+const _payCoinID = computed(() => {
+  const index = coins.value.findIndex((el) => {
+    return (el.ENV === good.value?.CoinEnv) && (el.Name?.toLowerCase().replace(/ /, '').includes('usdttrc20') || el.Name?.toLowerCase().replace(/ /, '').includes('tethertrc20'))
+  })
+  if (index < 0) {
+    return undefined as unknown as string
+  }
+  return coins.value[index].CoinTypeID
+})
 
 const showing = ref(false)
 
@@ -100,6 +109,7 @@ const onSubmit = (done: ()=> void) => {
   }
   order.createUserOrder({
     ...target.value,
+    PaymentCoinID: _payCoinID.value,
     Message: {
       Error: {
         Title: t('MSG_CREATE_ORDER'),
