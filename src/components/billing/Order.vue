@@ -44,9 +44,14 @@
       />
     </template>
   </q-table>
-  <q-item>
-    <span>{{ $t('MSG_TOTAL_SOLD') }}: {{ soldUnits }}</span>
-  </q-item>
+  <q-item><span>{{ $t('MSG_PAID') }}: {{ soldUnits }}</span></q-item>
+  <q-item><span>{{ $t('MSG_WAIT_PAYMENT') }}: {{ waitPaymentUnits }}</span></q-item>
+  <q-item><span>{{ $t('MSG_TIMEOUT') }}: {{ timeoutUnits }}</span></q-item>
+  <q-item><span>{{ $t('MSG_USER_CANCELED') }}: {{ userCanceledUnits }}</span></q-item>
+  <q-item><span>{{ $t('MSG_CANCELED') }}: {{ canceledUnits }}</span></q-item>
+  <q-item><span>{{ $t('MSG_IN_SERVICE') }}: {{ inServiceUnits }}</span></q-item>
+  <q-item><span>{{ $t('MSG_EXPIRED') }}: {{ expiredUnits }}</span></q-item>
+  <q-item><span>{{ $t('MSG_WAIT_START') }}: {{ waitStartUnits }}</span></q-item>
   <q-item>
     <span>{{ $t('MSG_PAYMENT_TIMEOUT') }}: {{ paymentTimeouts }}</span>
   </q-item>
@@ -128,6 +133,14 @@ const displayOrders = computed(() => order.Orders.filter((el) => {
 }))
 
 const soldUnits = computed(() => displayOrders.value.filter((el) => el.State === OrderState.PAID).reduce((sum, b) => sum + Number(b.Units), 0))
+const waitPaymentUnits = computed(() => displayOrders.value.filter((el) => el.State === OrderState.WAIT_PAYMENT).reduce((sum, b) => sum + Number(b.Units), 0))
+const timeoutUnits = computed(() => displayOrders.value.filter((el) => el.State === OrderState.PAYMENT_TIMEOUT).reduce((sum, b) => sum + Number(b.Units), 0))
+const userCanceledUnits = computed(() => displayOrders.value.filter((el) => el.State === OrderState.USER_CANCELED).reduce((sum, b) => sum + Number(b.Units), 0))
+const canceledUnits = computed(() => displayOrders.value.filter((el) => el.State === OrderState.CANCELED).reduce((sum, b) => sum + Number(b.Units), 0))
+const inServiceUnits = computed(() => displayOrders.value.filter((el) => el.State === OrderState.IN_SERVICE).reduce((sum, b) => sum + Number(b.Units), 0))
+const expiredUnits = computed(() => displayOrders.value.filter((el) => el.State === OrderState.EXPIRED).reduce((sum, b) => sum + Number(b.Units), 0))
+const waitStartUnits = computed(() => displayOrders.value.filter((el) => el.State === OrderState.WAIT_START).reduce((sum, b) => sum + Number(b.Units), 0))
+
 const paymentTimeouts = computed(() => displayOrders.value.filter((el) => el.State === OrderState.PAYMENT_TIMEOUT).length)
 const paymentAmount = computed(() => displayOrders.value.filter((el) => el.State === OrderState.PAID).reduce((sum, b) => {
   const currency = Number(b.PaymentCoinUSDCurrency) > 0 ? Number(b.PaymentCoinUSDCurrency) : 1
