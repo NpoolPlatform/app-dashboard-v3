@@ -38,9 +38,9 @@
         <span>{{ $t('MSG_EVENT_INSPIRE') }}</span>
       </q-card-section>
       <q-card-section>
-        <q-select :disable='updating' :options='[UsedFor.AffiliatePurchase, UsedFor.Purchase]' v-model='target.EventType' :label='$t("MSG_EVENT_YPE")' />
+        <q-select :disable='updating' :options='[UsedFor.AffiliatePurchase, UsedFor.Purchase, UsedFor.Signup, UsedFor.AffiliateSignup]' v-model='target.EventType' :label='$t("MSG_EVENT_YPE")' />
       </q-card-section>
-      <q-card-section v-if='target.EventType === UsedFor.AffiliatePurchase || target.EventType === UsedFor.Purchase'>
+      <q-card-section v-if='target.EventType === UsedFor.AffiliatePurchase || target.EventType === UsedFor.Purchase || UsedFor.Signup || UsedFor.AffiliateSignup'>
         <AppGoodSelector v-model:id='target.GoodID' v-if='!updating' />
         <CouponSelector v-model:ids='target.Coupons' />
       </q-card-section>
