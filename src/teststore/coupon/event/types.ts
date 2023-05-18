@@ -35,6 +35,7 @@ export enum UsedFor {
   Purchase = 'Purchase',
   AffiliatePurchase = 'AffiliatePurchase',
   Announcement = 'Announcement',
+  AffiliateSignup = 'AffiliateSignup',
 }
 
 export const UsedFors = [
@@ -55,7 +56,8 @@ export const UsedFors = [
   UsedFor.KYCRejected,
   UsedFor.Announcement,
   UsedFor.Purchase,
-  UsedFor.AffiliatePurchase
+  UsedFor.AffiliatePurchase,
+  UsedFor.AffiliateSignup
 ]
 
 export interface MyCoupon {
