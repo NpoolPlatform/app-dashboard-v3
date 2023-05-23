@@ -183,7 +183,7 @@ const onSubmit = (done: () => void) => {
     if (error) {
       return
     }
-    console.log()
+    onMenuHide()
   })
 }
 
