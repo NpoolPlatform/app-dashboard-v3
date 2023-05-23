@@ -1,0 +1,38 @@
+<template>
+  <q-table
+    dense
+    flat
+    :title='$t("MSG_OP_LOGS")'
+    :rows='opLogs'
+    row-key='ID'
+    :rows-per-page-options='[20]'
+  />
+</template>
+
+<script setup lang='ts'>
+import { useAdminOpLogStore } from 'src/teststore/oplog/oplog'
+import { OpLog } from 'src/teststore/oplog/oplog/types'
+import { computed, onMounted } from 'vue'
+
+const log = useAdminOpLogStore()
+const opLogs = computed(() => log.OpLogs.OpLogs)
+
+onMounted(() => {
+  if (opLogs.value.length === 0) {
+    getAppOpLogs(0, 500)
+  }
+})
+
+const getAppOpLogs = (offset: number, limit: number) => {
+  log.getAppOpLogs({
+    Offset: offset,
+    Limit: limit,
+    Message: {}
+  }, (error: boolean, rows: Array<OpLog>) => {
+    if (error || rows.length === 0) {
+      return
+    }
+    getAppOpLogs(offset + limit, limit)
+  })
+}
+</script>

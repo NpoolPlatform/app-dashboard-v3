@@ -408,6 +408,24 @@ const MainDrawerMenus = [
       sectionBegin: false,
       children: []
     } as MenuItem]
+  } as MenuItem, {
+    menuId: uid(),
+    label: '操作日志',
+    caption: '查看操作日志',
+    icon: 'format_list_numbered',
+    target: '/api',
+    level: 0,
+    sectionBegin: false,
+    children: [{
+      menuId: uid(),
+      label: '操作日志',
+      caption: '查看操作日志',
+      icon: 'format_list_numbered',
+      target: '/api/logs',
+      level: 1,
+      sectionBegin: false,
+      children: []
+    } as MenuItem]
   } as MenuItem
 ] as Array<MenuItem>
 
