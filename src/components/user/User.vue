@@ -3,13 +3,21 @@
     dense
     flat
     :title='$t("MSG_USERS")'
-    :rows='users'
+    :rows='displayUsers'
     row-key='ID'
     :loading='userLoading'
     :rows-per-page-options='[20]'
     :columns='columns'
+    @row-click='(evt, row, index) => onRowClick(row as User)'
   >
     <template #top-right>
+      <q-input
+        dense
+        flat
+        class='small'
+        v-model='username'
+        :label='$t("MSG_USERNAME")'
+      />
       <q-btn
         dense
         flat
@@ -33,6 +41,21 @@
       />
     </template>
   </q-table>
+  <q-dialog
+    v-model='showing'
+    @hide='onMenuHide'
+    position='right'
+  >
+    <q-card class='popup-menu'>
+      <q-card-section>
+        <q-input v-model='target.EmailAddress' :label='$t("MSG_NEW_EMAIL_ADDRESS")' />
+      </q-card-section>
+      <q-item class='row'>
+        <LoadingButton loading :label='$t("MSG_SUBMIT")' @click='onSubmit' />
+        <q-btn class='btn round' :label='$t("MSG_CANCEL")' @click='onCancel' />
+      </q-item>
+    </q-card>
+  </q-dialog>
   <q-card>
     <q-card-section class='bg-primary text-white'>
       {{ $t('MSG_ADVERTISEMENT_POSITION') }}
@@ -44,10 +67,12 @@
 import saveAs from 'file-saver'
 import { NotifyType, useAdminUserStore, User, formatTime, useFrontendAppStore } from 'npool-cli-v4'
 import { AppID } from 'src/const/const'
-import { computed, onMounted, ref } from 'vue'
+import { computed, defineAsyncComponent, onMounted, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 // eslint-disable-next-line @typescript-eslint/unbound-method
 const { t } = useI18n({ useScope: 'global' })
+const LoadingButton = defineAsyncComponent(() => import('src/components/button/LoadingButton.vue'))
+
 const columns = computed(() => [
   {
     name: 'AppID',
@@ -107,6 +132,60 @@ const users = computed(() => user.Users.Users.filter((el) => {
   }
   return display
 }))
+
+const username = ref('')
+
+const displayUsers = computed(() => users.value.filter((user) => {
+  const display = user.EmailAddress?.toLowerCase().includes(username.value.toLowerCase()) ||
+        user.PhoneNO?.toLowerCase().includes(username.value.toLowerCase())
+  return display
+}))
+
+const target = ref({} as User)
+const showing = ref(false)
+const updating = ref(false)
+
+const onRowClick = (row: User) => {
+  target.value = { ...row }
+  showing.value = true
+  updating.value = true
+}
+
+const onCancel = () => {
+  onMenuHide()
+}
+
+const onMenuHide = () => {
+  showing.value = false
+  target.value = {} as User
+}
+const _user = useAdminUserStore()
+const onSubmit = (done: () => void) => {
+  _user.updateAppUser({
+    TargetUserID: target.value?.ID,
+    EmailAddress: target.value?.EmailAddress,
+    Message: {
+      Error: {
+        Title: t('MSG_CREATE_INVITATION_CODE'),
+        Message: t('MSG_CREATE_INVITATION_CODE_FAIL'),
+        Popup: true,
+        Type: NotifyType.Error
+      },
+      Info: {
+        Title: t('MSG_CREATE_INVITATION_CODE'),
+        Message: t('MSG_CREATE_INVITATION_CODE_FAIL'),
+        Popup: true,
+        Type: NotifyType.Success
+      }
+    }
+  }, (error: boolean) => {
+    done()
+    if (error) {
+      return
+    }
+    console.log()
+  })
+}
 
 const start = ref('')
 const end = ref('')

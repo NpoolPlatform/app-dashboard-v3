@@ -153,7 +153,7 @@ const addInvitationCode = (idx = 0) => {
 const _user = useAdminUserStore()
 const onSetKolClick = () => {
   selectedUser.value?.forEach((el) => {
-    _user.updateAppUserKol({
+    _user.updateAppUser({
       TargetUserID: el.ID,
       Kol: true,
       Message: {
