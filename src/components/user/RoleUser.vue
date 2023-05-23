@@ -265,7 +265,8 @@ const onDeleteRoleUser = () => {
   }
 
   role.deleteRoleUser({
-    RoleUserID: selectedRoleUser.value[0].ID,
+    ID: selectedRoleUser.value[0].ID,
+    TargetUserID: selectedRoleUser.value[0].UserID,
     Message: {
       Error: {
         Title: 'MSG_DELETE_ROLE_USER',
