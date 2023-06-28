@@ -47,8 +47,7 @@
         />
         <q-select
           :options='UsedFors'
-          v-model='target.EventTypes'
-          multiple
+          v-model='target.EventType'
           :label='$t("MSG_USED_FOR")'
         />
       </q-card-section>
@@ -67,7 +66,6 @@ import {
   useAdminNotifChannelStore,
   TNotifChannel as NotifChannel,
   UsedFors,
-  UsedFor,
   NotifChannels
 } from 'npool-cli-v4'
 import { computed, defineAsyncComponent, onMounted, ref } from 'vue'
@@ -84,11 +82,7 @@ const channels = computed(() => {
   return rows.sort((a, b) => a.EventType.localeCompare(b.EventType, 'zh-CN'))
 })
 
-interface MyNotifChannel extends NotifChannel {
-  EventTypes: UsedFor[]
-}
-
-const target = ref({} as MyNotifChannel)
+const target = ref({} as NotifChannel)
 
 const showing = ref(false)
 const updating = ref(false)
@@ -99,7 +93,7 @@ const onCreate = () => {
 }
 
 const onMenuHide = () => {
-  target.value = {} as MyNotifChannel
+  target.value = {} as NotifChannel
   showing.value = false
 }
 
