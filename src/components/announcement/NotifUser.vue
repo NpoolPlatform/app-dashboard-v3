@@ -47,9 +47,9 @@
       </q-card-section>
       <q-card-section>
         <q-select
-          :options='NotifTypes'
-          v-model='target.NotifType'
-          :label='$t("MSG_NOIIF_TYPE")'
+          :options='UsedFors'
+          v-model='target.EventType'
+          :label='$t("MSG_USED_FOR")'
         />
         <AppUsersSelector v-model:id='target.UserID' label='MSG_USER' />
       </q-card-section>
@@ -66,7 +66,7 @@ import {
   formatTime,
   NotifyType,
   useAdminNotifUserStore,
-  NotifTypes,
+  UsedFors,
   NotifUser
 } from 'npool-cli-v4'
 import { AppID } from 'src/const/const'
