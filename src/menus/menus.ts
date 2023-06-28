@@ -31,10 +31,28 @@ const MainDrawerMenus = [
         children: []
       } as MenuItem, {
         menuId: uid(),
-        label: '渠道',
+        label: '通知渠道',
         caption: '管理通知渠道',
         icon: 'perm_identity',
         target: '/announcement/channel',
+        level: 1,
+        sectionBegin: false,
+        children: []
+      } as MenuItem, {
+        menuId: uid(),
+        label: '公告用户',
+        caption: '管理多播公告用户',
+        icon: 'perm_identity',
+        target: '/announcement/user',
+        level: 1,
+        sectionBegin: false,
+        children: []
+      } as MenuItem, {
+        menuId: uid(),
+        label: '通知用户',
+        caption: '管理多播通知用户',
+        icon: 'perm_identity',
+        target: '/notif/user',
         level: 1,
         sectionBegin: false,
         children: []

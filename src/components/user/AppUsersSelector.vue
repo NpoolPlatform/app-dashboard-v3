@@ -27,14 +27,14 @@ import { getUsers } from 'src/api/user'
 import { computed, defineEmits, defineProps, toRef, ref, onMounted } from 'vue'
 
 interface Props {
-  ids: string[]
+  id: string
   updating?: boolean
 }
 
 const props = defineProps<Props>()
-const ids = toRef(props, 'ids')
+const id = toRef(props, 'id')
 const updating = toRef(props, 'updating')
-const target = ref(ids.value)
+const target = ref(id.value)
 
 const user = useAdminUserStore()
 const users = computed(() => Array.from(user.Users.Users).map((el) => {
@@ -53,9 +53,9 @@ const onFilter = (val: string, doneFn: (callbackFn: () => void) => void) => {
   })
 }
 
-const emit = defineEmits<{(e: 'update:ids', ids: string[]): void}>()
+const emit = defineEmits<{(e: 'update:id', id: string): void}>()
 const onUpdate = () => {
-  emit('update:ids', target.value)
+  emit('update:id', target.value)
 }
 
 onMounted(() => {

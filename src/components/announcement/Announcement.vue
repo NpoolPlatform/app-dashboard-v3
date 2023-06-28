@@ -44,7 +44,7 @@
         <q-input v-model='target.Title' :label='$t("MSG_TITLE")' />
         <q-input v-model='target.Content' :label='$t("MSG_CONTENT")' />
         <q-select
-          :options='AnnouncementTypes'
+          :options='NotifTypes'
           v-model='target.AnnouncementType'
           :label='$t("MSG_ANNOUNCEMENT_TYPE")'
         />
@@ -76,7 +76,7 @@ import {
   useAdminAnnouncementStore,
   Announcement,
   NotifChannels,
-  AnnouncementTypes
+  NotifTypes
 } from 'npool-cli-v4'
 import { computed, defineAsyncComponent, onMounted, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
