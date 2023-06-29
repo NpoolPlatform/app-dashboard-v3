@@ -110,11 +110,10 @@ const onCancel = () => {
 
 onMounted(() => {
   if (announcementUsers.value?.length === 0) {
-    // getAppAnnouncementUsers(0, 100)
+    getAppAnnouncementUsers(0, 100)
   }
 })
 
-/*
 const getAppAnnouncementUsers = (offset: number, limit: number) => {
   announcementUser.getAppAnnouncementUsers({
     Offset: offset,
@@ -134,7 +133,6 @@ const getAppAnnouncementUsers = (offset: number, limit: number) => {
     getAppAnnouncementUsers(offset + limit, limit)
   })
 }
-*/
 
 const onSubmit = (done: () => void) => {
   createAnnouncementUser(done)
