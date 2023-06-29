@@ -10,7 +10,6 @@
     @update:model-value='onUpdate'
     use-input
     @filter='onFilter'
-    multiple
   >
     <template #option='scope'>
       <q-item v-bind='scope.itemProps'>
