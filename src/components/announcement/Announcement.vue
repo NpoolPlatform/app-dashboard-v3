@@ -57,6 +57,9 @@
         />
       </q-card-section>
       <q-card-section>
+        <DateTimePicker v-model:date='target.StartAt' label='MSG_START_AT' />
+      </q-card-section>
+      <q-card-section>
         <DateTimePicker v-model:date='target.EndAt' label='MSG_END_AT' />
       </q-card-section>
       <q-item class='row'>
@@ -265,6 +268,12 @@ const columns = computed(() => [
     label: t('MSG_CREATED_AT'),
     sortable: true,
     field: (row: Announcement) => formatTime(row.CreatedAt)
+  },
+  {
+    name: 'StartAt',
+    label: t('MSG_START_AT'),
+    sortable: true,
+    field: (row: Announcement) => formatTime(row.StartAt)
   },
   {
     name: 'END_AT',
