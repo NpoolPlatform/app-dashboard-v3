@@ -53,7 +53,7 @@
 
 <script setup lang='ts'>
 import { computed, onMounted, ref, defineAsyncComponent } from 'vue'
-import { useAdminEmailTemplateStore, EmailTemplate, UsedFors, NotifyType, UsedFor } from 'npool-cli-v4'
+import { useAdminEmailTemplateStore, EmailTemplate, UsedFors, NotifyType, UsedFor, validateEmailAddress } from 'npool-cli-v4'
 
 const LoadingButton = defineAsyncComponent(() => import('src/components/button/LoadingButton.vue'))
 const LanguagePicker = defineAsyncComponent(() => import('src/components/lang/LanguagePicker.vue'))
@@ -170,6 +170,26 @@ const updateEmailTemplate = (done: () => void) => {
 }
 
 const createEmailTemplate = (done: () => void) => {
+  let flag = false
+  if (myTarget.value?.ReplyTos?.length > 0) {
+    myTarget.value?.ReplyTos?.split(',')?.forEach((el) => {
+      if (!validateEmailAddress(el)) {
+        console.log('invalid email address', el)
+        flag = true
+      }
+    })
+  }
+  if (myTarget.value?.CCTos?.length > 0) {
+    myTarget.value?.CCTos?.split(',')?.forEach((el) => {
+      if (!validateEmailAddress(el)) {
+        console.log('invalid email address', el)
+        flag = true
+      }
+    })
+  }
+  if (flag) {
+    return
+  }
   email.createEmailTemplate({
     TargetLangID: myTarget.value.LangID,
     UsedFor: myTarget.value.UsedFor,
