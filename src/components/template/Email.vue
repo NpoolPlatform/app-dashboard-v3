@@ -144,6 +144,27 @@ const getEmailTemplates = (offset: number, limit: number) => {
 }
 
 const updateEmailTemplate = (done: () => void) => {
+  let flag = false
+  if (myTarget.value?.ReplyTos?.length > 0) {
+    myTarget.value?.ReplyTos?.split(',')?.forEach((el) => {
+      if (!validateEmailAddress(el)) {
+        console.log('invalid email address', el)
+        flag = true
+      }
+    })
+  }
+  if (myTarget.value?.CCTos?.length > 0) {
+    myTarget.value?.CCTos?.split(',')?.forEach((el) => {
+      if (!validateEmailAddress(el)) {
+        console.log('invalid email address', el)
+        flag = true
+      }
+    })
+  }
+  if (flag) {
+    done()
+    return
+  }
   email.updateEmailTemplate({
     TargetLangID: myTarget.value.LangID,
     ID: myTarget.value.ID,
@@ -188,6 +209,7 @@ const createEmailTemplate = (done: () => void) => {
     })
   }
   if (flag) {
+    done()
     return
   }
   email.createEmailTemplate({
