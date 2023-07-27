@@ -238,16 +238,6 @@ const columns = computed(() => [
     field: (row: NotifUser) => row.PhoneNO
   },
   {
-    name: 'Title',
-    label: t('MSG_TITLE'),
-    field: (row: NotifUser) => row.Title
-  },
-  {
-    name: 'Content',
-    label: t('MSG_CONTENT'),
-    field: (row: NotifUser) => row.Content
-  },
-  {
     name: 'CreatedAt',
     label: t('MSG_CREATED_AT'),
     field: (row: NotifUser) => formatTime(row.CreatedAt)
