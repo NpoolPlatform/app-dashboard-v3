@@ -6,7 +6,7 @@
     :rows='displayAccounts'
     row-key='ID'
     :loading='accountsLoading'
-    :rows-per-page-options='[20]'
+    :rows-per-page-options='[100]'
     :columns='columns'
   >
     <template #top-right>

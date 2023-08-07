@@ -5,7 +5,7 @@
     :title='$t("MSG_NOTIFS")'
     :rows='displayNotifs'
     row-key='ID'
-    :rows-per-page-options='[80]'
+    :rows-per-page-options='[100]'
     :columns='columns'
   >
     <template #top-right>

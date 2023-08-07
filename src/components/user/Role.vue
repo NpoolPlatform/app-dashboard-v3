@@ -6,7 +6,7 @@
     :rows='roles'
     row-key='ID'
     :loading='roleLoading'
-    :rows-per-page-options='[20]'
+    :rows-per-page-options='[100]'
   />
   <q-card>
     <q-card-section class='bg-primary text-white'>
