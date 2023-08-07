@@ -206,56 +206,67 @@ const columns = computed(() => [
   {
     name: 'ID',
     label: t('MSG_ID'),
+    sortable: true,
     field: (row: EventInspire) => row.ID
   },
   {
     name: 'AppID',
     label: t('MSG_APP_ID'),
+    sortable: true,
     field: (row: EventInspire) => row.AppID
   },
   {
     name: 'AppName',
     label: t('MSG_APP_NAME'),
+    sortable: true,
     field: (row: EventInspire) => row.AppName
   },
   {
     name: 'EventType',
     label: t('MSG_EVENT_TYPE'),
+    sortable: true,
     field: (row: EventInspire) => row.EventType
   },
   {
     name: 'Coupons',
     label: t('MSG_COUPONS'),
+    sortable: true,
     field: (row: EventInspire) => getCouponString.value(row.Coupons)
   },
   {
     name: 'Credits',
     label: t('MSG_CREDITS'),
+    sortable: true,
     field: (row: EventInspire) => row.Credits
   },
   {
     name: 'CreditsPerUSD',
     label: t('MSG_CREDITS_PERUSD'),
+    sortable: true,
     field: (row: EventInspire) => row.CreditsPerUSD
   },
   {
     name: 'MaxConsecutive',
     label: t('MSG_MAX_CONSECUTIVE'),
+    sortable: true,
     field: (row: EventInspire) => row.MaxConsecutive
   },
   {
     name: 'GoodID',
     label: t('MSG_GOOD_ID'),
+    sortable: true,
     field: (row: EventInspire) => row.GoodID
   },
   {
     name: 'GoodName',
     label: t('MSG_GOOD_NAME'),
+    sortable: true,
     field: (row: EventInspire) => row.GoodName
   },
   {
     name: 'InviterLayers',
     label: t('MSG_INVITER_LAYERS'),
+    sortable: true,
     field: (row: EventInspire) => row.InviterLayers
   },
   {

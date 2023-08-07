@@ -68,6 +68,7 @@ const columns = computed(() => [
   {
     name: 'ID',
     label: t('MSG_ID'),
+    sortable: true,
     field: (row: Notif) => row.ID
   },
   {
@@ -80,6 +81,7 @@ const columns = computed(() => [
     name: 'Content',
     align: 'left',
     label: t('MSG_CONTENT'),
+    sortable: true,
     field: (row: Notif) => row.Content
   },
   {
@@ -91,16 +93,19 @@ const columns = computed(() => [
   {
     name: 'UserID',
     label: t('MSG_USER_ID'),
+    sortable: true,
     field: (row: Notif) => row.UserID
   },
   {
     name: 'EmailAddress',
     label: t('MSG_EMAIL_ADDRESS'),
+    sortable: true,
     field: (row: Notif) => row.EmailAddress
   },
   {
     name: 'PhoneNO',
     label: t('MSG_PHONE_NO'),
+    sortable: true,
     field: (row: Notif) => row.PhoneNO
   },
   {
@@ -124,6 +129,7 @@ const columns = computed(() => [
   {
     name: 'Lang',
     label: t('MSG_LANG'),
+    sortable: true,
     field: (row: Notif) => row.Lang
   },
   {

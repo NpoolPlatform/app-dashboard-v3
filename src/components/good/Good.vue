@@ -216,116 +216,139 @@ const appGoodsColumns = computed(() => [
   {
     name: 'ID',
     label: t('MSG_ID'),
+    sortable: true,
     field: (row: AppGood) => row.ID
   },
   {
     name: 'GOODID',
     label: t('MSG_GOODID'),
+    sortable: true,
     field: (row: AppGood) => row.GoodID
   },
   {
     name: 'GOODNAME',
     label: t('MSG_GOODNAME'),
+    sortable: true,
     field: (row: AppGood) => row.GoodName
   },
   {
     name: 'GOODTYPE',
     label: t('MSG_GOOD_TYPE'),
+    sortable: true,
     field: (row: AppGood) => row.GoodType
   },
   {
     name: 'ONLINE',
     label: t('MSG_ONLINE'),
+    sortable: true,
     field: (row: AppGood) => row.Online
   },
   {
     name: 'VISIBLE',
     label: t('MSG_VISIBLE'),
+    sortable: true,
     field: (row: AppGood) => row.Visible
   },
   {
     name: 'PurchaseLimit',
     label: t('MSG_PURCHASE_LIMIT'),
+    sortable: true,
     field: (row: AppGood) => row.PurchaseLimit
   },
   {
     name: 'UserPurchaseLimit',
     label: t('MSG_USER_PURCHASE_LIMIT'),
+    sortable: true,
     field: (row: AppGood) => row.UserPurchaseLimit
   },
   {
     name: 'GOODPRICE',
     label: t('MSG_GOOD_PRICE'),
+    sortable: true,
     field: (row: AppGood) => row.Price
   },
   {
     name: 'GOODUNIT',
     label: t('MSG_GOOD_UNIT'),
+    sortable: true,
     field: (row: AppGood) => t(row.Unit)
   },
   {
     name: 'GOODTOTAL',
     label: t('MSG_GOOD_TOTAL'),
+    sortable: true,
     field: (row: AppGood) => row.Total
   },
   {
     name: 'GOODSOLD',
     label: t('MSG_GOOD_SOLD'),
+    sortable: true,
     field: (row: AppGood) => row.Sold
   },
   {
     name: 'GOODLOCKED',
     label: t('MSG_GOOD_LOCKED'),
+    sortable: true,
     field: (row: AppGood) => row.Locked
   },
   {
     name: 'GOODINSERVICE',
     label: t('MSG_GOOD_INSERVICE'),
+    sortable: true,
     field: (row: AppGood) => row.InService
   },
   {
     name: 'WaitStart',
     label: t('MSG_GOOD_WAITSTART'),
+    sortable: true,
     field: (row: AppGood) => row.WaitStart
   },
   {
     name: 'COINTYPEID',
     label: t('MSG_COIN_TYPE_ID'),
+    sortable: true,
     field: (row: AppGood) => row.CoinTypeID
   },
   {
     name: 'COINNAME',
     label: t('MSG_COINNAME'),
+    sortable: true,
     field: (row: AppGood) => row.CoinName
   },
   {
     name: 'BENEFITTYPE',
     label: t('MSG_BENEFITTYPE'),
+    sortable: true,
     field: (row: AppGood) => row.BenefitType
   },
   {
     name: 'STARTAT',
     label: t('MSG_STARTAT'),
+    sortable: true,
     field: (row: AppGood) => formatTime(row.StartAt)
   },
   {
     name: 'SaleStartAt',
     label: t('MSG_SALE_START_AT'),
+    sortable: true,
     field: (row: AppGood) => formatTime(row?.SaleStartAt)
   },
   {
     name: 'SaleEndAt',
     label: t('MSG_SALE_END_AT'),
+    sortable: true,
     field: (row: AppGood) => formatTime(row?.SaleEndAt)
   },
   {
     name: 'DailyRewardAmount',
     label: t('MSG_DAILY_REWARD_AMOUNT'),
+    sortable: true,
     field: (row: AppGood) => row.DailyRewardAmount
   },
   {
     name: 'ServiceStartAt',
     label: t('MSG_SERVICE_START_AT'),
+    sortable: true,
     field: (row: AppGood) => formatTime(row?.ServiceStartAt)
   }
 ])
@@ -334,96 +357,115 @@ const coinColumns = computed(() => [
   {
     name: 'ID',
     label: t('MSG_ID'),
+    sortable: true,
     field: (row: AppCoin) => row.ID
   },
   {
     name: 'AppID',
     label: t('MSG_APP_ID'),
+    sortable: true,
     field: (row: AppCoin) => row.AppID
   },
   {
     name: 'CoinTypeID',
     label: t('MSG_COIN_TYPE_ID'),
+    sortable: true,
     field: (row: AppCoin) => row.CoinTypeID
   },
   {
     name: 'Name',
     label: t('MSG_APP_COIN_NAME'),
+    sortable: true,
     field: (row: AppCoin) => row.Name
   },
   {
     name: 'DisplayNames',
     label: t('MSG_COIN_NAME'),
+    sortable: true,
     field: (row: AppCoin) => row.DisplayNames?.join(',')
   },
   {
     name: 'Logo',
     label: t('MSG_LOGO'),
+    sortable: true,
     field: (row: AppCoin) => row.Logo
   },
   {
     name: 'Unit',
     label: t('MSG_UNIT'),
+    sortable: true,
     field: (row: AppCoin) => row.Unit
   },
   {
     name: 'Presale',
     label: t('MSG_PRESALE'),
+    sortable: true,
     field: (row: AppCoin) => row.Presale
   },
   {
     name: 'ReservedAmount',
     label: t('MSG_RESERVED_AMOUNT'),
+    sortable: true,
     field: (row: AppCoin) => row.ReservedAmount
   },
   {
     name: 'ForPay',
     label: t('MSG_FOR_PAY'),
+    sortable: true,
     field: (row: AppCoin) => row.ForPay
   },
   {
     name: 'ProductPage',
     label: t('MSG_PRODUCT_PAGE'),
+    sortable: true,
     field: (row: AppCoin) => row.ProductPage
   },
   {
     name: 'ENV',
     label: t('MSG_ENV'),
+    sortable: true,
     field: (row: AppCoin) => row.ENV
   },
   {
     name: 'MarketValue',
     label: t('MSG_MARKET_VALUE'),
+    sortable: true,
     field: (row: AppCoin) => row.MarketValue
   },
   {
     name: 'SettleValue',
     label: t('MSG_SETTLE_VALUE'),
+    sortable: true,
     field: (row: AppCoin) => row.SettleValue
   },
   {
     name: 'SettlePercent',
     label: t('MSG_SETTLE_PERCENT'),
+    sortable: true,
     field: (row: AppCoin) => row.SettlePercent
   },
   {
     name: 'SettleTips',
     label: t('MSG_SETTLE_TIPS'),
+    sortable: true,
     field: (row: AppCoin) => row.SettleTips?.join(',')
   },
   {
     name: 'DailyRewardAmount',
     label: t('MSG_DAILY_REWARD_AMOUNT'),
+    sortable: true,
     field: (row: AppCoin) => row.DailyRewardAmount
   },
   {
     name: 'Display',
     label: t('MSG_DISPLAY'),
+    sortable: true,
     field: (row: AppCoin) => row.Display
   },
   {
     name: 'DisplayIndex',
     label: t('MSG_DISPLAY_INDEX'),
+    sortable: true,
     field: (row: AppCoin) => row.DisplayIndex
   }
 ])

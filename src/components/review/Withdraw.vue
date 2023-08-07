@@ -193,6 +193,7 @@ const columns = computed(() => [
   {
     name: 'CoinTypeID',
     label: t('MSG_COIN_TYPE_ID'),
+    sortable: true,
     field: (row: WithdrawReview) => row.CoinTypeID
   },
   {
@@ -204,16 +205,19 @@ const columns = computed(() => [
   {
     name: 'CoinLogo',
     label: t('MSG_COIN_LOGO'),
+    sortable: true,
     field: (row: WithdrawReview) => row.CoinLogo
   },
   {
     name: 'Amount',
     label: t('MSG_AMOUNT'),
+    sortable: true,
     field: (row: WithdrawReview) => row.Amount
   },
   {
     name: 'Address',
     label: t('MSG_ADDRESS'),
+    sortable: true,
     field: (row: WithdrawReview) => row.Address
   },
   {
@@ -237,6 +241,7 @@ const columns = computed(() => [
   {
     name: 'Message',
     label: t('MSG_MESSAGE'),
+    sortable: true,
     field: (row: WithdrawReview) => row.Message
   },
   {
@@ -248,21 +253,25 @@ const columns = computed(() => [
   {
     name: 'UpdatedAt',
     label: t('MSG_UPDATED_AT'),
+    sortable: true,
     field: (row: WithdrawReview) => formatTime(row.UpdatedAt)
   },
   {
     name: 'UserID',
     label: t('MSG_USER_ID'),
+    sortable: true,
     field: (row: WithdrawReview) => row.UserID
   },
   {
     name: 'EmailAddress',
     label: t('MSG_EMAIL_ADDRESS'),
+    sortable: true,
     field: (row: WithdrawReview) => row.EmailAddress
   },
   {
     name: 'PhoneNO',
     label: t('MSG_PHONE_NO'),
+    sortable: true,
     field: (row: WithdrawReview) => row.PhoneNO
   },
   {
