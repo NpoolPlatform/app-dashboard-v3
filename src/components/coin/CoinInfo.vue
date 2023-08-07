@@ -5,7 +5,7 @@
     :rows='displayCoins'
     row-key='ID'
     :title='$t("MSG_APP_COINS")'
-    :rows-per-page-options='[10]'
+    :rows-per-page-options='[100]'
     @row-click='(evt, row, index) => onRowClick(row as AppCoin)'
     :columns='columns'
   >

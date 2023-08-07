@@ -5,7 +5,7 @@
     :title='$t("MSG_ORDERS")'
     :rows='displayOrders'
     row-key='ID'
-    :rows-per-page-options='[10]'
+    :rows-per-page-options='[100]'
     :loading='orderLoading'
     :columns='columns'
     @row-click='(evt, row, index) => onRowClick(row as Order)'

@@ -5,7 +5,7 @@
     :title='$t("MSG_REGISTRATION")'
     :rows='displayRegistrations'
     row-key='ID'
-    :rows-per-page-options='[10]'
+    :rows-per-page-options='[100]'
     @row-click='(evt, row, index) => onRowClick(row as Registration)'
   >
     <template #top-right>

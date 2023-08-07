@@ -77,7 +77,7 @@
     flat
     :title='$t("MSG_LOADED_MESSAGES")'
     row-key='ID'
-    :rows-per-page-options='[10]'
+    :rows-per-page-options='[100]'
     :rows='loadedMessages'
   >
     <template #top-right>

@@ -5,7 +5,7 @@
     :title='$t("MSG_NOTIF_USERS")'
     :rows='displayNotifUsers'
     row-key='ID'
-    :rows-per-page-options='[10]'
+    :rows-per-page-options='[100]'
     selection='single'
     v-model:selected='selectedNotifUsers'
     :columns='columns'
