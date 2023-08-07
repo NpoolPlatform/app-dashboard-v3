@@ -6,7 +6,7 @@
     :rows='displayUsers'
     row-key='ID'
     :loading='userLoading'
-    :rows-per-page-options='[20]'
+    :rows-per-page-options='[100]'
     :columns='columns'
     @row-click='(evt, row, index) => onRowClick(row as User)'
   >

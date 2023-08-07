@@ -7,7 +7,7 @@
     row-key='ID'
     :loading='reviewLoading'
     :columns='columns'
-    :rows-per-page-options='[20]'
+    :rows-per-page-options='[100]'
     @row-click='(evt, row, index) => onRowClick(row as WithdrawReview)'
   >
     <template #top-right>

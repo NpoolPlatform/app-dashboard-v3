@@ -5,7 +5,7 @@
     :title='$t("MSG_APP_COUNTRIES")'
     :rows='displayCountries'
     row-key='ID'
-    :rows-per-page-options='[20]'
+    :rows-per-page-options='[100]'
   >
     <template #top-right>
       <q-input

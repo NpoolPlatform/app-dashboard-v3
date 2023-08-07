@@ -5,7 +5,7 @@
     :title='$t("MSG_COMMISSION_SETTINGS")'
     :rows='displayCommissions'
     row-key='ID'
-    :rows-per-page-options='[50]'
+    :rows-per-page-options='[100]'
     @row-click='(evt, row, index) => onRowClick(row as Commission)'
   >
     <template #top-right>

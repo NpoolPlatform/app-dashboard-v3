@@ -6,7 +6,7 @@
     :rows='displayEvents'
     row-key='ID'
     :columns='columns'
-    :rows-per-page-options='[50]'
+    :rows-per-page-options='[100]'
     @row-click='(evt, row, index) => onRowClick(row as EventInspire)'
   >
     <template #top-right>

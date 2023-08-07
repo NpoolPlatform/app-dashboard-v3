@@ -6,7 +6,7 @@
     :rows='coins'
     :columns='coinColumns'
     row-key='ID'
-    :rows-per-page-options='[20]'
+    :rows-per-page-options='[100]'
   />
   <q-table
     dense
@@ -15,7 +15,7 @@
     :rows='appGoods'
     :columns='appGoodsColumns'
     row-key='ID'
-    :rows-per-page-options='[20]'
+    :rows-per-page-options='[100]'
     @row-click='(evt, row, index) => onRowClick(row as AppGood)'
   />
   <q-dialog

@@ -5,7 +5,7 @@
     :title='$t("MSG_OP_LOGS")'
     :rows='opLogs'
     row-key='ID'
-    :rows-per-page-options='[20]'
+    :rows-per-page-options='[100]'
   />
 </template>
 
