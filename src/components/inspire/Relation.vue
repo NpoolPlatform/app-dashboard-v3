@@ -5,7 +5,7 @@
     :title='$t("MSG_USERS")'
     :rows='displayUsers'
     row-key='ID'
-    :rows-per-page-options='[10]'
+    :rows-per-page-options='[100]'
     selection='single'
     v-model:selected='selectedUser'
     :columns='uColumns'
@@ -26,7 +26,7 @@
     dense
     flat
     :title='$t("MSG_INVITEES")'
-    :rows-per-page-options='[10]'
+    :rows-per-page-options='[100]'
     row-key='name'
     :columns='(columns as never)'
     :rows='inviteeArchivements'
@@ -102,7 +102,7 @@
     flat
     :title='$t("MSG_INVITERS")'
     row-key='ID'
-    :rows-per-page-options='[10]'
+    :rows-per-page-options='[100]'
     :rows='inviterArchivements'
     :columns='(columns as never)'
     :loading='loading'

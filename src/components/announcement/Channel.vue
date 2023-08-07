@@ -5,7 +5,7 @@
     :title='$t("MSG_CHANNELS")'
     :rows='channels'
     row-key='ID'
-    :rows-per-page-options='[10]'
+    :rows-per-page-options='[100]'
     selection='single'
     v-model:selected='selectedNotifChannels'
     :columns='columns'

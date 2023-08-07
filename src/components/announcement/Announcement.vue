@@ -5,7 +5,7 @@
     :title='$t("MSG_ANNOUNCEMENTS")'
     :rows='announcements'
     row-key='ID'
-    :rows-per-page-options='[10]'
+    :rows-per-page-options='[100]'
     @row-click='(evt, row, index) => onRowClick(row as Announcement)'
     selection='single'
     v-model:selected='selectedAnnouncements'

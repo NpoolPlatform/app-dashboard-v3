@@ -5,7 +5,7 @@
     :title='$t("MSG_ANNOUNCEMENT_USERS")'
     :rows='displayAnnouncementUsers'
     row-key='ID'
-    :rows-per-page-options='[10]'
+    :rows-per-page-options='[100]'
     selection='single'
     v-model:selected='selectedAnnouncementUsers'
     :columns='columns'
