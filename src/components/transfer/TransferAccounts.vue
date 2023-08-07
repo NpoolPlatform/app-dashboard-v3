@@ -43,74 +43,74 @@ const columns = computed(() => [
   {
     name: 'ID',
     label: t('MSG_ID'),
-    field: (row: TFAccount) => row.ID,
-    sortable: true
+    sortable: true,
+    field: (row: TFAccount) => row.ID
   },
   {
     name: 'AppID',
     label: t('MSG_APP_ID'),
-    field: (row: TFAccount) => row.AppID,
-    sortable: true
+    sortable: true,
+    field: (row: TFAccount) => row.AppID
   },
   {
     name: 'UserID',
     label: t('MSG_USER_ID'),
-    field: (row: TFAccount) => row.UserID,
-    sortable: true
+    sortable: true,
+    field: (row: TFAccount) => row.UserID
   },
   {
     name: 'EmailAddress',
     label: t('MSG_EMAIL_ADDRESS'),
-    field: (row: TFAccount) => row.EmailAddress,
-    sortable: true
+    sortable: true,
+    field: (row: TFAccount) => row.EmailAddress
   },
   {
     name: 'PhoneNO',
     label: t('MSG_PHONE_NO'),
-    field: (row: TFAccount) => row.PhoneNO,
-    sortable: true
+    sortable: true,
+    field: (row: TFAccount) => row.PhoneNO
   },
   {
     name: 'TargetUserID',
     label: t('MSG_TARGET_USER_ID'),
-    field: (row: TFAccount) => row.TargetUserID,
-    sortable: true
+    sortable: true,
+    field: (row: TFAccount) => row.TargetUserID
   },
   {
     name: 'TargetEmailAddress',
     label: t('MSG_TARGET_EMAIL_ADDRESS'),
-    field: (row: TFAccount) => row.TargetEmailAddress,
-    sortable: true
+    sortable: true,
+    field: (row: TFAccount) => row.TargetEmailAddress
   },
   {
     name: 'TargetPhoneNO',
     label: t('MSG_TARGET_PHONE_NO'),
-    field: (row: TFAccount) => row.TargetPhoneNO,
-    sortable: true
+    sortable: true,
+    field: (row: TFAccount) => row.TargetPhoneNO
   },
   {
     name: 'TargetUsername',
     label: t('MSG_TARGET_USERNAME'),
-    field: (row: TFAccount) => row.TargetUsername,
-    sortable: true
+    sortable: true,
+    field: (row: TFAccount) => row.TargetUsername
   },
   {
     name: 'TargetFirstName',
     label: t('MSG_TARGET_FIRST_NAME'),
-    field: (row: TFAccount) => row.TargetFirstName,
-    sortable: true
+    sortable: true,
+    field: (row: TFAccount) => row.TargetFirstName
   },
   {
     name: 'TargetFirstName',
     label: t('MSG_TARGET_LAST_NAME'),
-    field: (row: TFAccount) => row.TargetLastName,
-    sortable: true
+    sortable: true,
+    field: (row: TFAccount) => row.TargetLastName
   },
   {
     name: 'CreatedAt',
     label: t('MSG_CREATED_AT'),
-    field: (row: TFAccount) => row.CreatedAt,
-    sortable: true
+    sortable: true,
+    field: (row: TFAccount) => row.CreatedAt
   }
 ])
 const transferAccounts = useAdminTransferAccountStore()

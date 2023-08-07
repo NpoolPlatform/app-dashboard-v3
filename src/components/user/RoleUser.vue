@@ -98,26 +98,31 @@ const columns = computed(() => [
   {
     name: 'AppID',
     label: t('MSG_APP_ID'),
+    sortable: true,
     field: (row: User) => row.AppID
   },
   {
     name: 'UserID',
     label: t('MSG_USER_ID'),
+    sortable: true,
     field: (row: User) => row.ID
   },
   {
     name: 'EmailAddress',
     label: t('MSG_EMAIL_ADDRESS'),
+    sortable: true,
     field: (row: User) => row.EmailAddress
   },
   {
     name: 'PhoneNO',
     label: t('MSG_PHONE_NO'),
+    sortable: true,
     field: (row: User) => row.PhoneNO
   },
   {
     name: 'Roles',
     label: t('MSG_ROLES'),
+    sortable: true,
     field: (row: User) => row.Roles?.join(',')
   },
   {
@@ -129,6 +134,7 @@ const columns = computed(() => [
   {
     name: 'IDNUMBER',
     label: t('MSG_IDNUMBER'),
+    sortable: true,
     field: (row: User) => row.IDNumber
   },
   {
