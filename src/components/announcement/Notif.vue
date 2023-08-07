@@ -6,7 +6,7 @@
     :rows='displayNotifs'
     row-key='ID'
     :rows-per-page-options='[100]'
-    :columns='columns'
+    :columns='(columns as any)'
   >
     <template #top-right>
       <div class='row indent flat'>
