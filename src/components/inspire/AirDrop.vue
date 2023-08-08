@@ -33,20 +33,11 @@
         <span>{{ $t('MSG_CREATE_EVENT_COUPON') }}</span>
       </q-card-section>
       <q-card-section>
-        <q-select :options='EventCouponTypes' v-model='couponType' :label='$t("MSG_COUPON_TYPE")' />
         <q-select
-          v-if='couponType === CouponType.FixAmount'
-          :options='fixAmounts'
-          v-model='selectedFixAmount'
-          :label='$t("MSG_FIX_AMOUNT_COUPON")'
+          :options='coupons'
+          v-model='selectedCoupon'
+          :label='$t("MSG_COUPON")'
         />
-        <q-select
-          v-if='couponType=== CouponType.Discount'
-          :options='discounts'
-          v-model='selectedDiscount'
-          :label='$t("MSG_DISCOUNT_COUPON")'
-        />
-        <q-input type='number' v-model='airdropCount' :label='$t("MSG_COUPON_COUNT")' />
       </q-card-section>
       <q-item class='row'>
         <q-btn class='btn round alt' :label='$t("MSG_SUBMIT")' @click='onSubmit' />
@@ -60,19 +51,10 @@
 </template>
 
 <script setup lang='ts'>
-import {
-  NotificationType,
-  FixAmountCoupon,
-  EventCouponTypes,
-  CouponType,
-  DiscountCoupon,
-  useFixAmountStore,
-  useDiscountStore,
-  useUserCouponStore
-} from 'npool-cli-v2'
 import { formatTime, NotifyType, useAdminUserStore, User } from 'npool-cli-v4'
 import { computed, onMounted, watch, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
+import { allocatedCoupon, coupon } from 'src/teststore'
 
 // eslint-disable-next-line @typescript-eslint/unbound-method
 const { t } = useI18n({ useScope: 'global' })
@@ -120,7 +102,15 @@ const columns = computed(() => [
     field: (row: User) => formatTime(row.CreatedAt)
   }
 ])
-const coupon = useUserCouponStore()
+
+const _allocatedCoupon = allocatedCoupon.useAllocatedCouponStore()
+const _coupon = coupon.useCouponStore()
+const coupons = computed(() => _coupon.Coupons.filter((el) => el.CouponType !== coupon.CouponType.SpecialOffer).map((el) => {
+  return {
+    label: el.Name + ' | ' + el.Denomination + ' | ' + el.CouponType,
+    value: el
+  }
+}))
 
 const user = useAdminUserStore()
 const users = computed(() => user.Users.Users)
@@ -130,45 +120,12 @@ const displayUsers = computed(() => users.value.filter((el) => {
 }))
 const selectedUsers = ref([] as Array<User>)
 
-interface MyFixAmount {
-  label: string
-  value: FixAmountCoupon
-}
-
-const fixAmount = useFixAmountStore()
-const appFixAmounts = computed(() => fixAmount.FixAmounts)
-const fixAmounts = computed(() => Array.from(appFixAmounts.value).map((el) => {
-  return {
-    label: el.Name + ' | ' + el.Denomination.toString(),
-    value: el
-  } as MyFixAmount
-}))
-const selectedFixAmount = ref(undefined as unknown as MyFixAmount)
-
-interface MyDiscount {
-  label: string
-  value: DiscountCoupon
-}
-
-const discount = useDiscountStore()
-const appDiscounts = computed(() => discount.Discounts)
-const discounts = computed(() => Array.from(appDiscounts.value).map((el) => {
-  return {
-    label: el.Name + ' | ' + el.Discount.toString() + '%',
-    value: el
-  } as MyDiscount
-}))
-const selectedDiscount = ref(undefined as unknown as MyDiscount)
-
 const loading = ref(false)
-const couponType = ref(undefined as unknown as CouponType)
-const airdropCount = ref(1)
 const couponID = ref(undefined as unknown as string)
-watch(selectedDiscount, () => {
-  couponID.value = selectedDiscount.value.value.ID as string
-})
-watch(selectedFixAmount, () => {
-  couponID.value = selectedFixAmount.value.value.ID as string
+const selectedCoupon = ref(undefined as unknown as coupon.Coupon)
+
+watch(selectedCoupon, () => {
+  couponID.value = selectedCoupon.value?.ID
 })
 
 const getUsers = (offset: number, limit: number) => {
@@ -192,26 +149,15 @@ const getUsers = (offset: number, limit: number) => {
   })
 }
 const prepare = () => {
-  fixAmount.getFixAmounts({
+  _coupon.getCoupons({
+    Offset: 0,
+    Limit: 100,
     Message: {
       Error: {
-        Title: t('MSG_GET_FIX_AMOUNTS'),
-        Message: t('MSG_GET_FIX_AMOUNTS_FAIL'),
+        Title: t('MSG_GET_COUPONS'),
+        Message: t('MSG_GET_COUPONS_FAIL'),
         Popup: true,
-        Type: NotificationType.Error
-      }
-    }
-  }, () => {
-    // TODO
-  })
-
-  discount.getDiscounts({
-    Message: {
-      Error: {
-        Title: t('MSG_GET_DISCOUNTS'),
-        Message: t('MSG_GET_DISCOUNTS_FAIL'),
-        Popup: true,
-        Type: NotificationType.Error
+        Type: NotifyType.Error
       }
     }
   }, () => {
@@ -240,18 +186,15 @@ const onMenuHide = () => {
 const onSubmit = () => {
   showing.value = false
   selectedUsers.value.forEach((user) => {
-    coupon.createUserCoupon({
+    _allocatedCoupon.createCoupon({
       TargetUserID: user.ID,
-      Info: {
-        Type: couponType.value,
-        CouponID: couponID.value
-      },
+      CouponID: couponID.value,
       Message: {
         Error: {
           Title: t('MSG_CREATE_USER_COUPONS'),
           Message: t('MSG_CREATE_USER_COUPONS_FAIL'),
           Popup: true,
-          Type: NotificationType.Error
+          Type: NotifyType.Error
         }
       }
     }, () => {
