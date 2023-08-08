@@ -7,7 +7,7 @@
     row-key='ID'
     :columns='columns'
     :rows-per-page-options='[50]'
-    @row-click='(evt, row, index) => onRowClick(row as EventInspire)'
+    @row-click='(evt, row, index) => onRowClick(row as Event)'
   >
     <template #top-right>
       <div class='row indent flat'>
@@ -42,7 +42,7 @@
       </q-card-section>
       <q-card-section v-if='target.EventType === UsedFor.AffiliatePurchase || target.EventType === UsedFor.Purchase || UsedFor.Signup || UsedFor.AffiliateSignup'>
         <AppGoodSelector v-model:id='target.GoodID' v-if='!updating' />
-        <CouponSelector v-model:ids='target.Coupons' />
+        <CouponSelector v-model:ids='couponIDs' />
       </q-card-section>
       <q-card-section>
         <q-input type='number' v-model='target.Credits' :label='$t("MSG_CREDIT")' />
@@ -62,11 +62,9 @@
 
 <script setup lang='ts'>
 import { formatTime, NotifyType } from 'npool-cli-v4'
-import { getCouponPools } from 'src/api/inspire'
-import { useAdminCouponStore } from 'src/teststore/coupon/coupon'
-import { CouponTypes } from 'src/teststore/coupon/coupon/types'
-import { useAdminEventInspireStore } from 'src/teststore/coupon/event'
-import { EventInspire, MyCoupon, UsedFor } from 'src/teststore/coupon/event/types'
+import { getCoupons } from 'src/api/inspire'
+import { useCouponStore, Coupon } from 'src/teststore/inspire/coupon'
+import { useEventStore, Event, UsedFor } from 'src/teststore/inspire/event'
 import { computed, defineAsyncComponent, onMounted, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 // eslint-disable-next-line @typescript-eslint/unbound-method
@@ -76,45 +74,46 @@ const LoadingButton = defineAsyncComponent(() => import('src/components/button/L
 const AppGoodSelector = defineAsyncComponent(() => import('src/components/good/AppGoodSelector.vue'))
 const CouponSelector = defineAsyncComponent(() => import('src/components/inspire/CouponSelector.vue'))
 
-const coupon = useAdminCouponStore()
-
-const inspire = useAdminEventInspireStore()
-const events = computed(() => inspire.eventInspires)
+const coupon = useCouponStore()
+const event = useEventStore()
+const events = computed(() => event.Events)
+const couponIDs = ref([] as Array<string>)
 
 // const username = ref('')
 const displayEvents = computed(() => events.value.filter((el) => {
   return el
 }))
 
-const target = ref({} as EventInspire)
+const target = ref({} as Event)
 const showing = ref(false)
 const updating = ref(false)
 
 const onCreate = () => {
-  target.value = { MaxConsecutive: 1, InviterLayers: 1 } as EventInspire
+  target.value = { MaxConsecutive: 1, InviterLayers: 1 } as Event
   showing.value = true
   updating.value = false
 }
-const onRowClick = (row: EventInspire) => {
+const onRowClick = (row: Event) => {
   target.value = { ...row }
   showing.value = true
   updating.value = true
 }
 const onMenuHide = () => {
   showing.value = false
-  target.value = {} as EventInspire
+  target.value = {} as Event
 }
 const onCancel = () => {
   onMenuHide()
 }
 
 const onSubmit = (done: () => void) => {
-  updating.value ? updateEventInspire(done) : createEventInspire(done)
+  updating.value ? updateEvent(done) : createEvent(done)
 }
 
-const updateEventInspire = (done: () => void) => {
-  inspire.updateEventInspire({
+const updateEvent = (done: () => void) => {
+  event.updateEvent({
     ...target.value,
+    CouponIDs: target.value.Coupons.map((el) => el.ID),
     Message: {
       Error: {
         Title: t('MSG_UPDATE_EVENT'),
@@ -138,9 +137,10 @@ const updateEventInspire = (done: () => void) => {
   })
 }
 
-const createEventInspire = (done: () => void) => {
-  inspire.createEventInspire({
+const createEvent = (done: () => void) => {
+  event.createEvent({
     ...target.value,
+    CouponIDs: couponIDs.value,
     Message: {
       Error: {
         Title: t('MSG_CREATE_EVENT'),
@@ -165,18 +165,16 @@ const createEventInspire = (done: () => void) => {
 }
 
 onMounted(() => {
-  if (inspire.EventInspires.EventInspires.length === 0) {
-    getEventInspires(0, 500)
+  if (event.Events.length === 0) {
+    getEvents(0, 500)
   }
-  if (coupon.CouponPools.CouponPools.length === 0) {
-    CouponTypes.forEach((type) => {
-      getCouponPools(0, 500, type)
-    })
+  if (coupon.Coupons.length === 0) {
+    getCoupons(0, 500)
   }
 })
 
-const getEventInspires = (offset: number, limit: number) => {
-  inspire.getEventInspires({
+const getEvents = (offset: number, limit: number) => {
+  event.getEvents({
     Offset: offset,
     Limit: limit,
     Message: {
@@ -186,18 +184,18 @@ const getEventInspires = (offset: number, limit: number) => {
         Type: NotifyType.Error
       }
     }
-  }, (error: boolean, rows: Array<EventInspire>) => {
+  }, (error: boolean, rows: Array<Event>) => {
     if (error || rows.length < limit) {
       return
     }
-    getEventInspires(offset + limit, limit)
+    getEvents(offset + limit, limit)
   })
 }
 
-const getCouponString = computed(() => (rows: MyCoupon[]) => {
+const eventCoupons = computed(() => (rows: Coupon[]) => {
   let str = ''
   rows.forEach((el) => {
-    str += `${el.ID}|${el.CouponType}|${el.Name}|${el.Value}  ;  `
+    str += `${el.ID} | ${el.CouponType} | ${el.Name} | ${el.Denomination}  ;  `
   })
   return str
 })
@@ -206,69 +204,64 @@ const columns = computed(() => [
   {
     name: 'ID',
     label: t('MSG_ID'),
-    field: (row: EventInspire) => row.ID
-  },
-  {
-    name: 'AppID',
-    label: t('MSG_APP_ID'),
-    field: (row: EventInspire) => row.AppID
+    field: (row: Event) => row.ID
   },
   {
     name: 'AppName',
     label: t('MSG_APP_NAME'),
-    field: (row: EventInspire) => row.AppName
+    field: (row: Event) => row.AppName
   },
   {
     name: 'EventType',
     label: t('MSG_EVENT_TYPE'),
-    field: (row: EventInspire) => row.EventType
+    field: (row: Event) => row.EventType
   },
   {
     name: 'Coupons',
     label: t('MSG_COUPONS'),
-    field: (row: EventInspire) => getCouponString.value(row.Coupons)
+    field: (row: Event) => eventCoupons.value(row.Coupons)
   },
   {
     name: 'Credits',
     label: t('MSG_CREDITS'),
-    field: (row: EventInspire) => row.Credits
+    field: (row: Event) => row.Credits
   },
   {
     name: 'CreditsPerUSD',
     label: t('MSG_CREDITS_PERUSD'),
-    field: (row: EventInspire) => row.CreditsPerUSD
+    field: (row: Event) => row.CreditsPerUSD
   },
   {
     name: 'MaxConsecutive',
     label: t('MSG_MAX_CONSECUTIVE'),
-    field: (row: EventInspire) => row.MaxConsecutive
+    field: (row: Event) => row.MaxConsecutive
   },
   {
     name: 'GoodID',
     label: t('MSG_GOOD_ID'),
-    field: (row: EventInspire) => row.GoodID
+    field: (row: Event) => row.GoodID
   },
   {
     name: 'GoodName',
     label: t('MSG_GOOD_NAME'),
-    field: (row: EventInspire) => row.GoodName
+    field: (row: Event) => row.GoodName
   },
   {
     name: 'InviterLayers',
     label: t('MSG_INVITER_LAYERS'),
-    field: (row: EventInspire) => row.InviterLayers
+    field: (row: Event) => row.InviterLayers
   },
   {
     name: 'CreatedAt',
     label: t('MSG_CREATED_AT'),
     sortable: true,
-    field: (row: EventInspire) => formatTime(row.CreatedAt)
+    field: (row: Event) => formatTime(row.CreatedAt)
   },
   {
     name: 'UpdatedAt',
     label: t('MSG_UPDATED_AT'),
     sortable: true,
-    field: (row: EventInspire) => formatTime(row.UpdatedAt)
+    field: (row: Event) => formatTime(row.UpdatedAt)
   }
 ])
 </script>

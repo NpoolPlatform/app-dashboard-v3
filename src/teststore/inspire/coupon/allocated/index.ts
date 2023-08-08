@@ -13,10 +13,7 @@ import { doActionWithError } from 'npool-cli-v4'
 
 export const useAdminAllocatedCouponStore = defineStore('admin-allocatedcoupon-v4', {
   state: () => ({
-    AllocatedCoupons: {
-      AllocatedCoupons: [] as Array<Coupon>,
-      Total: 0
-    }
+    AllocatedCoupons: [] as Array<Coupon>
   }),
   getters: {
   },
@@ -27,8 +24,7 @@ export const useAdminAllocatedCouponStore = defineStore('admin-allocatedcoupon-v
         req,
         req.Message,
         (resp: GetAppCouponsResponse): void => {
-          this.AllocatedCoupons.AllocatedCoupons.push(...resp.Infos)
-          this.AllocatedCoupons.Total = resp.Total
+          this.AllocatedCoupons.push(...resp.Infos)
           done(false, resp.Infos)
         }, () => {
           done(true, [] as Array<Coupon>)
@@ -41,8 +37,7 @@ export const useAdminAllocatedCouponStore = defineStore('admin-allocatedcoupon-v
         req,
         req.Message,
         (resp: GetCouponsResponse): void => {
-          this.AllocatedCoupons.AllocatedCoupons.push(...resp.Infos)
-          this.AllocatedCoupons.Total = resp.Total
+          this.AllocatedCoupons.push(...resp.Infos)
           done(false, resp.Infos)
         }, () => {
           done(true, [] as Array<Coupon>)
@@ -55,8 +50,7 @@ export const useAdminAllocatedCouponStore = defineStore('admin-allocatedcoupon-v
         req,
         req.Message,
         (resp: CreateCouponResponse): void => {
-          this.AllocatedCoupons.AllocatedCoupons.push(resp.Info)
-          this.AllocatedCoupons.Total += 1
+          this.AllocatedCoupons.push(resp.Info)
           done(false, resp.Info)
         }, () => {
           done(true, {} as Coupon)
@@ -65,3 +59,6 @@ export const useAdminAllocatedCouponStore = defineStore('admin-allocatedcoupon-v
     }
   }
 })
+
+export * from './const'
+export * from './types'

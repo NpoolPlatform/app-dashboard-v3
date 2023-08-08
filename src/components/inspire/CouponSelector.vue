@@ -22,14 +22,12 @@
   </q-select>
 </template>
 <script setup lang='ts'>
-import { useAdminCouponStore } from 'src/teststore/coupon/coupon'
-import { CouponType, MyCoupon } from 'src/teststore/coupon/event/types'
-import { CouponTypes } from 'src/teststore/coupon/coupon/types'
+import { useCouponStore, CouponTypes, CouponType } from 'src/teststore/inspire/coupon'
 import { computed, defineEmits, defineProps, toRef, ref, onMounted } from 'vue'
-import { getCouponPools } from 'src/api/inspire'
+import { getCoupons } from 'src/api/inspire'
 
 interface Props {
-  ids: MyCoupon[]
+  ids: string[]
   updating?: boolean
 }
 
@@ -38,20 +36,13 @@ const ids = toRef(props, 'ids')
 const updating = toRef(props, 'updating')
 const target = ref(ids.value)
 
-const coupon = useAdminCouponStore()
-const myCoupons = computed(() => coupon.CouponPools.CouponPools.filter((el) => el.CouponType !== CouponType.SpecialOffer).map((el) => {
-  return {
-    ID: el.ID,
-    Name: el.Name,
-    CouponType: el.CouponType,
-    Value: el.Value
-  } as MyCoupon
-}))
+const coupon = useCouponStore()
+const myCoupons = computed(() => coupon.Coupons.filter((el) => el.CouponType !== CouponType.SpecialOffer))
 
 const coupons = computed(() => myCoupons.value.map((el) => {
   return {
     value: el,
-    label: `${el.ID} | ${el.Name} | ${el.CouponType} | ${el.Value}`
+    label: `${el.ID} | ${el.Name} | ${el.CouponType} | ${el.Denomination}`
   }
 }))
 
@@ -65,7 +56,7 @@ const onFilter = (val: string, doneFn: (callbackFn: () => void) => void) => {
   })
 }
 
-const emit = defineEmits<{(e: 'update:ids', ids: MyCoupon[]): void}>()
+const emit = defineEmits<{(e: 'update:ids', ids: string[]): void}>()
 const onUpdate = () => {
   emit('update:ids', target.value)
 }
@@ -73,7 +64,7 @@ const onUpdate = () => {
 onMounted(() => {
   if (coupons.value.length === 0) {
     CouponTypes.forEach((type) => {
-      getCouponPools(0, 500, type)
+      getCoupons(0, 500, type)
     })
   }
 })

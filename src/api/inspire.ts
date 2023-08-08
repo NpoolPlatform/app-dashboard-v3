@@ -1,10 +1,9 @@
 import { NotifyType } from 'npool-cli-v4'
-import { useAdminCouponStore } from 'src/teststore/coupon/coupon'
-import { Coupon, CouponType } from 'src/teststore/coupon/coupon/types'
+import { useCouponStore, Coupon, CouponType } from 'src/teststore/inspire/coupon'
 
-const coupon = useAdminCouponStore()
-export const getCouponPools = (offset: number, limit: number, type: CouponType) => {
-  coupon.getCouponPools({
+const coupon = useCouponStore()
+export const getCoupons = (offset: number, limit: number, type?: CouponType) => {
+  coupon.getCoupons({
     Offset: offset,
     Limit: limit,
     CouponType: type,
@@ -16,10 +15,13 @@ export const getCouponPools = (offset: number, limit: number, type: CouponType) 
         Type: NotifyType.Error
       }
     }
-  }, (error: boolean, resp: Array<Coupon>) => {
-    if (error || resp.length < limit) {
+  }, (error: boolean, rows?: Array<Coupon>) => {
+    if (error) {
       return
     }
-    getCouponPools(offset + limit, limit, type)
+    if (!rows?.length) {
+      return
+    }
+    getCoupons(offset + limit, limit, type)
   })
 }
