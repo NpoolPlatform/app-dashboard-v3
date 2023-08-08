@@ -7,7 +7,7 @@
     row-key='ID'
     :columns='columns'
     :rows-per-page-options='[100]'
-    @row-click='(evt, row, index) => onRowClick(row as EventInspire)'
+    @row-click='(evt, row, index) => onRowClick(row as eventinspire.Event)'
   >
     <template #top-right>
       <div class='row indent flat'>
@@ -38,9 +38,24 @@
         <span>{{ $t('MSG_EVENT_INSPIRE') }}</span>
       </q-card-section>
       <q-card-section>
-        <q-select :disable='updating' :options='[UsedFor.AffiliatePurchase, UsedFor.Purchase, UsedFor.Signup, UsedFor.AffiliateSignup]' v-model='target.EventType' :label='$t("MSG_EVENT_YPE")' />
+        <q-select
+          :disable='updating'
+          :options='[
+            eventinspire.UsedFor.AffiliatePurchase,
+            eventinspire.UsedFor.Purchase,
+            eventinspire.UsedFor.Signup,
+            eventinspire.UsedFor.AffiliateSignup,
+          ]'
+          v-model='target.EventType'
+          :label='$t("MSG_EVENT_YPE")'
+        />
       </q-card-section>
-      <q-card-section v-if='target.EventType === UsedFor.AffiliatePurchase || target.EventType === UsedFor.Purchase || UsedFor.Signup || UsedFor.AffiliateSignup'>
+      <q-card-section
+        v-if='target.EventType === eventinspire.UsedFor.AffiliatePurchase ||
+          target.EventType === eventinspire.UsedFor.Purchase ||
+          eventinspire.UsedFor.Signup ||
+          eventinspire.UsedFor.AffiliateSignup'
+      >
         <AppGoodSelector v-model:id='target.GoodID' v-if='!updating' />
         <CouponSelector v-model:ids='couponIDs' />
       </q-card-section>
@@ -66,8 +81,7 @@
 <script setup lang='ts'>
 import { formatTime, NotifyType } from 'npool-cli-v4'
 import { getCoupons } from 'src/api/inspire'
-import { useCouponStore, Coupon } from 'src/teststore/inspire/coupon'
-import { useEventStore, Event, UsedFor } from 'src/teststore/inspire/event'
+import { coupon, eventinspire } from 'src/teststore'
 import { computed, defineAsyncComponent, onMounted, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 // eslint-disable-next-line @typescript-eslint/unbound-method
@@ -77,8 +91,8 @@ const LoadingButton = defineAsyncComponent(() => import('src/components/button/L
 const AppGoodSelector = defineAsyncComponent(() => import('src/components/good/AppGoodSelector.vue'))
 const CouponSelector = defineAsyncComponent(() => import('src/components/inspire/CouponSelector.vue'))
 
-const coupon = useCouponStore()
-const event = useEventStore()
+const _coupon = coupon.useCouponStore()
+const event = eventinspire.useEventStore()
 const events = computed(() => event.Events)
 const couponIDs = ref([] as Array<string>)
 
@@ -87,23 +101,23 @@ const displayEvents = computed(() => events.value.filter((el) => {
   return el
 }))
 
-const target = ref({} as Event)
+const target = ref({} as eventinspire.Event)
 const showing = ref(false)
 const updating = ref(false)
 
 const onCreate = () => {
-  target.value = { MaxConsecutive: 1, InviterLayers: 1 } as Event
+  target.value = { MaxConsecutive: 1, InviterLayers: 1 } as eventinspire.Event
   showing.value = true
   updating.value = false
 }
-const onRowClick = (row: Event) => {
+const onRowClick = (row: eventinspire.Event) => {
   target.value = { ...row }
   showing.value = true
   updating.value = true
 }
 const onMenuHide = () => {
   showing.value = false
-  target.value = {} as Event
+  target.value = {} as eventinspire.Event
 }
 const onCancel = () => {
   onMenuHide()
@@ -171,7 +185,7 @@ onMounted(() => {
   if (event.Events.length === 0) {
     getEvents(0, 500)
   }
-  if (coupon.Coupons.length === 0) {
+  if (_coupon.Coupons.length === 0) {
     getCoupons(0, 500)
   }
 })
@@ -187,15 +201,18 @@ const getEvents = (offset: number, limit: number) => {
         Type: NotifyType.Error
       }
     }
-  }, (error: boolean, rows: Array<Event>) => {
-    if (error || rows.length < limit) {
+  }, (error: boolean, rows?: Array<eventinspire.Event>) => {
+    if (error) {
+      return
+    }
+    if (!rows?.length) {
       return
     }
     getEvents(offset + limit, limit)
   })
 }
 
-const eventCoupons = computed(() => (rows: Coupon[]) => {
+const eventCoupons = computed(() => (rows: coupon.Coupon[]) => {
   let str = ''
   rows.forEach((el) => {
     str += `${el.ID} | ${el.CouponType} | ${el.Name} | ${el.Denomination}  ;  `
@@ -207,64 +224,64 @@ const columns = computed(() => [
   {
     name: 'ID',
     label: t('MSG_ID'),
-    field: (row: Event) => row.ID
+    field: (row: eventinspire.Event) => row.ID
   },
   {
     name: 'AppName',
     label: t('MSG_APP_NAME'),
-    field: (row: Event) => row.AppName
+    field: (row: eventinspire.Event) => row.AppName
   },
   {
     name: 'EventType',
     label: t('MSG_EVENT_TYPE'),
-    field: (row: Event) => row.EventType
+    field: (row: eventinspire.Event) => row.EventType
   },
   {
     name: 'Coupons',
     label: t('MSG_COUPONS'),
-    field: (row: Event) => eventCoupons.value(row.Coupons)
+    field: (row: eventinspire.Event) => eventCoupons.value(row.Coupons)
   },
   {
     name: 'Credits',
     label: t('MSG_CREDITS'),
-    field: (row: Event) => row.Credits
+    field: (row: eventinspire.Event) => row.Credits
   },
   {
     name: 'CreditsPerUSD',
     label: t('MSG_CREDITS_PERUSD'),
-    field: (row: Event) => row.CreditsPerUSD
+    field: (row: eventinspire.Event) => row.CreditsPerUSD
   },
   {
     name: 'MaxConsecutive',
     label: t('MSG_MAX_CONSECUTIVE'),
-    field: (row: Event) => row.MaxConsecutive
+    field: (row: eventinspire.Event) => row.MaxConsecutive
   },
   {
     name: 'GoodID',
     label: t('MSG_GOOD_ID'),
-    field: (row: Event) => row.GoodID
+    field: (row: eventinspire.Event) => row.GoodID
   },
   {
     name: 'GoodName',
     label: t('MSG_GOOD_NAME'),
-    field: (row: Event) => row.GoodName
+    field: (row: eventinspire.Event) => row.GoodName
   },
   {
     name: 'InviterLayers',
     label: t('MSG_INVITER_LAYERS'),
-    field: (row: Event) => row.InviterLayers
+    field: (row: eventinspire.Event) => row.InviterLayers
   },
   {
     name: 'CreatedAt',
     label: t('MSG_CREATED_AT'),
     sortable: true,
-    field: (row: Event) => formatTime(row.CreatedAt)
+    field: (row: eventinspire.Event) => formatTime(row.CreatedAt)
   },
   {
     name: 'UpdatedAt',
     label: t('MSG_UPDATED_AT'),
     sortable: true,
-    field: (row: Event) => formatTime(row.UpdatedAt)
+    field: (row: eventinspire.Event) => formatTime(row.UpdatedAt)
   }
 ])
 </script>

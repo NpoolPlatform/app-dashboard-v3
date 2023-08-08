@@ -14,18 +14,18 @@
 import { NotifyType } from 'npool-cli-v4'
 import { computed, onMounted, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { useCouponStore } from 'src/teststore/inspire/coupon'
+import { coupon } from 'src/teststore'
 
 // eslint-disable-next-line @typescript-eslint/unbound-method
 const { t } = useI18n({ useScope: 'global' })
 
-const coupon = useCouponStore()
-const coupons = computed(() => coupon.Coupons)
+const _coupon = coupon.useCouponStore()
+const coupons = computed(() => _coupon.Coupons)
 const loading = ref(true)
 
 const prepare = () => {
   loading.value = true
-  coupon.getCoupons({
+  _coupon.getCoupons({
     Offset: 0,
     Limit: 100,
     Message: {

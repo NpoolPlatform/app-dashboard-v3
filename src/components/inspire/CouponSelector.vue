@@ -22,7 +22,7 @@
   </q-select>
 </template>
 <script setup lang='ts'>
-import { useCouponStore, CouponTypes, CouponType } from 'src/teststore/inspire/coupon'
+import { coupon } from 'src/teststore'
 import { computed, defineEmits, defineProps, toRef, ref, onMounted } from 'vue'
 import { getCoupons } from 'src/api/inspire'
 
@@ -36,9 +36,8 @@ const ids = toRef(props, 'ids')
 const updating = toRef(props, 'updating')
 const target = ref(ids.value)
 
-const coupon = useCouponStore()
-const myCoupons = computed(() => coupon.Coupons.filter((el) => el.CouponType !== CouponType.SpecialOffer))
-
+const _coupon = coupon.useCouponStore()
+const myCoupons = computed(() => _coupon.Coupons.filter((el) => el.CouponType !== coupon.CouponType.SpecialOffer))
 const coupons = computed(() => myCoupons.value.map((el) => {
   return {
     value: el,
@@ -63,9 +62,7 @@ const onUpdate = () => {
 
 onMounted(() => {
   if (coupons.value.length === 0) {
-    CouponTypes.forEach((type) => {
-      getCoupons(0, 500, type)
-    })
+    getCoupons(0, 500)
   }
 })
 </script>
