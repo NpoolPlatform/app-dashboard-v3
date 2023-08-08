@@ -6,7 +6,7 @@
     :rows='displayCommissions'
     row-key='ID'
     :rows-per-page-options='[50]'
-    @row-click='(evt, row, index) => onRowClick(row as Commission)'
+    @row-click='(evt, row, index) => onRowClick(row as commission.Commission)'
   >
     <template #top-right>
       <div class='row indent flat'>
@@ -53,10 +53,10 @@
       <q-card-section v-if='!updating'>
         <AppGoodSelector v-model:id='target.GoodID' />
         <AppUserSelector v-model:id='target.UserID' />
-        <q-select :options='SettleTypes' v-model='target.SettleType' :label='$t("MSG_COMMISSION_SETTLE_TYPE")' />
+        <q-select :options='commission.SettleTypes' v-model='target.SettleType' :label='$t("MSG_COMMISSION_SETTLE_TYPE")' />
       </q-card-section>
       <q-card-section>
-        <q-input type='number' v-model.number='target.Percent' :label='$t("MSG_PERCENT")' suffix='%' />
+        <q-input type='number' v-model.number='target.AmountOrPercent' :label='$t("MSG_AMOUNT_OR_PERCENT")' suffix='$ | %' />
       </q-card-section>
       <q-card-section>
         <DateTimePicker v-model:date='target.StartAt' label='MSG_START_AT' />
@@ -80,8 +80,7 @@
       <q-card-section>
         <AppGoodSelector v-model:id='cloneCommission.FromGoodID' />
         <AppGoodSelector v-model:id='cloneCommission.ToGoodID' />
-        <q-select :options='SettleTypes' v-model='cloneCommission.SettleType' :label='$t("MSG_COMMISSION_SETTLE_TYPE")' />
-        <q-input type='number' v-model='cloneCommission.Value' :label='$t("MSG_SCALE")' suffix='%' />
+        <q-input type='number' v-model='cloneCommission.ScalePercent' :label='$t("MSG_SCALE")' suffix='%' />
       </q-card-section>
       <q-item class='row'>
         <LoadingButton loading :label='$t("MSG_CLONE")' @click='onSubmit1' />
@@ -113,10 +112,12 @@
 </template>
 
 <script setup lang='ts'>
-import { NotifyType, SettleType, useAdminCommissionStore, Commission, SettleTypes, useAdminReconcileStore } from 'npool-cli-v4'
+import { NotifyType, useAdminReconcileStore } from 'npool-cli-v4'
 import { ReconcileRequest } from 'npool-cli-v4/dist/store/admin/inspire/reconcile/types'
 import { computed, defineAsyncComponent, onMounted, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
+import { commission } from 'src/teststore'
+
 // eslint-disable-next-line @typescript-eslint/unbound-method
 const { t } = useI18n({ useScope: 'global' })
 
@@ -125,8 +126,8 @@ const DateTimePicker = defineAsyncComponent(() => import('src/components/date/Da
 const AppGoodSelector = defineAsyncComponent(() => import('src/components/good/AppGoodSelector.vue'))
 const AppUserSelector = defineAsyncComponent(() => import('src/components/user/AppUserSelector.vue'))
 
-const commission = useAdminCommissionStore()
-const commissions = computed(() => commission.Commissions.Commissions)
+const _commission = commission.useCommissionStore()
+const commissions = computed(() => _commission.Commissions)
 
 const username = ref('')
 const displayCommissions = computed(() => commissions.value.filter((el) => {
@@ -134,23 +135,23 @@ const displayCommissions = computed(() => commissions.value.filter((el) => {
   return el.EmailAddress.toLowerCase().includes(name) || el.PhoneNO.toLowerCase().includes(name)
 }))
 
-const target = ref({} as Commission)
+const target = ref({} as commission.Commission)
 const showing = ref(false)
 const updating = ref(false)
 
 const onCreate = () => {
-  target.value = {} as Commission
+  target.value = {} as commission.Commission
   showing.value = true
   updating.value = false
 }
-const onRowClick = (row: Commission) => {
+const onRowClick = (row: commission.Commission) => {
   target.value = { ...row }
   showing.value = true
   updating.value = true
 }
 const onMenuHide = () => {
   showing.value = false
-  target.value = {} as Commission
+  target.value = {} as commission.Commission
 }
 const onCancel = () => {
   onMenuHide()
@@ -161,21 +162,20 @@ const onSubmit = (done: () => void) => {
 }
 
 const updateCommission = (done: () => void) => {
-  commission.updateCommission({
+  _commission.updateCommission({
     ID: target.value.ID,
-    Value: `${target.value.Percent}`,
     StartAt: target.value.StartAt,
-    SettleType: target.value.SettleType,
+    Threshold: target.value.Threshold,
     Message: {
       Error: {
-        Title: t('MSG_UPDATE_USER_PURCHASE_AMOUNT_SETTING'),
-        Message: t('MSG_UPDATE_USER_PURCHASE_AMOUNT_SETTING_FAIL'),
+        Title: t('MSG_UPDATE_COMMISSION'),
+        Message: t('MSG_UPDATE_COMMISSION_FAIL'),
         Popup: true,
         Type: NotifyType.Error
       },
       Info: {
-        Title: t('MSG_UPDATE_USER_PURCHASE_AMOUNT_SETTING'),
-        Message: t('MSG_UPDATE_USER_PURCHASE_AMOUNT_SETTING_FAIL'),
+        Title: t('MSG_UPDATE_COMMISSION'),
+        Message: t('MSG_UPDATE_COMMISSION_FAIL'),
         Popup: true,
         Type: NotifyType.Success
       }
@@ -189,22 +189,25 @@ const updateCommission = (done: () => void) => {
   })
 }
 const createUserCommission = (done: () => void) => {
-  commission.createUserCommission({
+  _commission.createUserCommission({
     TargetUserID: target.value.UserID,
     StartAt: target.value.StartAt,
     GoodID: target.value.GoodID,
+    AmountOrPercent: `${target.value.AmountOrPercent}`,
     SettleType: target.value.SettleType,
-    Value: `${target.value.Percent}`,
+    SettleAmountType: target.value.SettleAmountType,
+    SettleMode: target.value.SettleMode,
+    Threshold: target.value.Threshold,
     Message: {
       Error: {
-        Title: t('MSG_CREATE_USER_PURCHASE_AMOUNT_SETTING'),
-        Message: t('MSG_CREATE_USER_PURCHASE_AMOUNT_SETTING_FAIL'),
+        Title: t('MSG_CREATE_COMMISSION'),
+        Message: t('MSG_CREATE_COMMISSION_FAIL'),
         Popup: true,
         Type: NotifyType.Error
       },
       Info: {
-        Title: t('MSG_CREATE_USER_PURCHASE_AMOUNT_SETTING'),
-        Message: t('MSG_CREATE_USER_PURCHASE_AMOUNT_SETTING_FAIL'),
+        Title: t('MSG_CREATE_COMMISSION'),
+        Message: t('MSG_CREATE_COMMISSION_FAIL'),
         Popup: true,
         Type: NotifyType.Success
       }
@@ -221,7 +224,7 @@ interface CloneCommission {
   FromGoodID: string;
   ToGoodID: string;
   Value: string;
-  SettleType: SettleType;
+  ScalePercent: string;
 }
 
 const cloneCommission = ref({} as CloneCommission)
@@ -242,18 +245,18 @@ const onCancel1 = () => {
 }
 
 const onSubmit1 = (done: () => void) => {
-  commission.cloneCommissions({
+  _commission.cloneCommissions({
     ...cloneCommission.value,
     Message: {
       Error: {
-        Title: t('MSG_CLONE_PURCHASE_AMOUNT_SETTING'),
-        Message: t('MSG_CLONE_PURCHASE_AMOUNT_SETTING_FAIL'),
+        Title: t('MSG_CLONE_COMMISSION'),
+        Message: t('MSG_CLONE_COMMISSION_FAIL'),
         Popup: true,
         Type: NotifyType.Error
       },
       Info: {
-        Title: t('MSG_CLONE_PURCHASE_AMOUNT_SETTING'),
-        Message: t('MSG_CLONE_PURCHASE_AMOUNT_SETTING_FAIL'),
+        Title: t('MSG_CLONE_COMMISSION'),
+        Message: t('MSG_CLONE_COMMISSION_FAIL'),
         Popup: true,
         Type: NotifyType.Success
       }
@@ -311,25 +314,27 @@ const onSubmit2 = (done: () => void) => {
 }
 
 onMounted(() => {
-  if (commission.Commissions.Commissions.length === 0) {
+  if (_commission.Commissions.length === 0) {
     getAppCommissions(0, 500)
   }
 })
 
 const getAppCommissions = (offset: number, limit: number) => {
-  commission.getAppCommissions({
+  _commission.getAppCommissions({
     Offset: offset,
     Limit: limit,
-    SettleType: SettleType.GoodOrderPercent,
     Message: {
       Error: {
-        Title: t('MSG_GET_PURCHASE_AMOUNT_SETTINGS_FAIL'),
+        Title: t('MSG_GET_COMMISSIONS_FAIL'),
         Popup: true,
         Type: NotifyType.Error
       }
     }
-  }, (error: boolean, rows: Array<Commission>) => {
-    if (error || rows.length < limit) {
+  }, (error: boolean, rows?: Array<commission.Commission>) => {
+    if (error) {
+      return
+    }
+    if (!rows?.length) {
       return
     }
     getAppCommissions(offset + limit, limit)
