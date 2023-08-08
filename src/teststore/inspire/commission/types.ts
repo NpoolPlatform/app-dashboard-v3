@@ -25,6 +25,7 @@ export enum SettleInterval {
   SettleYearly = 'SettleYearly',
   SettleEveryOrder = 'SettleEveryOrder'
 }
+export const SettleIntervals = Object.values(SettleInterval)
 
 export interface Commission {
   ID: string
