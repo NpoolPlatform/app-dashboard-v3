@@ -7,12 +7,9 @@ import {
 } from './types'
 import { doActionWithError } from 'npool-cli-v4'
 
-export const useAdminOpLogStore = defineStore('admin-oplog-v4', {
+export const useOpLogStore = defineStore('oplog', {
   state: () => ({
-    OpLogs: {
-      OpLogs: [] as Array<OpLog>,
-      Total: 0
-    }
+    OpLogs: [] as Array<OpLog>
   }),
   getters: {},
   actions: {
@@ -22,8 +19,7 @@ export const useAdminOpLogStore = defineStore('admin-oplog-v4', {
         req,
         req.Message,
         (resp: GetAppOpLogsResponse): void => {
-          this.OpLogs.OpLogs.push(...resp.Infos)
-          this.OpLogs.Total = resp.Total
+          this.OpLogs.push(...resp.Infos)
           done(false, resp.Infos)
         }, () => {
           done(true, [] as Array<OpLog>)
@@ -32,3 +28,5 @@ export const useAdminOpLogStore = defineStore('admin-oplog-v4', {
     }
   }
 })
+
+export * from './types'

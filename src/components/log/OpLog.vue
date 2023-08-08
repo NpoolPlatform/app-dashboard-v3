@@ -13,12 +13,11 @@
 </template>
 
 <script setup lang='ts'>
-import { useAdminOpLogStore } from 'src/teststore/oplog/oplog'
-import { OpLog } from 'src/teststore/oplog/oplog/types'
+import { oplog } from 'src/teststore'
 import { computed, onMounted } from 'vue'
 
-const log = useAdminOpLogStore()
-const opLogs = computed(() => log.OpLogs.OpLogs)
+const log = oplog.useOpLogStore()
+const opLogs = computed(() => log.OpLogs)
 
 onMounted(() => {
   if (opLogs.value.length === 0) {
@@ -31,7 +30,7 @@ const getAppOpLogs = (offset: number, limit: number) => {
     Offset: offset,
     Limit: limit,
     Message: {}
-  }, (error: boolean, rows: Array<OpLog>) => {
+  }, (error: boolean, rows: Array<oplog.OpLog>) => {
     if (error || rows.length === 0) {
       return
     }
