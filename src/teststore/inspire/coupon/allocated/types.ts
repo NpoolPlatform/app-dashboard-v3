@@ -34,37 +34,36 @@ export interface Coupon {
 }
 
 export interface CreateCouponRequest extends BaseRequest {
-  TargetUserID: string;
-  CouponType: CouponType;
-  CouponID: string;
+  TargetUserID: string
+  CouponID: string
 }
 
 export interface CreateCouponResponse {
-  Info: Coupon;
+  Info: Coupon
 }
 
 export interface GetCouponsRequest extends BaseRequest {
   /** @format int32 */
-  Offset: number;
+  Offset: number
   /** @format int32 */
-  Limit: number;
+  Limit: number
 }
 
 export interface GetCouponsResponse {
-  Infos: Coupon[];
+  Infos: Coupon[]
   /** @format int64 */
-  Total: number;
+  Total: number
 }
 
 export interface GetAppCouponsRequest extends BaseRequest {
   /** @format int32 */
-  Offset: number;
+  Offset: number
   /** @format int32 */
-  Limit: number;
+  Limit: number
 }
 
 export interface GetAppCouponsResponse {
-  Infos: Coupon[];
+  Infos: Coupon[]
   /** @format int64 */
-  Total: number;
+  Total: number
 }
