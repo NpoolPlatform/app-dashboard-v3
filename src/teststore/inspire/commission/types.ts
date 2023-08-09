@@ -67,6 +67,7 @@ export interface CreateCommissionRequest extends BaseRequest {
   StartAt: number
   SettleMode: SettleMode
   Threshold?: string
+  SettleInterval: SettleInterval
 }
 
 export interface CreateCommissionResponse {
@@ -82,6 +83,7 @@ export interface CreateUserCommissionRequest extends BaseRequest {
   AmountOrPercent: string
   StartAt: number
   Threshold?: string
+  SettleInterval: SettleInterval
 }
 
 export interface CreateUserCommissionResponse {

@@ -200,6 +200,7 @@ const createUserCommission = (done: () => void) => {
     AmountOrPercent: `${target.value.AmountOrPercent}`,
     SettleType: target.value.SettleType,
     SettleAmountType: target.value.SettleAmountType,
+    SettleInterval: target.value.SettleInterval,
     SettleMode: target.value.SettleMode,
     Threshold: target.value.Threshold,
     Message: {
