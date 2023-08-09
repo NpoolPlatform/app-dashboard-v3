@@ -4,7 +4,7 @@
     :options='displayGoods'
     options-selected-class='text-deep-orange'
     emit-value
-    label='MSG_APP_GOODS'
+    :label='label'
     map-options
     @update:model-value='onUpdate'
     use-input
@@ -25,10 +25,12 @@ import { computed, defineEmits, defineProps, toRef, ref } from 'vue'
 
 interface Props {
   id: string
+  label: string
 }
 
 const props = defineProps<Props>()
 const goodID = toRef(props, 'id')
+const label = toRef(props, 'label')
 const target = ref(goodID.value)
 
 const appGood = useAdminAppGoodStore()
