@@ -51,7 +51,7 @@
         <span>{{ updating ? $t('MSG_UPDATE_COMMISSION_SETTING') : $t('MSG_CREATE_COMMISSION_SETTING') }}</span>
       </q-card-section>
       <q-card-section v-if='!updating'>
-        <AppGoodSelector v-model:id='target.GoodID' />
+        <AppGoodSelector v-model:id='target.GoodID' :label='$t("MSG_GOOD")' />
         <AppUserSelector v-model:id='target.UserID' />
         <q-select :options='commission.SettleTypes' v-model='target.SettleType' :label='$t("MSG_COMMISSION_SETTLE_TYPE")' />
         <q-select :options='commission.SettleAmountTypes' v-model='target.SettleAmountType' :label='$t("MSG_COMMISSION_SETTLE_AMOUNT_TYPE")' />
@@ -63,7 +63,7 @@
       </q-card-section>
       <q-card-section>
         <DateTimePicker v-model:date='target.StartAt' label='MSG_START_AT' />
-        <q-input type='number' v-model.number='target.Threshold' :label='$t("MSG_THRESHOLD")' suffix='$' />
+        <q-input v-model.number='target.Threshold' :label='$t("MSG_THRESHOLD")' suffix='$' />
       </q-card-section>
       <q-item class='row'>
         <LoadingButton loading :label='$t("MSG_SUBMIT")' @click='onSubmit' />
@@ -82,8 +82,8 @@
         <span>{{ $t('MSG_CLONE_COMMISSION_SETTING') }}</span>
       </q-card-section>
       <q-card-section>
-        <AppGoodSelector v-model:id='cloneCommission.FromGoodID' />
-        <AppGoodSelector v-model:id='cloneCommission.ToGoodID' />
+        <AppGoodSelector v-model:id='cloneCommission.FromGoodID' :label='$t("MSG_FROM_GOOD")' />
+        <AppGoodSelector v-model:id='cloneCommission.ToGoodID' :label='$t("MSG_TO_GOOD")' />
         <q-input type='number' v-model='cloneCommission.ScalePercent' :label='$t("MSG_SCALE")' suffix='%' />
       </q-card-section>
       <q-item class='row'>
@@ -105,7 +105,7 @@
       </q-card-section>
       <q-card-section>
         <AppUserSelector v-model:id='reconcileRequest.TargetUserID' />
-        <AppGoodSelector v-model:id='reconcileRequest.GoodID' />
+        <AppGoodSelector v-model:id='reconcileRequest.GoodID' :label='$t("MSG_GOOD")' />
       </q-card-section>
       <q-item class='row'>
         <LoadingButton loading :label='$t("MSG_RECONCILE")' @click='onSubmit2' />
