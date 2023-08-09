@@ -56,7 +56,7 @@
           eventinspire.UsedFor.Signup ||
           eventinspire.UsedFor.AffiliateSignup'
       >
-        <AppGoodSelector v-model:id='target.GoodID' v-if='!updating' />
+        <AppGoodSelector v-model:id='target.GoodID' v-if='!updating' :label='$t("MSG_GOOD")' />
         <CouponSelector v-model:ids='couponIDs' />
       </q-card-section>
       <q-card-section>
