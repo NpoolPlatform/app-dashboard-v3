@@ -15,12 +15,12 @@ export const useAchievementStore = defineStore('achievement', {
     },
     inviteeAchievements (): (userID: string) => Array<Achievement> {
       return (userID: string) => {
-        return this.Achievements.filter((el) => el.UserID === userID).filter((el) => el.InviterID === userID)
+        return this.Achievements.filter((el) => el.InviterID === userID)
       }
     },
     inviterAchievements (): (userID: string) => Array<Achievement> {
       return (userID: string) => {
-        return this.Achievements.filter((el) => el.UserID === userID).filter((el) => el.InviterID !== userID)
+        return this.Achievements.filter((el) => el.InviterID !== userID)
       }
     }
   },

@@ -247,11 +247,11 @@ watch(curUserID, () => {
   getInviterIDs(curUserID.value)
   if (archivements.value.length === 0) {
     loading.value = true
-    getUserArchivements(0, 500, curUserID.value)
+    getUserArchivements(0, 100)
   }
 })
 
-const getUserArchivements = (offset: number, limit: number, key: string) => {
+const getUserArchivements = (offset: number, limit: number) => {
   _archivement.getUserAchievements({
     UserIDs: inviteeIDs.value,
     Offset: offset,
@@ -271,7 +271,7 @@ const getUserArchivements = (offset: number, limit: number, key: string) => {
     if (!rows?.length) {
       return
     }
-    getUserArchivements(offset + limit, limit, key)
+    getUserArchivements(offset + limit, limit)
   })
 }
 
@@ -298,7 +298,7 @@ const currentKolState = ref(KOLOptions.value[0])
 
 onMounted(() => {
   if (user.Users.Users.length === 0) {
-    getUsers(0, 500)
+    getUsers(0, 100)
   }
 })
 
