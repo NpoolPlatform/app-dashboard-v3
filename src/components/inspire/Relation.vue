@@ -29,7 +29,7 @@
     :rows-per-page-options='[100]'
     row-key='name'
     :columns='(columns as never)'
-    :rows='inviteeArchivements'
+    :rows='inviteeAchievements'
     :loading='loading'
   >
     <template #top-right>
@@ -61,9 +61,9 @@
         <q-td key='TotalInvitees' :props='props'>
           {{ props.row.TotalInvitees }}
         </q-td>
-        <q-td key='Archivements' :props='props'>
+        <q-td key='Achievements' :props='props'>
           <table>
-            <div v-if='props.row.Archivements?.length > 0'>
+            <div v-if='props.row.Achievements?.length > 0'>
               <tr>
                 <th>Name</th>
                 <th>ProductID</th>
@@ -72,7 +72,7 @@
                 <th>Total Sales</th>
                 <th>Commission</th>
               </tr>
-              <tr v-for='(_good,index) in props.row.Archivements' :key='index'>
+              <tr v-for='(_good,index) in props.row.Achievements' :key='index'>
                 <td class='name'>
                   {{ getDisplayNames(_good.GoodID)?.[4]? $t(getDisplayNames(_good.GoodID)?.[4] as string) : _good.CoinName }}
                 </td>
@@ -127,9 +127,9 @@
         <q-td key='TotalInvitees' :props='props'>
           {{ props.row.TotalInvitees }}
         </q-td>
-        <q-td key='Archivements' :props='props'>
+        <q-td key='Achievements' :props='props'>
           <table>
-            <div v-if='props.row.Archivements?.length > 0'>
+            <div v-if='props.row.Achievements?.length > 0'>
               <tr>
                 <th>Name</th>
                 <th>ProductID</th>
@@ -138,7 +138,7 @@
                 <th>Total Sales</th>
                 <th>Commission</th>
               </tr>
-              <tr v-for='(_good,index) in props.row.Archivements' :key='index'>
+              <tr v-for='(_good,index) in props.row.Achievements' :key='index'>
                 <td class='name'>
                   {{ getDisplayNames(_good.GoodID)?.[4]? $t(getDisplayNames(_good.GoodID)?.[4] as string) : _good.CoinName }}
                 </td>
@@ -207,21 +207,21 @@ const getInviterIDs = (userID: string) => {
 }
 const userInviters = computed(() => _userInviters.value)
 
-const _archivement = achievement.useAchievementStore()
-const archivements = computed(() => _archivement.achievements(curUserID.value))
-const inviteeArchivements = computed(() => {
-  let _data = _archivement.inviteeAchievements(curUserID.value)
+const _Achievement = achievement.useAchievementStore()
+const Achievements = computed(() => _Achievement.achievements(curUserID.value))
+const inviteeAchievements = computed(() => {
+  let _data = _Achievement.inviteeAchievements(curUserID.value)
   if (currentKolState.value.Label !== 'ALL') {
     _data = _data.filter((el) => el.Kol === currentKolState.value.Value)
   }
   return _data
 })
 
-const _inviterArchivements = computed(() => _archivement.inviterAchievements(curUserID.value))
-const inviterArchivements = computed(() => {
+const _inviterAchievements = computed(() => _Achievement.inviterAchievements(curUserID.value))
+const inviterAchievements = computed(() => {
   let _data = [] as Array<achievement.Achievement>
   userInviters.value.forEach((ID) => {
-    const data = _inviterArchivements.value.find((el) => el.UserID === ID)
+    const data = _inviterAchievements.value.find((el) => el.UserID === ID)
     if (data) {
       _data.push(data)
     }
@@ -245,20 +245,20 @@ watch(curUserID, () => {
   }
   _userInviters.value = []
   getInviterIDs(curUserID.value)
-  if (archivements.value.length <= 1) {
+  if (Achievements.value.length <= 1) {
     loading.value = true
-    getUserArchivements(0, 100)
+    getUserAchievements(0, 100)
   }
 })
 
-const getUserArchivements = (offset: number, limit: number) => {
-  _archivement.getUserAchievements({
+const getUserAchievements = (offset: number, limit: number) => {
+  _Achievement.getUserAchievements({
     UserIDs: inviteeIDs.value,
     Offset: offset,
     Limit: limit,
     Message: {
       Error: {
-        Title: t('MSG_GET_GOOD_ARCHIVEMENT_FAIL'),
+        Title: t('MSG_GET_GOOD_Achievement_FAIL'),
         Popup: true,
         Type: NotifyType.Error
       }
@@ -271,7 +271,7 @@ const getUserArchivements = (offset: number, limit: number) => {
     if (!rows?.length) {
       return
     }
-    getUserArchivements(offset + limit, limit)
+    getUserAchievements(offset + limit, limit)
   })
 }
 
@@ -354,7 +354,7 @@ const columns = [
   { name: 'PhoneNO', label: 'PHONENO', field: 'PhoneNO', align: 'center' },
   { name: 'Kol', label: 'KOL', field: 'Kol', align: 'center', sortable: true },
   { name: 'TotalInvitees', label: 'TOTALINVITEES', field: 'TotalInvitees', align: 'center', sortable: true },
-  { name: 'Archivements', label: 'PROFIT', field: 'Archivements', align: 'center' }
+  { name: 'Achievements', label: 'PROFIT', field: 'Achievements', align: 'center' }
 ]
 </script>
 
