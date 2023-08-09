@@ -16,7 +16,7 @@ export const useEventStore = defineStore('event', {
     Events: [] as Array<Event>
   }),
   getters: {
-    Events: (state) : Array<Event> => {
+    events: (state) : Array<Event> => {
       return state.Events.sort((a, b) => a.EventType.localeCompare(b.EventType, 'zh-CN'))
     }
   },
