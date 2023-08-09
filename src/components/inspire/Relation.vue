@@ -245,7 +245,7 @@ watch(curUserID, () => {
   }
   _userInviters.value = []
   getInviterIDs(curUserID.value)
-  if (archivements.value.length === 0) {
+  if (archivements.value.length <= 1) {
     loading.value = true
     getUserArchivements(0, 100)
   }

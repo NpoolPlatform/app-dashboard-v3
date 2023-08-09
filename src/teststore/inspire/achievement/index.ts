@@ -31,7 +31,13 @@ export const useAchievementStore = defineStore('achievement', {
         req,
         req.Message,
         (resp: GetUserAchievementsResponse): void => {
-          this.Achievements.push(...resp.Infos)
+          resp.Infos.forEach((el) => {
+            const index = this.Achievements.findIndex((el1) => el.UserID === el1.UserID)
+            if (index >= 0) {
+              return
+            }
+            this.Achievements.push(el)
+          })
           done(false, resp.Infos)
         }, () => {
           done(true)
