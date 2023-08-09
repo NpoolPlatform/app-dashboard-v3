@@ -133,7 +133,7 @@ const onSubmit = (done: () => void) => {
 
 onMounted(() => {
   if (registrations.value.length === 0) {
-    getRegistrations(0, 500)
+    getRegistrations(0, 100)
   }
 })
 
@@ -149,7 +149,10 @@ const getRegistrations = (offset: number, limit: number) => {
       }
     }
   }, (error: boolean, rows: Array<Registration>) => {
-    if (error || rows.length < limit) {
+    if (error) {
+      return
+    }
+    if (!rows.length) {
       return
     }
     getRegistrations(offset + limit, limit)
