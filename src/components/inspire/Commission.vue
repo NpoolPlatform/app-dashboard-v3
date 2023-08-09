@@ -54,15 +54,16 @@
         <AppGoodSelector v-model:id='target.GoodID' />
         <AppUserSelector v-model:id='target.UserID' />
         <q-select :options='commission.SettleTypes' v-model='target.SettleType' :label='$t("MSG_COMMISSION_SETTLE_TYPE")' />
-        <q-select :options='commission.SettleModes' v-model='target.SettleMode' :label='$t("MSG_COMMISSION_SETTLE_MODE")' />
         <q-select :options='commission.SettleAmountTypes' v-model='target.SettleAmountType' :label='$t("MSG_COMMISSION_SETTLE_AMOUNT_TYPE")' />
         <q-select :options='commission.SettleIntervals' v-model='target.SettleInterval' :label='$t("MSG_COMMISSION_SETTLE_INTERVAL")' />
+        <q-select :options='commission.SettleModes' v-model='target.SettleMode' :label='$t("MSG_COMMISSION_SETTLE_MODE")' />
       </q-card-section>
-      <q-card-section>
+      <q-card-section v-if='!updating'>
         <q-input type='number' v-model.number='target.AmountOrPercent' :label='$t("MSG_AMOUNT_OR_PERCENT")' suffix='$ | %' />
       </q-card-section>
       <q-card-section>
         <DateTimePicker v-model:date='target.StartAt' label='MSG_START_AT' />
+        <q-input type='number' v-model.number='target.Threshold' :label='$t("MSG_THRESHOLD")' suffix='$' />
       </q-card-section>
       <q-item class='row'>
         <LoadingButton loading :label='$t("MSG_SUBMIT")' @click='onSubmit' />
@@ -321,7 +322,7 @@ const onSubmit2 = (done: () => void) => {
 
 onMounted(() => {
   if (_commission.Commissions.length === 0) {
-    getAppCommissions(0, 500)
+    getAppCommissions(0, 100)
   }
 })
 
