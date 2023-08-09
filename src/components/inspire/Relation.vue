@@ -169,10 +169,12 @@
 import {
   PriceCoinName
 } from 'npool-cli-v2'
-import { formatTime, NotifyType, useAdminArchivementStore, useAdminUserStore, User, useAdminRegistrationStore, InvalidID, UserArchivement, useAdminAppGoodStore } from 'npool-cli-v4'
+import { formatTime, NotifyType, useAdminUserStore, User, useAdminRegistrationStore, InvalidID, useAdminAppGoodStore } from 'npool-cli-v4'
 import { getUsers } from 'src/api/user'
 import { computed, defineAsyncComponent, onMounted, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
+import { achievement } from 'src/teststore'
+
 // eslint-disable-next-line @typescript-eslint/unbound-method
 const { t } = useI18n({ useScope: 'global' })
 
@@ -205,19 +207,19 @@ const getInviterIDs = (userID: string) => {
 }
 const userInviters = computed(() => _userInviters.value)
 
-const archivement = useAdminArchivementStore()
-const archivements = computed(() => archivement.getArchivementByUserID(curUserID.value))
+const _archivement = achievement.useAchievementStore()
+const archivements = computed(() => _archivement.achievements(curUserID.value))
 const inviteeArchivements = computed(() => {
-  let _data = archivement.inviteeArchivements(curUserID.value)
+  let _data = _archivement.inviteeAchievements(curUserID.value)
   if (currentKolState.value.Label !== 'ALL') {
     _data = _data.filter((el) => el.Kol === currentKolState.value.Value)
   }
   return _data
 })
 
-const _inviterArchivements = computed(() => archivement.inviterArchivements(curUserID.value))
+const _inviterArchivements = computed(() => _archivement.inviterAchievements(curUserID.value))
 const inviterArchivements = computed(() => {
-  let _data = [] as Array<UserArchivement>
+  let _data = [] as Array<achievement.Achievement>
   userInviters.value.forEach((ID) => {
     const data = _inviterArchivements.value.find((el) => el.UserID === ID)
     if (data) {
@@ -250,7 +252,7 @@ watch(curUserID, () => {
 })
 
 const getUserArchivements = (offset: number, limit: number, key: string) => {
-  archivement.getUserGoodArchivements({
+  _archivement.getUserAchievements({
     UserIDs: inviteeIDs.value,
     Offset: offset,
     Limit: limit,
@@ -261,9 +263,12 @@ const getUserArchivements = (offset: number, limit: number, key: string) => {
         Type: NotifyType.Error
       }
     }
-  }, key, (error: boolean, rows: Array<UserArchivement>) => {
+  }, (error: boolean, rows?: Array<achievement.Achievement>) => {
     loading.value = false
-    if (error || rows.length < limit) {
+    if (error) {
+      return
+    }
+    if (!rows?.length) {
       return
     }
     getUserArchivements(offset + limit, limit, key)
