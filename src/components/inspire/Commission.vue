@@ -59,11 +59,11 @@
         <q-select :options='commission.SettleModes' v-model='target.SettleMode' :label='$t("MSG_COMMISSION_SETTLE_MODE")' />
       </q-card-section>
       <q-card-section v-if='!updating'>
-        <q-input type='number' v-model.number='target.AmountOrPercent' :label='$t("MSG_AMOUNT_OR_PERCENT")' suffix='$ | %' />
+        <q-input v-model='target.AmountOrPercent' :label='$t("MSG_AMOUNT_OR_PERCENT")' suffix='$ | %' />
       </q-card-section>
       <q-card-section>
         <DateTimePicker v-model:date='target.StartAt' label='MSG_START_AT' />
-        <q-input v-model.number='target.Threshold' :label='$t("MSG_THRESHOLD")' suffix='$' />
+        <q-input v-model='target.Threshold' :label='$t("MSG_THRESHOLD")' suffix='$' />
       </q-card-section>
       <q-item class='row'>
         <LoadingButton loading :label='$t("MSG_SUBMIT")' @click='onSubmit' />
