@@ -240,10 +240,10 @@ const target = computed(() => (goodID: string) => good.getGoodByID(goodID))
 const getDisplayNames = computed(() => (goodID: string) => good.getGoodByID(goodID)?.DisplayNames)
 
 watch(curUserID, () => {
+  _userInviters.value = []
   if (curUserID.value === InvalidID) {
     return
   }
-  _userInviters.value = []
   getInviterIDs(curUserID.value)
   if (Achievements.value.length <= 1) {
     loading.value = true
