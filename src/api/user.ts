@@ -14,7 +14,10 @@ export const getUsers = (offset: number, limit: number) => {
       }
     }
   }, (resp: Array<User>, error: boolean) => {
-    if (error || resp.length < limit) {
+    if (error) {
+      return
+    }
+    if (!resp.length) {
       return
     }
     getUsers(offset + limit, limit)
