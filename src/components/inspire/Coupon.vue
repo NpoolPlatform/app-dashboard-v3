@@ -24,6 +24,9 @@ const coupons = computed(() => _coupon.Coupons)
 const loading = ref(true)
 
 const prepare = () => {
+  if (_coupon.Coupons.length > 0) {
+    return
+  }
   loading.value = true
   _coupon.getCoupons({
     Offset: 0,
