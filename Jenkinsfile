@@ -3,7 +3,10 @@ pipeline {
   stages {
     stage('Clone') {
       steps {
-        git(url: scm.userRemoteConfigs[0].url, branch: '$BRANCH_NAME', changelog: true, credentialsId: 'KK-github-key', poll: true)
+        git (url: scm.userRemoteConfigs[0].url, branch: '$BRANCH_NAME', changelog: true, credentialsId: 'KK-github-key', poll: true)
+        sh (returnStdout: false, script: '''
+          git submodule update --init --recursive
+        ''')
       }
     }
 

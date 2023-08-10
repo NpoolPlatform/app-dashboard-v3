@@ -120,7 +120,7 @@ import { NotifyType, useAdminReconcileStore } from 'npool-cli-v4'
 import { ReconcileRequest } from 'npool-cli-v4/dist/store/admin/inspire/reconcile/types'
 import { computed, defineAsyncComponent, onMounted, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { commission } from 'src/teststore'
+import { commission } from 'src/npoolstore'
 
 // eslint-disable-next-line @typescript-eslint/unbound-method
 const { t } = useI18n({ useScope: 'global' })
