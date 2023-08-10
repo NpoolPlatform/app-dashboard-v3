@@ -25,6 +25,7 @@ const loading = ref(true)
 
 const prepare = () => {
   if (_coupon.Coupons.length > 0) {
+    loading.value = false
     return
   }
   loading.value = true
