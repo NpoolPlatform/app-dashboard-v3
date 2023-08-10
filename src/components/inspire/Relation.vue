@@ -235,8 +235,6 @@ const inviterAchievements = computed(() => {
 const loading = ref(false)
 
 const good = useAdminAppGoodStore()
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-const target = computed(() => (goodID: string) => good.getGoodByID(goodID))
 const getDisplayNames = computed(() => (goodID: string) => good.getGoodByID(goodID)?.DisplayNames)
 
 watch(curUserID, () => {
@@ -261,7 +259,7 @@ const getUserAchievements = (offset: number, limit: number) => {
     Limit: limit,
     Message: {
       Error: {
-        Title: t('MSG_GET_GOOD_achievement_FAIL'),
+        Title: t('MSG_GET_GOOD_ACHIEVEMENT_FAIL'),
         Popup: true,
         Type: NotifyType.Error
       }
