@@ -207,17 +207,17 @@ const getInviterIDs = (userID: string) => {
 }
 const userInviters = computed(() => _userInviters.value)
 
-const _Achievement = achievement.useAchievementStore()
-const Achievements = computed(() => _Achievement.achievements(curUserID.value))
+const _achievement = achievement.useAchievementStore()
+const Achievements = computed(() => _achievement.achievements(curUserID.value))
 const inviteeAchievements = computed(() => {
-  let _data = _Achievement.inviteeAchievements(curUserID.value)
+  let _data = _achievement.inviteeAchievements(curUserID.value)
   if (currentKolState.value.Label !== 'ALL') {
     _data = _data.filter((el) => el.Kol === currentKolState.value.Value)
   }
   return _data
 })
 
-const _inviterAchievements = computed(() => _Achievement.inviterAchievements(curUserID.value))
+const _inviterAchievements = computed(() => _achievement.inviterAchievements(curUserID.value))
 const inviterAchievements = computed(() => {
   let _data = [] as Array<achievement.Achievement>
   userInviters.value.forEach((ID) => {
@@ -252,13 +252,16 @@ watch(curUserID, () => {
 })
 
 const getUserAchievements = (offset: number, limit: number) => {
-  _Achievement.getUserAchievements({
+  if (!inviteeIDs.value.length) {
+    return
+  }
+  _achievement.getUserAchievements({
     UserIDs: inviteeIDs.value,
     Offset: offset,
     Limit: limit,
     Message: {
       Error: {
-        Title: t('MSG_GET_GOOD_Achievement_FAIL'),
+        Title: t('MSG_GET_GOOD_achievement_FAIL'),
         Popup: true,
         Type: NotifyType.Error
       }
