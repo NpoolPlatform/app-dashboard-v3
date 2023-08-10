@@ -23,14 +23,10 @@ const _coupon = allocatedCoupon.useAllocatedCouponStore()
 const coupons = computed(() => _coupon.AllocatedCoupons)
 const loading = ref(true)
 
-const prepare = () => {
-  if (_coupon.AllocatedCoupons.length > 0) {
-    return
-  }
-  loading.value = true
+const getCoupons = (offset: number, limit: number) => {
   _coupon.getCoupons({
-    Offset: 0,
-    Limit: 100,
+    Offset: offset,
+    Limit: limit,
     Message: {
       Error: {
         Title: t('MSG_GET_COUPONS'),
@@ -39,9 +35,25 @@ const prepare = () => {
         Type: NotifyType.Error
       }
     }
-  }, () => {
-    loading.value = false
+  }, (error: boolean, rows: Array<allocatedCoupon.Coupon>) => {
+    if (error) {
+      loading.value = false
+      return
+    }
+    if (!rows.length) {
+      loading.value = false
+      return
+    }
+    getCoupons(offset + limit, limit)
   })
+}
+
+const prepare = () => {
+  if (_coupon.AllocatedCoupons.length > 0) {
+    return
+  }
+  loading.value = true
+  getCoupons(0, 100)
 }
 
 onMounted(() => {
