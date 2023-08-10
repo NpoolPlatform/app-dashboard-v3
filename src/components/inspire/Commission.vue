@@ -104,7 +104,6 @@
         <span>{{ $t('MSG_RECONCILE') }}</span>
       </q-card-section>
       <q-card-section>
-        <AppUserSelector v-model:id='reconcileRequest.TargetUserID' />
         <AppGoodSelector v-model:id='reconcileRequest.GoodID' :label='$t("MSG_GOOD")' />
       </q-card-section>
       <q-item class='row'>
