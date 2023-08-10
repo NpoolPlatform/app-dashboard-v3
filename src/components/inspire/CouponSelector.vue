@@ -28,7 +28,7 @@ const ids = toRef(props, 'ids')
 const updating = toRef(props, 'updating')
 
 const _coupon = coupon.useCouponStore()
-const myCoupons = computed(() => _coupon.Coupons.filter((el) => el.CouponType !== coupon.CouponType.SpecialOffer))
+const myCoupons = computed(() => _coupon.Coupons.filter((el) => el.CouponType !== coupon.CouponType.SpecialOffer && _coupon.valid(el)))
 const coupons = computed(() => myCoupons.value.map((el) => {
   return {
     value: el,

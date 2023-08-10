@@ -104,11 +104,13 @@ const updating = ref(false)
 
 const onCreate = () => {
   target.value = { MaxConsecutive: 1, InviterLayers: 1 } as eventinspire.Event
+  couponIDs.value = []
   showing.value = true
   updating.value = false
 }
 const onRowClick = (row: eventinspire.Event) => {
   target.value = { ...row }
+  couponIDs.value = target.value.Coupons.map((el) => el.ID)
   showing.value = true
   updating.value = true
 }
@@ -127,7 +129,7 @@ const onSubmit = (done: () => void) => {
 const updateEvent = (done: () => void) => {
   event.updateEvent({
     ...target.value,
-    CouponIDs: target.value.Coupons.map((el) => el.ID),
+    CouponIDs: couponIDs.value,
     Message: {
       Error: {
         Title: t('MSG_UPDATE_EVENT'),
