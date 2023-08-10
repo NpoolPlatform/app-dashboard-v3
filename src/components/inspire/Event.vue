@@ -81,7 +81,7 @@
 <script setup lang='ts'>
 import { formatTime, NotifyType } from 'npool-cli-v4'
 import { getCoupons } from 'src/api/inspire'
-import { coupon, eventinspire } from 'src/teststore'
+import { coupon, eventinspire } from 'src/npoolstore'
 import { computed, defineAsyncComponent, onMounted, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 // eslint-disable-next-line @typescript-eslint/unbound-method

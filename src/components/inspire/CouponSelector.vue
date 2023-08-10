@@ -22,7 +22,7 @@
   </q-select>
 </template>
 <script setup lang='ts'>
-import { coupon } from 'src/teststore'
+import { coupon } from 'src/npoolstore'
 import { computed, defineEmits, defineProps, toRef, ref, onMounted } from 'vue'
 import { getCoupons } from 'src/api/inspire'
 

@@ -13,7 +13,7 @@
 </template>
 
 <script setup lang='ts'>
-import { oplog } from 'src/teststore'
+import { oplog } from 'src/npoolstore'
 import { computed, onMounted } from 'vue'
 
 const log = oplog.useOpLogStore()

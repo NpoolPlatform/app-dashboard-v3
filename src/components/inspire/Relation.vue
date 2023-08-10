@@ -173,7 +173,7 @@ import { formatTime, NotifyType, useAdminUserStore, User, useAdminRegistrationSt
 import { getUsers } from 'src/api/user'
 import { computed, defineAsyncComponent, onMounted, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { achievement } from 'src/teststore'
+import { achievement } from 'src/npoolstore'
 
 // eslint-disable-next-line @typescript-eslint/unbound-method
 const { t } = useI18n({ useScope: 'global' })

@@ -1,5 +1,5 @@
 import { NotifyType } from 'npool-cli-v4'
-import { coupon } from 'src/teststore'
+import { coupon } from 'src/npoolstore'
 
 const _coupon = coupon.useCouponStore()
 export const getCoupons = (offset: number, limit: number, type?: coupon.CouponType) => {

@@ -14,7 +14,7 @@
 import { NotifyType } from 'npool-cli-v4'
 import { computed, onMounted, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { allocatedCoupon } from 'src/teststore'
+import { allocatedCoupon } from 'src/npoolstore'
 
 // eslint-disable-next-line @typescript-eslint/unbound-method
 const { t } = useI18n({ useScope: 'global' })
