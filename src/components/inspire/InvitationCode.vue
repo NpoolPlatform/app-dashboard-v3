@@ -194,7 +194,10 @@ const getInvitationCodes = (offset: number, limit: number) => {
     Limit: limit,
     Message: {}
   }, (error: boolean, rows: Array<InvitationCode>) => {
-    if (error || rows.length < limit) {
+    if (error) {
+      return
+    }
+    if (!rows.length) {
       return
     }
     getInvitationCodes(offset + limit, limit)
