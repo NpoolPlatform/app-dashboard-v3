@@ -78,7 +78,7 @@
                 </td>
                 <td>{{ _good?.GoodID }}</td>
                 <td>
-                  {{ _good.CommissionPercent }} <span>%</span>
+                  {{ _good.CommissionValue }} <span>%</span>
                 </td>
                 <td class='units'>
                   {{ _good.TotalUnits }}{{ $t(_good.GoodUnit) }}
@@ -144,7 +144,7 @@
                 </td>
                 <td>{{ _good?.GoodID }}</td>
                 <td>
-                  {{ _good.CommissionPercent }} <span>%</span>
+                  {{ _good.CommissionValue }} <span>%</span>
                 </td>
                 <td class='units'>
                   {{ _good.TotalUnits }}{{ $t(_good.GoodUnit) }}
