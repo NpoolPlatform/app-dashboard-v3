@@ -7,7 +7,19 @@
     row-key='ID'
     :loading='loading'
     :rows-per-page-options='[10]'
-  />
+  >
+    <template #top-right>
+      <div class='row indent flat'>
+        <q-input
+          dense
+          flat
+          class='small'
+          v-model='username'
+          :label='$t("MSG_USERNAME")'
+        />
+      </div>
+    </template>
+  </q-table>
 </template>
 
 <script setup lang='ts'>
@@ -20,7 +32,12 @@ import { allocatedCoupon } from 'src/npoolstore'
 const { t } = useI18n({ useScope: 'global' })
 
 const _coupon = allocatedCoupon.useAllocatedCouponStore()
-const coupons = computed(() => _coupon.AllocatedCoupons)
+const username = ref('')
+const coupons = computed(() => _coupon.AllocatedCoupons.filter((el) => {
+  return el.EmailAddress?.includes(username.value) ||
+         el.PhoneNO?.includes(username.value) ||
+         el.Username?.includes(username.value)
+}))
 const loading = ref(true)
 
 const getCoupons = (offset: number, limit: number) => {
@@ -50,6 +67,7 @@ const getCoupons = (offset: number, limit: number) => {
 
 const prepare = () => {
   if (_coupon.AllocatedCoupons.length > 0) {
+    loading.value = false
     return
   }
   loading.value = true

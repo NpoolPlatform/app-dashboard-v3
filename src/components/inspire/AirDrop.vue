@@ -13,6 +13,13 @@
   >
     <template #top-right>
       <div class='row indent flat'>
+        <q-input
+          dense
+          flat
+          class='small'
+          v-model='username'
+          :label='$t("MSG_USERNAME")'
+        />
         <q-btn
           dense
           flat
