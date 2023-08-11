@@ -5,7 +5,7 @@
     :title='$t("MSG_CHANNELS")'
     :rows='channels'
     row-key='ID'
-    :rows-per-page-options='[10]'
+    :rows-per-page-options='[100]'
     selection='single'
     v-model:selected='selectedNotifChannels'
     :columns='columns'
@@ -57,6 +57,9 @@
       </q-item>
     </q-card>
   </q-dialog>
+  <q-card-section class='bg-primary text-white'>
+    {{ $t('MSG_ADVERTISEMENT_POSITION') }}
+  </q-card-section>
 </template>
 
 <script setup lang='ts'>
@@ -184,26 +187,31 @@ const columns = computed(() => [
   {
     name: 'ID',
     label: t('MSG_ID'),
+    sortable: true,
     field: (row: NotifChannel) => row.ID
   },
   {
     name: 'AppID',
     label: t('MSG_APP_ID'),
+    sortable: true,
     field: (row: NotifChannel) => row.AppID
   },
   {
     name: 'EventType',
     label: t('MSG_EVENT_TYPE'),
+    sortable: true,
     field: (row: NotifChannel) => row.EventType
   },
   {
     name: 'Channel',
     label: t('MSG_CHANNEL'),
+    sortable: true,
     field: (row: NotifChannel) => row.Channel
   },
   {
     name: 'CreatedAt',
     label: t('MSG_CREATED_AT'),
+    sortable: true,
     field: (row: NotifChannel) => formatTime(row.CreatedAt)
   }
 ])

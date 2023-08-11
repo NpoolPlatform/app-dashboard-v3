@@ -5,7 +5,7 @@
     :title='$t("MSG_NOTIF_USERS")'
     :rows='displayNotifUsers'
     row-key='ID'
-    :rows-per-page-options='[10]'
+    :rows-per-page-options='[100]'
     selection='single'
     v-model:selected='selectedNotifUsers'
     :columns='columns'
@@ -59,6 +59,9 @@
       </q-item>
     </q-card>
   </q-dialog>
+  <q-card-section class='bg-primary text-white'>
+    {{ $t('MSG_ADVERTISEMENT_POSITION') }}
+  </q-card-section>
 </template>
 
 <script setup lang='ts'>
@@ -200,51 +203,61 @@ const columns = computed(() => [
   {
     name: 'ID',
     label: t('MSG_ID'),
+    sortable: true,
     field: (row: NotifUser) => row.ID
   },
   {
     name: 'AppID',
     label: t('MSG_APP_ID'),
+    sortable: true,
     field: (row: NotifUser) => row.AppID
   },
   {
     name: 'EventType',
     label: t('MSG_EVENT_TYPE'),
+    sortable: true,
     field: (row: NotifUser) => row.EventType
   },
   {
     name: 'NotifType',
     label: t('MSG_ANNOUNCEMENT_TYPE'),
+    sortable: true,
     field: (row: NotifUser) => row.NotifType
   },
   {
     name: 'UserID',
     label: t('USER_ID'),
+    sortable: true,
     field: (row: NotifUser) => row.UserID
   },
   {
     name: 'EmailAddress',
     label: t('EMAIL_ADDRESS'),
+    sortable: true,
     field: (row: NotifUser) => row.EmailAddress
   },
   {
     name: 'Username',
     label: t('USERNAME'),
+    sortable: true,
     field: (row: NotifUser) => row.Username
   },
   {
     name: 'PhoneNO',
     label: t('PHONE_NO'),
+    sortable: true,
     field: (row: NotifUser) => row.PhoneNO
   },
   {
     name: 'CreatedAt',
     label: t('MSG_CREATED_AT'),
+    sortable: true,
     field: (row: NotifUser) => formatTime(row.CreatedAt)
   },
   {
     name: 'UpdatedAt',
     label: t('MSG_UPDATED_AT'),
+    sortable: true,
     field: (row: NotifUser) => formatTime(row.UpdatedAt)
   }
 ])

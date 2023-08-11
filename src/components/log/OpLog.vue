@@ -5,8 +5,11 @@
     :title='$t("MSG_OP_LOGS")'
     :rows='opLogs'
     row-key='ID'
-    :rows-per-page-options='[20]'
+    :rows-per-page-options='[100]'
   />
+  <q-card-section class='bg-primary text-white'>
+    {{ $t('MSG_ADVERTISEMENT_POSITION') }}
+  </q-card-section>
 </template>
 
 <script setup lang='ts'>

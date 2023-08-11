@@ -6,8 +6,8 @@
     :rows='displayEvents'
     row-key='ID'
     :columns='columns'
-    :rows-per-page-options='[50]'
-    @row-click='(evt, row, index) => onRowClick(row as Event)'
+    :rows-per-page-options='[100]'
+    @row-click='(evt, row, index) => onRowClick(row as EventInspire)'
   >
     <template #top-right>
       <div class='row indent flat'>
@@ -58,6 +58,9 @@
       </q-item>
     </q-card>
   </q-dialog>
+  <q-card-section class='bg-primary text-white'>
+    {{ $t('MSG_ADVERTISEMENT_POSITION') }}
+  </q-card-section>
 </template>
 
 <script setup lang='ts'>

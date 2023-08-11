@@ -6,7 +6,7 @@
     :rows='coupons'
     row-key='ID'
     :loading='loading'
-    :rows-per-page-options='[10]'
+    :rows-per-page-options='[100]'
     @row-click='(evt, row, index) => onRowClick(row as FixAmountCoupon)'
   >
     <template #top-right>
@@ -44,6 +44,9 @@
       </q-item>
     </q-card>
   </q-dialog>
+  <q-card-section class='bg-primary text-white'>
+    {{ $t('MSG_ADVERTISEMENT_POSITION') }}
+  </q-card-section>
 </template>
 
 <script setup lang='ts'>

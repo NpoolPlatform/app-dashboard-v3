@@ -5,7 +5,7 @@
     :title='$t("MSG_ANNOUNCEMENT_USERS")'
     :rows='displayAnnouncementUsers'
     row-key='ID'
-    :rows-per-page-options='[10]'
+    :rows-per-page-options='[100]'
     selection='single'
     v-model:selected='selectedAnnouncementUsers'
     :columns='columns'
@@ -55,6 +55,9 @@
       </q-item>
     </q-card>
   </q-dialog>
+  <q-card-section class='bg-primary text-white'>
+    {{ $t('MSG_ADVERTISEMENT_POSITION') }}
+  </q-card-section>
 </template>
 
 <script setup lang='ts'>
@@ -201,61 +204,73 @@ const columns = computed(() => [
   {
     name: 'ID',
     label: t('MSG_ID'),
+    sortable: true,
     field: (row: AnnouncementUser) => row.ID
   },
   {
     name: 'AppID',
     label: t('MSG_APP_ID'),
+    sortable: true,
     field: (row: AnnouncementUser) => row.AppID
   },
   {
     name: 'AnnouncementID',
     label: t('MSG_ANNOUNCEMENT_ID'),
+    sortable: true,
     field: (row: AnnouncementUser) => row.AnnouncementID
   },
   {
     name: 'AnnouncementType',
     label: t('MSG_ANNOUNCEMENT_TYPE'),
+    sortable: true,
     field: (row: AnnouncementUser) => row.AnnouncementType
   },
   {
     name: 'UserID',
     label: t('USER_ID'),
+    sortable: true,
     field: (row: AnnouncementUser) => row.UserID
   },
   {
     name: 'EmailAddress',
     label: t('EMAIL_ADDRESS'),
+    sortable: true,
     field: (row: AnnouncementUser) => row.EmailAddress
   },
   {
     name: 'Username',
     label: t('USERNAME'),
+    sortable: true,
     field: (row: AnnouncementUser) => row.Username
   },
   {
     name: 'PhoneNO',
     label: t('PHONE_NO'),
+    sortable: true,
     field: (row: AnnouncementUser) => row.PhoneNO
   },
   {
     name: 'Title',
     label: t('MSG_TITLE'),
+    sortable: true,
     field: (row: AnnouncementUser) => row.Title
   },
   {
     name: 'Content',
     label: t('MSG_CONTENT'),
+    sortable: true,
     field: (row: AnnouncementUser) => row.Content
   },
   {
     name: 'CreatedAt',
     label: t('MSG_CREATED_AT'),
+    sortable: true,
     field: (row: AnnouncementUser) => formatTime(row.CreatedAt)
   },
   {
     name: 'UpdatedAt',
     label: t('MSG_UPDATED_AT'),
+    sortable: true,
     field: (row: AnnouncementUser) => formatTime(row.UpdatedAt)
   }
 ])

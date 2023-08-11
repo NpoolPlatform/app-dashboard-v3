@@ -6,7 +6,7 @@
     :rows='contacts'
     row-key='ID'
     :loading='contactsLoading'
-    :rows-per-page-options='[20]'
+    :rows-per-page-options='[100]'
     @row-click='(evt, row, index) => onRowClick(row as Contact)'
   >
     <template #top-right>
@@ -43,6 +43,9 @@
       </q-item>
     </q-card>
   </q-dialog>
+  <q-card-section class='bg-primary text-white'>
+    {{ $t('MSG_ADVERTISEMENT_POSITION') }}
+  </q-card-section>
 </template>
 
 <script setup lang='ts'>

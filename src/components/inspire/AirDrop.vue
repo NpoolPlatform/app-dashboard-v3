@@ -6,7 +6,7 @@
     :rows='displayUsers'
     row-key='ID'
     :loading='loading'
-    :rows-per-page-options='[10]'
+    :rows-per-page-options='[100]'
     selection='multiple'
     v-model:selected='selectedUsers'
     :columns='columns'
@@ -54,6 +54,9 @@
       </q-item>
     </q-card>
   </q-dialog>
+  <q-card-section class='bg-primary text-white'>
+    {{ $t('MSG_ADVERTISEMENT_POSITION') }}
+  </q-card-section>
 </template>
 
 <script setup lang='ts'>
@@ -77,36 +80,43 @@ const columns = computed(() => [
   {
     name: 'AppID',
     label: t('MSG_APP_ID'),
+    sortable: true,
     field: (row: User) => row.AppID
   },
   {
     name: 'UserID',
     label: t('MSG_USER_ID'),
+    sortable: true,
     field: (row: User) => row.ID
   },
   {
     name: 'EmailAddress',
     label: t('MSG_EMAIL_ADDRESS'),
+    sortable: true,
     field: (row: User) => row.EmailAddress
   },
   {
     name: 'PhoneNO',
     label: t('MSG_PHONE_NO'),
+    sortable: true,
     field: (row: User) => row.PhoneNO
   },
   {
     name: 'Roles',
     label: t('MSG_ROLES'),
+    sortable: true,
     field: (row: User) => row.Roles?.join(',')
   },
   {
     name: 'IDNUMBER',
     label: t('MSG_IDNUMBER'),
+    sortable: true,
     field: (row: User) => row.IDNumber
   },
   {
     name: 'CreatedAt',
     label: t('MSG_CREATEDAT'),
+    sortable: true,
     field: (row: User) => formatTime(row.CreatedAt)
   }
 ])

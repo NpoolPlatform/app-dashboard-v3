@@ -5,7 +5,7 @@
     :title='$t("MSG_USERS")'
     :rows='displayUsers'
     row-key='ID'
-    :rows-per-page-options='[10]'
+    :rows-per-page-options='[100]'
     selection='single'
     v-model:selected='selectedUser'
     :columns='uColumns'
@@ -26,7 +26,7 @@
     dense
     flat
     :title='$t("MSG_INVITEES")'
-    :rows-per-page-options='[10]'
+    :rows-per-page-options='[100]'
     row-key='name'
     :columns='(columns as never)'
     :rows='inviteeArchivements'
@@ -102,7 +102,7 @@
     flat
     :title='$t("MSG_INVITERS")'
     row-key='ID'
-    :rows-per-page-options='[10]'
+    :rows-per-page-options='[100]'
     :rows='inviterArchivements'
     :columns='(columns as never)'
     :loading='loading'
@@ -301,36 +301,43 @@ const uColumns = computed(() => [
   {
     name: 'AppID',
     label: t('MSG_APP_ID'),
+    sortable: true,
     field: (row: User) => row.AppID
   },
   {
     name: 'UserID',
     label: t('MSG_USER_ID'),
+    sortable: true,
     field: (row: User) => row.ID
   },
   {
     name: 'EmailAddress',
     label: t('MSG_EMAIL_ADDRESS'),
+    sortable: true,
     field: (row: User) => row.EmailAddress
   },
   {
     name: 'PhoneNO',
     label: t('MSG_PHONE_NO'),
+    sortable: true,
     field: (row: User) => row.PhoneNO
   },
   {
     name: 'Roles',
     label: t('MSG_ROLES'),
+    sortable: true,
     field: (row: User) => row.Roles?.join(',')
   },
   {
     name: 'IDNUMBER',
     label: t('MSG_IDNUMBER'),
+    sortable: true,
     field: (row: User) => row.IDNumber
   },
   {
     name: 'CreatedAt',
     label: t('MSG_CREATEDAT'),
+    sortable: true,
     field: (row: User) => formatTime(row.CreatedAt)
   }
 ])

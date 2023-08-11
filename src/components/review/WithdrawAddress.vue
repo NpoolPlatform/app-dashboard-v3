@@ -5,7 +5,7 @@
     :title='$t("MSG_WITHDRAW_ADDRESS")'
     :rows='withdrawAddress'
     row-key='ID'
-    :rows-per-page-options='[20]'
+    :rows-per-page-options='[100]'
     :columns='columns'
   />
   <q-card-section class='bg-primary text-white'>

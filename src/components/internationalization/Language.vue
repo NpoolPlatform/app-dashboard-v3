@@ -5,7 +5,7 @@
     :title='$t("MSG_APP_LANGUAGES")'
     :rows='langs'
     row-key='ID'
-    :rows-per-page-options='[20]'
+    :rows-per-page-options='[100]'
     @row-click='(evt, row, index) => onRowClick(row as AppLang)'
   />
   <q-dialog

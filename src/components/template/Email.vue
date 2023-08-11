@@ -6,7 +6,7 @@
     :rows='emails'
     row-key='ID'
     :loading='emailLoading'
-    :rows-per-page-options='[20]'
+    :rows-per-page-options='[100]'
     @row-click='(evt, row, index) => onRowClick(row as MyEmailTemplate)'
   >
     <template #top-right>
@@ -49,6 +49,9 @@
       </q-item>
     </q-card>
   </q-dialog>
+  <q-card-section class='bg-primary text-white'>
+    {{ $t('MSG_ADVERTISEMENT_POSITION') }}
+  </q-card-section>
 </template>
 
 <script setup lang='ts'>
@@ -147,18 +150,24 @@ const updateEmailTemplate = (done: () => void) => {
   let flag = false
   if (myTarget.value?.ReplyTos?.length > 0) {
     myTarget.value?.ReplyTos?.split(',')?.forEach((el) => {
-      if (!validateEmailAddress(el)) {
-        console.log('invalid email address', el)
-        flag = true
-      }
+      const emails = el.match(/[\d\w]+\b@[a-zA-ZA-z0-9]+\.[a-z]+/g)
+      emails?.forEach((al) => {
+        if (!validateEmailAddress(al)) {
+          console.log('invalid email address', al)
+          flag = true
+        }
+      })
     })
   }
   if (myTarget.value?.CCTos?.length > 0) {
     myTarget.value?.CCTos?.split(',')?.forEach((el) => {
-      if (!validateEmailAddress(el)) {
-        console.log('invalid email address', el)
-        flag = true
-      }
+      const emails = el.match(/[\d\w]+\b@[a-zA-ZA-z0-9]+\.[a-z]+/g)
+      emails?.forEach((al) => {
+        if (!validateEmailAddress(al)) {
+          console.log('invalid email address', al)
+          flag = true
+        }
+      })
     })
   }
   if (flag) {
@@ -194,18 +203,24 @@ const createEmailTemplate = (done: () => void) => {
   let flag = false
   if (myTarget.value?.ReplyTos?.length > 0) {
     myTarget.value?.ReplyTos?.split(',')?.forEach((el) => {
-      if (!validateEmailAddress(el)) {
-        console.log('invalid email address', el)
-        flag = true
-      }
+      const emails = el.match(/[\d\w]+\b@[a-zA-ZA-z0-9]+\.[a-z]+/g)
+      emails?.forEach((al) => {
+        if (!validateEmailAddress(al)) {
+          console.log('invalid email address', al)
+          flag = true
+        }
+      })
     })
   }
   if (myTarget.value?.CCTos?.length > 0) {
     myTarget.value?.CCTos?.split(',')?.forEach((el) => {
-      if (!validateEmailAddress(el)) {
-        console.log('invalid email address', el)
-        flag = true
-      }
+      const emails = el.match(/[\d\w]+\b@[a-zA-ZA-z0-9]+\.[a-z]+/g)
+      emails?.forEach((al) => {
+        if (!validateEmailAddress(al)) {
+          console.log('invalid email address', al)
+          flag = true
+        }
+      })
     })
   }
   if (flag) {
