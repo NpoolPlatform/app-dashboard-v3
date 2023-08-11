@@ -6,7 +6,7 @@
     :rows='displayCommissions'
     row-key='ID'
     :rows-per-page-options='[100]'
-    @row-click='(evt, row, index) => onRowClick(row as Commission)'
+    @row-click='(evt, row, index) => onRowClick(row as commission.Commission)'
   >
     <template #top-right>
       <div class='row indent flat'>

@@ -103,7 +103,7 @@
     :title='$t("MSG_INVITERS")'
     row-key='ID'
     :rows-per-page-options='[100]'
-    :rows='inviterArchivements'
+    :rows='inviterAchievements'
     :columns='(columns as never)'
     :loading='loading'
   >
