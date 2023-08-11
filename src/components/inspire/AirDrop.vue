@@ -119,10 +119,11 @@ const selectedUsers = ref([] as Array<User>)
 
 const loading = ref(false)
 const couponID = ref(undefined as unknown as string)
-const selectedCoupon = ref(undefined as unknown as coupon.Coupon)
+const selectedCoupon = ref(undefined as unknown as Record<string, unknown>)
 
 watch(selectedCoupon, () => {
-  couponID.value = selectedCoupon.value?.ID
+  const value = selectedCoupon.value?.value as coupon.Coupon
+  couponID.value = value.ID
 })
 
 const getUsers = (offset: number, limit: number) => {
