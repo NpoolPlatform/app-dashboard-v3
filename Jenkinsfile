@@ -43,9 +43,23 @@ pipeline {
       }
     }
 
+    stage('Generate docker image for feature') {
+      when {
+        expression { BUILD_TARGET == 'true' }
+        expression { BRANCH_NAME != 'master' }
+      }
+      steps {
+        sh(returnStdout: false, script: '''
+          feature_name=`echo $BRANCH_NAME | awk -F '/' '{ print $2 }'`
+          docker build -t $DOCKER_REGISTRY/entropypool/app-dashboard-v3:$feature_name .
+        '''.stripIndent())
+      }
+    }
+
     stage('Generate docker image for development') {
       when {
         expression { BUILD_TARGET == 'true' }
+        expression { BRANCH_NAME == 'master' }
       }
       steps {
         sh 'docker build -t $DOCKER_REGISTRY/entropypool/app-dashboard-v3:latest .'
@@ -178,6 +192,29 @@ pipeline {
       }
     }
 
+    stage('Release docker image for feature') {
+      when {
+        expression { RELEASE_TARGET == 'true' }
+        expression { BRANCH_NAME != 'master' }
+      }
+      steps {
+        sh(returnStdout: false, script: '''
+          feature_name=`echo $BRANCH_NAME | awk -F '/' '{ print $2 }'`
+          set +e
+          docker images | grep app-dashboard-v3 | grep $feature_name
+          rc=$?
+          set -e
+          if [ 0 -eq $rc ]; then
+            docker push $DOCKER_REGISTRY/entropypool/app-dashboard-v3:$feature_name
+          fi
+          images=`docker images | grep entropypool | grep app-dashboard-v3 | grep none | awk '{ print $3 }'`
+          for image in $images; do
+            docker rmi $image -f
+          done
+        '''.stripIndent())
+      }
+    }
+
     stage('Release docker image for development') {
       when {
         expression { RELEASE_TARGET == 'true' }
@@ -240,10 +277,33 @@ pipeline {
       }
     }
 
+    stage('Deploy for feature') {
+      when {
+        expression { DEPLOY_TARGET == 'true' }
+        expression { TARGET_ENV ==~ /.*development.*/ }
+        expression { BRANCH_NAME != 'master' }
+      }
+      steps {
+        sh(returnStdout: false, script: '''
+          feature_name=`echo $BRANCH_NAME | awk -F '/' '{ print $2 }'`
+          sed -i "s/npool\\.top/$ROOT_DOMAIN/g" k8s/02-traefik-ingress.yaml
+          sdomain=`echo $ROOT_DOMAIN | sed 's/\\./-/g'`
+          sed -i "s/npool-top/$sdomain/g" k8s/02-traefik-ingress.yaml
+          sed -i "s/app-dashboard-v3-treafik/app-dashboard-v3-treafik-$sdomain/g" k8s/02-traefik-ingress.yaml
+          sed -i "s/alidns-npool/$CERTIFICATE_ISSUER/g" k8s/02-traefik-ingress.yaml
+
+          sed -i "s/app-dashboard-v3:latest/app-dashboard-v3:$feature_name/g" k8s/01-app-dashboard-v3.yaml
+          sed -i "s/uhub.service.ucloud.cn/$DOCKER_REGISTRY/g" k8s/01-app-dashboard-v3.yaml
+          kubectl apply -k k8s
+        '''.stripIndent())
+      }
+    }
+
     stage('Deploy for development') {
       when {
         expression { DEPLOY_TARGET == 'true' }
         expression { TARGET_ENV ==~ /.*development.*/ }
+        expression { BRANCH_NAME == 'master' }
       }
       steps {
         sh 'sed -i "s/npool\\.top/$ROOT_DOMAIN/g" k8s/02-traefik-ingress.yaml'
