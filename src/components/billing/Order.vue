@@ -8,11 +8,11 @@
     :rows-per-page-options='[100]'
     :loading='orderLoading'
     :columns='columns'
-    @row-click='(evt, row, index) => onRowClick(row as Order)'
+    @row-click='(evt, row, index) => onRowClick(row as order.Order)'
   >
     <template #top-right>
       <select class='order-type' name='order-type' v-model='selectedOrderType'>
-        <option v-for='value in OrderTypes' :key='value'>
+        <option v-for='value in order.OrderTypes' :key='value'>
           {{ value }}
         </option>
       </select>
@@ -57,7 +57,7 @@
     <span>{{ $t('MSG_PAYMENT_TIMEOUT') }}: {{ paymentTimeouts }}</span>
   </q-item>
   <q-item>
-    <span>{{ $t('MSG_PAYMENT_USDT_AMOUNT') }}: {{ paymentAmount }} {{ PriceCoinName }}</span>
+    <span>{{ $t('MSG_PAYMENT_USDT_AMOUNT') }}: {{ paymentAmount }} {{ constant.PriceCoinName }}</span>
   </q-item>
   <q-item>
     <span>{{ $t('MSG_ORDER_USER_COUNT') }}: {{ orderUsers }}</span>
@@ -81,7 +81,7 @@
         <q-item-label>{{ $t('MSG_COINNAME') }}: {{ currentOrder?.CoinName }} {{ currentOrder?.Units }}</q-item-label>
         <q-item-label>{{ $t('MSG_UNTITS') }}: {{ currentOrder?.Units }}</q-item-label>
         <q-item-label>{{ $t('MSG_PAYMENT_AMOUNT') }}: {{ currentOrder?.PaymentAmount }}</q-item-label>
-        <q-item-label>{{ $t('MSG_CREATED_AT') }}: {{ formatTime(currentOrder?.CreatedAt) }}</q-item-label>
+        <q-item-label>{{ $t('MSG_CREATED_AT') }}: {{ utils.formatTime(currentOrder?.CreatedAt) }}</q-item-label>
       </q-card-section>
       <q-card-section>
         <q-item-label>{{ $t('MSG_GOOD_NAME') }}: {{ currentOrder?.GoodName }}</q-item-label>
@@ -89,13 +89,13 @@
         <q-item-label>{{ $t('MSG_ORDER_TYPE') }}: {{ currentOrder?.OrderType }}</q-item-label>
       </q-card-section>
       <q-item class='row'>
-        <q-item-label>{{ $t('MSG_ORDER_STATE') }}: {{ currentOrder?.State }}</q-item-label>
+        <q-item-label>{{ $t('MSG_ORDER_STATE') }}: {{ currentOrder?.OrderState }}</q-item-label>
       </q-item>
       <q-item class='row'>
         <!-- <q-item-label> <span class='cancel-order-tip' v-if='currentOrder.OrderType !== OrderType.Offline'>Only Paid offline orders can be Canceled!</span></q-item-label> -->
       </q-item>
       <q-item class='row'>
-        <q-btn class='btn round alt' :label='$t("MSG_CANCEL_ORDER")' @click='cancelOrder' :disable='good.getGoodByID(currentOrder.GoodID)?.CancelMode === CancelMode.UnCancellable' />
+        <q-btn class='btn round alt' :label='$t("MSG_CANCEL_ORDER")' @click='cancelOrder' :disable='good.good(undefined, currentOrder.AppGoodID)?.CancelMode === appgood.CancelMode.UnCancellable' />
         <q-btn class='btn round' :label='$t("MSG_CANCEL")' @click='onCancel' />
       </q-item>
     </q-card>
@@ -103,13 +103,9 @@
 </template>
 
 <script setup lang='ts'>
-import {
-  PriceCoinName
-} from 'npool-cli-v2'
-import { NotifyType, Order, OrderState, useAdminOrderStore, OrderTypes, useFrontendAppStore, formatTime, useAdminAppGoodStore, CancelMode } from 'npool-cli-v4'
+import { order, appgood, app, notify, utils, constant } from 'src/npoolstore'
 import { onMounted, ref, computed } from 'vue'
 import { saveAs } from 'file-saver'
-import { AppID } from 'src/const/const'
 import { getAppOrders } from 'src/api/order'
 import { useI18n } from 'vue-i18n'
 
@@ -120,9 +116,9 @@ const username = ref('')
 const start = ref('')
 const end = ref('')
 
-const order = useAdminOrderStore()
+const _order = order.useOrderStore()
 const selectedOrderType = ref('ALL')
-const displayOrders = computed(() => order.Orders.filter((el) => {
+const displayOrders = computed(() => _order.orders().filter((el) => {
   const name = username.value?.toLowerCase()
   let display = el.EmailAddress?.toLowerCase().includes(name) || el.PhoneNO?.toLowerCase()?.includes(name) || el.GoodID?.toLowerCase()?.includes(name) || el.ID?.toLowerCase()?.includes(name)
   if (start.value.length) {
@@ -137,23 +133,23 @@ const displayOrders = computed(() => order.Orders.filter((el) => {
   return display
 }))
 
-const soldUnits = computed(() => displayOrders.value.filter((el) => el.State === OrderState.PAID).reduce((sum, b) => sum + Number(b.Units), 0))
-const waitPaymentUnits = computed(() => displayOrders.value.filter((el) => el.State === OrderState.WAIT_PAYMENT).reduce((sum, b) => sum + Number(b.Units), 0))
-const timeoutUnits = computed(() => displayOrders.value.filter((el) => el.State === OrderState.PAYMENT_TIMEOUT).reduce((sum, b) => sum + Number(b.Units), 0))
-const userCanceledUnits = computed(() => displayOrders.value.filter((el) => el.State === OrderState.USER_CANCELED).reduce((sum, b) => sum + Number(b.Units), 0))
-const canceledUnits = computed(() => displayOrders.value.filter((el) => el.State === OrderState.CANCELED).reduce((sum, b) => sum + Number(b.Units), 0))
-const inServiceUnits = computed(() => displayOrders.value.filter((el) => el.State === OrderState.IN_SERVICE).reduce((sum, b) => sum + Number(b.Units), 0))
-const expiredUnits = computed(() => displayOrders.value.filter((el) => el.State === OrderState.EXPIRED).reduce((sum, b) => sum + Number(b.Units), 0))
-const waitStartUnits = computed(() => displayOrders.value.filter((el) => el.State === OrderState.WAIT_START).reduce((sum, b) => sum + Number(b.Units), 0))
+const soldUnits = computed(() => displayOrders.value.filter((el) => el.OrderState === order.OrderState.PAID).reduce((sum, b) => sum + Number(b.Units), 0))
+const waitPaymentUnits = computed(() => displayOrders.value.filter((el) => el.OrderState === order.OrderState.WAIT_PAYMENT).reduce((sum, b) => sum + Number(b.Units), 0))
+const timeoutUnits = computed(() => displayOrders.value.filter((el) => el.OrderState === order.OrderState.PAYMENT_TIMEOUT).reduce((sum, b) => sum + Number(b.Units), 0))
+const userCanceledUnits = computed(() => displayOrders.value.filter((el) => el.OrderState === order.OrderState.CANCELED).reduce((sum, b) => sum + Number(b.Units), 0))
+const canceledUnits = computed(() => displayOrders.value.filter((el) => el.OrderState === order.OrderState.CANCELED).reduce((sum, b) => sum + Number(b.Units), 0))
+const inServiceUnits = computed(() => displayOrders.value.filter((el) => el.OrderState === order.OrderState.IN_SERVICE).reduce((sum, b) => sum + Number(b.Units), 0))
+const expiredUnits = computed(() => displayOrders.value.filter((el) => el.OrderState === order.OrderState.EXPIRED).reduce((sum, b) => sum + Number(b.Units), 0))
+const waitStartUnits = computed(() => displayOrders.value.filter((el) => el.OrderState === order.OrderState.WAIT_START).reduce((sum, b) => sum + Number(b.Units), 0))
 
-const paymentTimeouts = computed(() => displayOrders.value.filter((el) => el.State === OrderState.PAYMENT_TIMEOUT).length)
-const paymentAmount = computed(() => displayOrders.value.filter((el) => el.State === OrderState.PAID).reduce((sum, b) => {
+const paymentTimeouts = computed(() => displayOrders.value.filter((el) => el.OrderState === order.OrderState.PAYMENT_TIMEOUT).length)
+const paymentAmount = computed(() => displayOrders.value.filter((el) => el.OrderState === order.OrderState.PAID).reduce((sum, b) => {
   const currency = Number(b.PaymentCoinUSDCurrency) > 0 ? Number(b.PaymentCoinUSDCurrency) : 1
   return sum + Number(b.PaymentAmount) * currency + Number(b.PayWithBalanceAmount) * currency
 }, 0))
 const orderUsers = computed(() => {
   const users = new Map<string, number>()
-  displayOrders.value.filter((el) => el.State === OrderState.PAID).forEach((el) => {
+  displayOrders.value.filter((el) => el.OrderState === order.OrderState.PAID).forEach((el) => {
     let u = users.get(el.UserID)
     if (!u) {
       u = 0
@@ -166,22 +162,21 @@ const orderUsers = computed(() => {
 
 const orderLoading = ref(false)
 
-const good = useAdminAppGoodStore()
+const good = appgood.useAppGoodStore()
 
 onMounted(() => {
-  if (order.Orders.length === 0) {
+  if (!_order.orders(undefined)) {
     getAppOrders(0, 500)
   }
 
-  if (app.App === undefined) {
-    app.getApp({
-      AppID: AppID,
+  if (_app.app() === undefined) {
+    _app.getApp({
       Message: {
         Error: {
           Title: 'MSG_GET_APP',
           Message: 'MSG_GET_APP_FAIL',
           Popup: true,
-          Type: NotifyType.Error
+          Type: notify.NotifyType.Error
         }
       }
     }, () => {
@@ -189,7 +184,7 @@ onMounted(() => {
     })
   }
 })
-const app = useFrontendAppStore()
+const _app = app.useApplicationStore()
 const onExport = () => {
   let orderStr = ''
   let createdAtCol = 0
@@ -217,7 +212,7 @@ const onExport = () => {
         lineStr += ';'
       }
       if (col === createdAtCol || col === paidAtCol) {
-        lineStr += formatTime(Number(v), false)
+        lineStr += utils.formatTime(Number(v))
         return
       }
       lineStr += v
@@ -226,25 +221,25 @@ const onExport = () => {
   })
 
   const blob = new Blob([orderStr], { type: 'text/plain;charset=utf-8' })
-  const filename = app.App.Name + '-Orders-' +
-                   formatTime(new Date().getTime() / 1000) +
+  const filename = 'procyon' + '-Orders-' +
+                   utils.formatTime(new Date().getTime() / 1000) +
                    '.csv'
   saveAs(blob, filename)
 }
 
 const orderInfoDialog = ref(false)
-const currentOrder = ref({} as Order)
-const onRowClick = (row: Order) => {
+const currentOrder = ref({} as order.Order)
+const onRowClick = (row: order.Order) => {
   orderInfoDialog.value = true
   currentOrder.value = { ...row }
 }
 const onMenuHide = () => {
-  currentOrder.value = {} as Order
+  currentOrder.value = {} as order.Order
   orderInfoDialog.value = false
 }
 const cancelOrder = () => {
   orderInfoDialog.value = false
-  order.updateUserOrder({
+  _order.updateUserOrder({
     ID: currentOrder.value.ID,
     TargetUserID: currentOrder.value.UserID,
     PaymentID: currentOrder.value.PaymentID,
@@ -254,7 +249,7 @@ const cancelOrder = () => {
         Title: 'MSG_UPDATE_ORDER',
         Message: 'MSG_UPDATE_ORDER_FAIL',
         Popup: true,
-        Type: NotifyType.Error
+        Type: notify.NotifyType.Error
       }
     }
   }, () => {
@@ -270,163 +265,163 @@ const columns = computed(() => [
     name: 'ID',
     label: t('MSG_ID'),
     sortable: true,
-    field: (row: Order) => row.ID
+    field: (row: order.Order) => row.ID
   },
   {
     name: 'AppID',
     label: t('MSG_APP_ID'),
     sortable: true,
-    field: (row: Order) => row.AppID
+    field: (row: order.Order) => row.AppID
   },
   {
     name: 'GoodID',
     label: t('MSG_GOOD_ID'),
     sortable: true,
-    field: (row: Order) => row.GoodID
+    field: (row: order.Order) => row.GoodID
   },
   {
     name: 'GoodName',
     label: t('MSG_GOOD_NAME'),
     sortable: true,
-    field: (row: Order) => row.GoodName
+    field: (row: order.Order) => row.GoodName
   },
   {
     name: 'GoodUnit',
     label: t('MSG_GOOD_UNIT'),
     sortable: true,
-    field: (row: Order) => row.GoodUnit
+    field: (row: order.Order) => row.GoodUnit
   },
   {
     name: 'GoodUnitPrice',
     label: t('MSG_GOOD_UNIT_PRICE'),
     sortable: true,
-    field: (row: Order) => row.GoodUnitPrice
+    field: (row: order.Order) => row.GoodUnitPrice
   },
   {
     name: 'GoodValue',
     label: t('MSG_GOOD_VALUE'),
     sortable: true,
-    field: (row: Order) => row.GoodValue
+    field: (row: order.Order) => row.GoodValue
   },
   {
     name: 'Units',
     label: t('MSG_UNITS'),
     sortable: true,
-    field: (row: Order) => row.Units
+    field: (row: order.Order) => row.Units
   },
   {
     name: 'PaymentID',
     label: t('MSG_PAYMENT_ID'),
     sortable: true,
-    field: (row: Order) => row.PaymentID
+    field: (row: order.Order) => row.PaymentID
   },
   {
     name: 'PaymentCoinTypeID',
     label: t('MSG_PAYMENT_COINTYPE_ID'),
     sortable: true,
-    field: (row: Order) => row.PaymentCoinTypeID
+    field: (row: order.Order) => row.PaymentCoinTypeID
   },
   {
     name: 'PaymentCoinName',
     label: t('MSG_PAYMENT_COINNAME'),
     sortable: true,
-    field: (row: Order) => row.PaymentCoinName
+    field: (row: order.Order) => row.PaymentCoinName
   },
   {
     name: 'PaymentCoinUnit',
     label: t('MSG_PAYMENT_COIN_UNIT'),
     sortable: true,
-    field: (row: Order) => row.PaymentCoinUnit
+    field: (row: order.Order) => row.PaymentCoinUnit
   },
   {
     name: 'CoinPresale',
     label: t('MSG_COIN_PRESALE'),
     sortable: true,
-    field: (row: Order) => row.CoinPresale
+    field: (row: order.Order) => row.CoinPresale
   },
   {
     name: 'PaymentAddress',
     label: t('MSG_PAYMENT_ADDRESS'),
     sortable: true,
-    field: (row: Order) => row.PaymentAddress
+    field: (row: order.Order) => row.PaymentAddress
   },
   {
     name: 'PaymentCoinUSDCurrency',
     label: t('MSG_PAYMENT_COIN_USD_CURRENCY'),
     sortable: true,
-    field: (row: Order) => row.PaymentCoinUSDCurrency
+    field: (row: order.Order) => row.PaymentCoinUSDCurrency
   },
   {
     name: 'PaymentLiveUSDCurrency',
     label: t('MSG_PAYMENT_LIVE_USD_CURRENCY'),
     sortable: true,
-    field: (row: Order) => row.PaymentLiveUSDCurrency
+    field: (row: order.Order) => row.PaymentLiveUSDCurrency
   },
   {
     name: 'PaymentLocalUSDCurrency',
     label: t('MSG_PAYMENT_LOCAL_USD_CURRENCY'),
     sortable: true,
-    field: (row: Order) => row.PaymentLocalUSDCurrency
+    field: (row: order.Order) => row.PaymentLocalUSDCurrency
   },
   {
     name: 'PaymentAmount',
     label: t('MSG_PAYMENT_AMOUNT'),
     sortable: true,
-    field: (row: Order) => row.PaymentAmount
+    field: (row: order.Order) => row.PaymentAmount
   },
   {
     name: 'Type',
     label: t('MSG_TYPE'),
     sortable: true,
-    field: (row: Order) => row.OrderType
+    field: (row: order.Order) => row.OrderType
   },
   {
     name: 'State',
     label: t('MSG_CONTENT'),
     sortable: true,
-    field: (row: Order) => row.State
+    field: (row: order.Order) => row.OrderState
   },
   {
     name: 'UserID',
     label: t('MSG_USER_ID'),
     sortable: true,
-    field: (row: Order) => row.UserID
+    field: (row: order.Order) => row.UserID
   },
   {
     name: 'EmailAddress',
     label: t('MSG_EMAIL_ADDRESS'),
     sortable: true,
-    field: (row: Order) => row.EmailAddress
+    field: (row: order.Order) => row.EmailAddress
   },
   {
     name: 'PhoneNO',
     label: t('MSG_PHONE_NO'),
     sortable: true,
-    field: (row: Order) => row.PhoneNO
+    field: (row: order.Order) => row.PhoneNO
   },
   {
     name: 'CreatedAt',
     label: t('MSG_CREATED_AT'),
     sortable: true,
-    field: (row: Order) => formatTime(row.CreatedAt)
+    field: (row: order.Order) => utils.formatTime(row.CreatedAt)
   },
   {
     name: 'PaidAt',
     label: t('MSG_PAID_AT'),
     sortable: true,
-    field: (row: Order) => formatTime(row.PaidAt)
+    field: (row: order.Order) => utils.formatTime(row.PaidAt)
   },
   {
     name: 'Start',
     label: t('MSG_START'),
     sortable: true,
-    field: (row: Order) => formatTime(row.Start)
+    field: (row: order.Order) => utils.formatTime(row.StartAt)
   },
   {
     name: 'End',
     label: t('MSG_END'),
     sortable: true,
-    field: (row: Order) => formatTime(row.End)
+    field: (row: order.Order) => utils.formatTime(row.EndAt)
   }
 ])
 </script>
