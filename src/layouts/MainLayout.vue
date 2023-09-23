@@ -17,6 +17,7 @@
 
 <script setup lang='ts'>
 import { defineAsyncComponent, onMounted, watch, computed } from 'vue'
+import 'src/api/app'
 import {
   useNotificationStore as useOldNotificationStore,
   notify as OldNotify,

@@ -6,7 +6,7 @@
     :rows='langs'
     row-key='ID'
     :rows-per-page-options='[100]'
-    @row-click='(evt, row, index) => onRowClick(row as AppLang)'
+    @row-click='(evt, row, index) => onRowClick(row as g11nbase.AppLang)'
   />
   <q-dialog
     v-model='showing'
@@ -35,19 +35,19 @@
 </template>
 
 <script setup lang='ts'>
-import { NotifyType, useAdminAppLangStore, AppLang } from 'npool-cli-v4'
+import { applang, notify, g11nbase } from 'src/npoolstore'
 import { computed, ref, defineAsyncComponent } from 'vue'
 
 const LoadingButton = defineAsyncComponent(() => import('src/components/button/LoadingButton.vue'))
 
-const lang = useAdminAppLangStore()
-const langs = computed(() => lang.AppLangs.AppLangs)
+const lang = applang.useAppLangStore()
+const langs = computed(() => lang.langs(undefined))
 
-const target = ref({} as AppLang)
+const target = ref({} as g11nbase.AppLang)
 const showing = ref(false)
 const updating = ref(false)
 
-const onRowClick = (row: AppLang) => {
+const onRowClick = (row: g11nbase.AppLang) => {
   showing.value = true
   updating.value = true
   target.value = { ...row }
@@ -55,7 +55,7 @@ const onRowClick = (row: AppLang) => {
 
 const onMenuHide = () => {
   showing.value = false
-  target.value = { Main: false } as AppLang
+  target.value = { Main: false } as g11nbase.AppLang
 }
 
 const onCancel = () => {
@@ -70,13 +70,13 @@ const onSubmit = (done: () => void) => {
         Title: 'MSG_UPDATE_APP_LANGUAGE',
         Message: 'MSG_UPDATE_APP_LANGUAGE_FAIL',
         Popup: true,
-        Type: NotifyType.Error
+        Type: notify.NotifyType.Error
       },
       Info: {
         Title: 'MSG_UPDATE_APP_LANGUAGE',
         Message: 'MSG_UPDATE_APP_LANGUAGE_SUCCESS',
         Popup: true,
-        Type: NotifyType.Success
+        Type: notify.NotifyType.Success
       }
     }
   }, (error: boolean) => {
