@@ -29,16 +29,18 @@
 </template>
 
 <script setup lang='ts'>
-import { NotifyType, TransferAccount, useAdminTransferAccountStore, useAdminUserStore, User } from 'npool-cli-v4'
+import { AppID } from 'src/const/const'
+import { transferaccount, user, notify } from 'src/npoolstore'
 import { computed, onMounted, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 // eslint-disable-next-line @typescript-eslint/unbound-method
 const { t } = useI18n({ useScope: 'global' })
 
-interface TFAccount extends TransferAccount {
+interface TFAccount extends transferaccount.TransferAccount {
   PhoneNO: string;
   EmailAddress: string;
 }
+
 const columns = computed(() => [
   {
     name: 'ID',
@@ -113,12 +115,17 @@ const columns = computed(() => [
     field: (row: TFAccount) => row.CreatedAt
   }
 ])
-const transferAccounts = useAdminTransferAccountStore()
+
+const _user = user.useUserStore()
+const users = computed(() => _user.appUsers(undefined))
+
+const transferAccount = transferaccount.useTransferAccountStore()
+const transferAccounts = computed(() => transferAccount.transferAccounts(undefined, undefined))
 
 const displayAccounts = computed(() => {
   const data = [] as Array<TFAccount>
-  transferAccounts.TransferAccounts.TransferAccounts.forEach((el) => {
-    const targetUser = user.getUserByID(el.UserID)
+  transferAccount.transferAccounts(undefined, undefined).forEach((el) => {
+    const targetUser = _user.appUser(el.AppID, el.UserID) as user.User
     data.push({ ...el, ...{ PhoneNO: targetUser?.PhoneNO, EmailAddress: targetUser?.EmailAddress } })
   })
   return data.filter((el) => el.EmailAddress?.includes(username.value) || el.PhoneNO?.includes(username.value))
@@ -126,19 +133,19 @@ const displayAccounts = computed(() => {
 const accountsLoading = ref(false)
 const username = ref('')
 
-const user = useAdminUserStore()
-
 onMounted(() => {
-  if (transferAccounts.TransferAccounts.TransferAccounts.length === 0) {
+  if (!transferAccounts.value?.length) {
     accountsLoading.value = true
     getAppTransfers(0, 500)
   }
-  if (user.Users.Users.length === 0) {
+  if (!users.value?.length) {
     getUsers(0, 500)
   }
 })
+
 const getAppTransfers = (offset: number, limit: number) => {
-  transferAccounts.getAppTransfers({
+  transferAccount.getAppTransfers({
+    TargetAppID: AppID,
     Offset: offset,
     Limit: limit,
     Message: {
@@ -146,11 +153,11 @@ const getAppTransfers = (offset: number, limit: number) => {
         Title: 'MSG_GET_USERS',
         Message: 'MSG_GET_USERS_FAIL',
         Popup: true,
-        Type: NotifyType.Error
+        Type: notify.NotifyType.Error
       }
     }
-  }, (resp: Array<TransferAccount>, error: boolean) => {
-    if (error || resp.length < limit) {
+  }, (error: boolean, rows?: Array<transferaccount.TransferAccount>) => {
+    if (error || !rows?.length) {
       accountsLoading.value = false
       return
     }
@@ -158,7 +165,7 @@ const getAppTransfers = (offset: number, limit: number) => {
   })
 }
 const getUsers = (offset: number, limit: number) => {
-  user.getUsers({
+  _user.getUsers({
     Offset: offset,
     Limit: limit,
     Message: {
@@ -166,11 +173,11 @@ const getUsers = (offset: number, limit: number) => {
         Title: 'MSG_GET_USERS',
         Message: 'MSG_GET_USERS_FAIL',
         Popup: true,
-        Type: NotifyType.Error
+        Type: notify.NotifyType.Error
       }
     }
-  }, (resp: Array<User>, error: boolean) => {
-    if (error || resp.length < limit) {
+  }, (error: boolean, rows?: Array<user.User>) => {
+    if (error || !rows?.length) {
       return
     }
     getUsers(offset + limit, limit)
