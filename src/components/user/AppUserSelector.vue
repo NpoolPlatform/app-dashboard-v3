@@ -21,7 +21,7 @@
   </q-select>
 </template>
 <script setup lang='ts'>
-import { useAdminUserStore } from 'npool-cli-v4'
+import { user } from 'src/npoolstore'
 import { getUsers } from 'src/api/user'
 import { computed, defineEmits, defineProps, toRef, ref, onMounted } from 'vue'
 
@@ -35,15 +35,15 @@ const id = toRef(props, 'id')
 const updating = toRef(props, 'updating')
 const target = ref(id.value)
 
-const user = useAdminUserStore()
-const users = computed(() => Array.from(user.Users.Users).map((el) => {
+const _user = user.useUserStore()
+const users = computed(() => Array.from(_user.appUsers(undefined)).map((el) => {
   return {
     value: el.ID,
     label: `${el.EmailAddress} | ${el.PhoneNO}`
   }
 }))
-const displayUsers = ref(users.value)
 
+const displayUsers = ref(users.value)
 const onFilter = (val: string, doneFn: (callbackFn: () => void) => void) => {
   doneFn(() => {
     displayUsers.value = users.value.filter((el) => {
