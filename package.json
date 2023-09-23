@@ -36,8 +36,6 @@
     "@types/uuid": "^9.0.4",
     "js-sha256": "^0.10.1",
     "vue-i18n": "^9.0.0",
-    "npool-cli-v2": "^0.2.307",
-    "npool-cli-v4": "^0.3.855",
     "vue-recaptcha-v3": "^2.0.1",
     "vue-router": "4.0.11"
   },
