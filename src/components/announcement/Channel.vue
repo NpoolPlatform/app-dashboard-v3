@@ -41,12 +41,12 @@
       </q-card-section>
       <q-card-section>
         <q-select
-          :options='NotifChannels'
+          :options='notifbase.NotifChannels'
           v-model='target.Channel'
           :label='$t("MSG_CHANNEL_TYPE")'
         />
         <q-select
-          :options='UsedFors'
+          :options='basetypes.EventTypes'
           v-model='target.EventType'
           :label='$t("MSG_USED_FOR")'
         />
@@ -63,14 +63,7 @@
 </template>
 
 <script setup lang='ts'>
-import {
-  formatTime,
-  NotifyType,
-  useAdminNotifChannelStore,
-  TNotifChannel as NotifChannel,
-  UsedFors,
-  NotifChannels
-} from 'npool-cli-v4'
+import { utils, notify, notifbase, notifchannel, basetypes } from 'src/npoolstore'
 import { computed, defineAsyncComponent, onMounted, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 
@@ -79,13 +72,13 @@ const { t } = useI18n({ useScope: 'global' })
 
 const LoadingButton = defineAsyncComponent(() => import('src/components/button/LoadingButton.vue'))
 
-const channel = useAdminNotifChannelStore()
+const channel = notifchannel.useNotifChannelStore()
 const channels = computed(() => {
-  const rows = channel.NotifChannels.NotifChannels
+  const rows = channel.channels(undefined)
   return rows.sort((a, b) => a.EventType.localeCompare(b.EventType, 'zh-CN'))
 })
 
-const target = ref({} as NotifChannel)
+const target = ref({} as notifchannel.TNotifChannel)
 
 const showing = ref(false)
 const updating = ref(false)
@@ -96,7 +89,7 @@ const onCreate = () => {
 }
 
 const onMenuHide = () => {
-  target.value = {} as NotifChannel
+  target.value = {} as notifchannel.TNotifChannel
   showing.value = false
 }
 
@@ -119,10 +112,10 @@ const getAppNotifChannels = (offset: number, limit: number) => {
         Title: t('MSG_GET_CHANNELS'),
         Message: t('MSG_GET_CHANNELS_FAIL'),
         Popup: true,
-        Type: NotifyType.Error
+        Type: notify.NotifyType.Error
       }
     }
-  }, (error: boolean, rows: Array<NotifChannel>) => {
+  }, (error: boolean, rows: Array<notifchannel.TNotifChannel>) => {
     if (error || rows.length < limit) {
       return
     }
@@ -142,13 +135,13 @@ const createNotifChannel = (done: () => void) => {
         Title: 'MSG_CREATE_CHANNEL',
         Message: 'MSG_CREATE_CHANNEL_FAIL',
         Popup: true,
-        Type: NotifyType.Error
+        Type: notify.NotifyType.Error
       },
       Info: {
         Title: 'MSG_CREATE_CHANNEL',
         Message: 'MSG_CREATE_CHANNEL_SUCCESS',
         Popup: true,
-        Type: NotifyType.Success
+        Type: notify.NotifyType.Success
       }
     }
   }, (error: boolean) => {
@@ -160,8 +153,8 @@ const createNotifChannel = (done: () => void) => {
   })
 }
 
-const selectedNotifChannels = ref([] as Array<NotifChannel>)
-const onDelete = (row: NotifChannel) => {
+const selectedNotifChannels = ref([] as Array<notifchannel.TNotifChannel>)
+const onDelete = (row: notifchannel.TNotifChannel) => {
   channel.deleteNotifChannel({
     ID: row.ID,
     Message: {
@@ -169,13 +162,13 @@ const onDelete = (row: NotifChannel) => {
         Title: 'MSG_DELETE_CHANNEL',
         Message: 'MSG_DELETE_CHANNEL_FAIL',
         Popup: true,
-        Type: NotifyType.Error
+        Type: notify.NotifyType.Error
       },
       Info: {
         Title: 'MSG_DELETE_CHANNEL',
         Message: 'MSG_DELETE_CHANNEL_SUCCESS',
         Popup: true,
-        Type: NotifyType.Success
+        Type: notify.NotifyType.Success
       }
     }
   }, () => {
@@ -188,31 +181,31 @@ const columns = computed(() => [
     name: 'ID',
     label: t('MSG_ID'),
     sortable: true,
-    field: (row: NotifChannel) => row.ID
+    field: (row: notifchannel.TNotifChannel) => row.ID
   },
   {
     name: 'AppID',
     label: t('MSG_APP_ID'),
     sortable: true,
-    field: (row: NotifChannel) => row.AppID
+    field: (row: notifchannel.TNotifChannel) => row.AppID
   },
   {
     name: 'EventType',
     label: t('MSG_EVENT_TYPE'),
     sortable: true,
-    field: (row: NotifChannel) => row.EventType
+    field: (row: notifchannel.TNotifChannel) => row.EventType
   },
   {
     name: 'Channel',
     label: t('MSG_CHANNEL'),
     sortable: true,
-    field: (row: NotifChannel) => row.Channel
+    field: (row: notifchannel.TNotifChannel) => row.Channel
   },
   {
     name: 'CreatedAt',
     label: t('MSG_CREATED_AT'),
     sortable: true,
-    field: (row: NotifChannel) => formatTime(row.CreatedAt)
+    field: (row: notifchannel.TNotifChannel) => utils.formatTime(row.CreatedAt)
   }
 ])
 </script>

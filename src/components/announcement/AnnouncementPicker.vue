@@ -21,7 +21,7 @@
   </q-select>
 </template>
 <script setup lang='ts'>
-import { useAdminAnnouncementStore, Announcement } from 'npool-cli-v4'
+import { announcement } from 'src/npoolstore'
 import { computed, defineEmits, defineProps, toRef, ref, onMounted } from 'vue'
 
 interface Props {
@@ -34,8 +34,8 @@ const id = toRef(props, 'id')
 const updating = toRef(props, 'updating')
 const target = ref(id.value)
 
-const announcement = useAdminAnnouncementStore()
-const announcements = computed(() => Array.from(announcement.Announcements.Announcements).map((el) => {
+const _announcement = announcement.useAnnouncementStore()
+const announcements = computed(() => Array.from(_announcement.announcements(undefined)).map((el) => {
   return {
     value: el.ID,
     label: `${el.ID} | ${el.Title} | ${el.AnnouncementType}`
@@ -64,13 +64,13 @@ onMounted(() => {
 })
 
 const getAppAnnouncements = (offset: number, limit: number) => {
-  announcement.getAppAnnouncements({
+  _announcement.getAppAnnouncements({
     Offset: offset,
     Limit: limit,
     Message: {
     }
-  }, (error: boolean, rows: Array<Announcement>) => {
-    if (error || rows.length < limit) {
+  }, (error: boolean, rows: Array<announcement.Announcement>) => {
+    if (error || !rows.length) {
       return
     }
     getAppAnnouncements(offset + limit, limit)
