@@ -6,7 +6,7 @@
     row-key='ID'
     :title='$t("MSG_COIN_DESCRIPTIONS")'
     :rows-per-page-options='[100]'
-    @row-click='(evt, row, index) => onRowClick(row as CoinDescription)'
+    @row-click='(evt, row, index) => onRowClick(row as appcoindescription.CoinDescription)'
   >
     <template #top-right>
       <div class='row indent flat'>
@@ -37,7 +37,7 @@
         <q-input v-model='target.Message' :label='$t("MSG_MESSAGE")' type='textarea' />
       </q-card-section>
       <q-card-section>
-        <q-select dense :options='CoinDescriptionUsedFors' v-model='target.UsedFor' :label='$t("MSG_USED_FOR")' />
+        <q-select dense :options='appcoindescription.CoinDescriptionUsedFors' v-model='target.UsedFor' :label='$t("MSG_USED_FOR")' />
       </q-card-section>
       <q-item class='row'>
         <LoadingButton loading :label='$t("MSG_SUBMIT")' @click='onSubmit' />
@@ -51,19 +51,19 @@
 </template>
 
 <script setup lang='ts'>
-import { useAdminCoinDescriptionStore, CoinDescription, NotifyType, CoinDescriptionUsedFors } from 'npool-cli-v4'
+import { appcoindescription, notify } from 'src/npoolstore'
 import { getCoinDescriptions } from 'src/api/coin'
 import { computed, onMounted, ref, defineAsyncComponent } from 'vue'
 
 const CoinPicker = defineAsyncComponent(() => import('src/components/coin/CoinPicker.vue'))
 const LoadingButton = defineAsyncComponent(() => import('src/components/button/LoadingButton.vue'))
 
-const description = useAdminCoinDescriptionStore()
-const descriptions = computed(() => description.CoinDescriptions.CoinDescriptions)
+const description = appcoindescription.useCoinDescriptionStore()
+const descriptions = computed(() => description.descriptions())
 
 const showing = ref(false)
 const updating = ref(false)
-const target = ref({} as CoinDescription)
+const target = ref({} as appcoindescription.CoinDescription)
 
 const onCreate = () => {
   showing.value = true
@@ -74,7 +74,7 @@ const onCancel = () => {
   onMenuHide()
 }
 
-const onRowClick = (row: CoinDescription) => {
+const onRowClick = (row: appcoindescription.CoinDescription) => {
   target.value = { ...row }
   showing.value = true
   updating.value = true
@@ -82,7 +82,7 @@ const onRowClick = (row: CoinDescription) => {
 
 const onMenuHide = () => {
   showing.value = false
-  target.value = {} as CoinDescription
+  target.value = {} as appcoindescription.CoinDescription
 }
 
 const onSubmit = (done: () => void) => {
@@ -107,7 +107,7 @@ const updateCoinDescription = (done: () => void) => {
         Title: 'MSG_UPDATE_DESCRIPTION',
         Message: 'MSG_UPDATE_DESCRIPTION_FAIL',
         Popup: true,
-        Type: NotifyType.Error
+        Type: notify.NotifyType.Error
       }
     }
   }, (error: boolean) => {
@@ -127,7 +127,7 @@ const createCoinDescription = (done: () => void) => {
         Title: 'MSG_CREATE_DESCRIPTION',
         Message: 'MSG_CREATE_DESCRIPTION_FAIL',
         Popup: true,
-        Type: NotifyType.Error
+        Type: notify.NotifyType.Error
       }
     }
   }, (error: boolean) => {
@@ -144,7 +144,7 @@ onMounted(() => {
 })
 
 const prepare = () => {
-  if (descriptions.value.length === 0) {
+  if (descriptions.value?.length === 0) {
     getCoinDescriptions(0, 500)
   }
 }
