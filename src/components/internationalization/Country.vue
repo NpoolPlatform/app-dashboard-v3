@@ -20,11 +20,11 @@
 
 <script setup lang='ts'>
 import { getCountries } from 'src/api/g11n'
-import { useAdminAppCountryStore } from 'npool-cli-v4'
+import { appcountry } from 'src/npoolstore'
 import { computed, onMounted, ref } from 'vue'
 
-const country = useAdminAppCountryStore()
-const countries = computed(() => country.AppCountries.AppCountries)
+const country = appcountry.useAppCountryStore()
+const countries = computed(() => country.countries())
 
 const countryName = ref('')
 const displayCountries = computed(() => countries.value.filter((el) => el.Country?.toLowerCase().includes(countryName.value?.toLowerCase())))
