@@ -112,7 +112,7 @@ const columns = computed(() => [
 
 const _allocatedCoupon = allocatedCoupon.useAllocatedCouponStore()
 const _coupon = coupon.useCouponStore()
-const coupons = computed(() => _coupon.Coupons.filter((el) => el.CouponType !== coupon.CouponType.SpecialOffer).map((el) => {
+const coupons = computed(() => _coupon.coupons(undefined).filter((el) => el.CouponType !== coupon.CouponType.SpecialOffer).map((el) => {
   return {
     label: el.Name + ' | ' + el.Denomination + ' | ' + el.CouponType,
     value: el

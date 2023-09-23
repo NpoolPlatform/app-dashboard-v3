@@ -82,8 +82,8 @@
         <span>{{ $t('MSG_CLONE_COMMISSION_SETTING') }}</span>
       </q-card-section>
       <q-card-section>
-        <AppGoodSelector v-model:id='cloneCommission.FromGoodID' :label='$t("MSG_FROM_GOOD")' />
-        <AppGoodSelector v-model:id='cloneCommission.ToGoodID' :label='$t("MSG_TO_GOOD")' />
+        <AppGoodSelector v-model:id='cloneCommission.FromAppGoodID' :label='$t("MSG_FROM_GOOD")' />
+        <AppGoodSelector v-model:id='cloneCommission.ToAppGoodID' :label='$t("MSG_TO_GOOD")' />
         <q-input type='number' v-model='cloneCommission.ScalePercent' :label='$t("MSG_SCALE")' suffix='%' />
       </q-card-section>
       <q-item class='row'>
@@ -133,7 +133,7 @@ const AppGoodSelector = defineAsyncComponent(() => import('src/components/good/A
 const AppUserSelector = defineAsyncComponent(() => import('src/components/user/AppUserSelector.vue'))
 
 const _commission = commission.useCommissionStore()
-const commissions = computed(() => _commission.Commissions)
+const commissions = computed(() => _commission.commissions())
 
 const username = ref('')
 const displayCommissions = computed(() => commissions.value.filter((el) => {
@@ -198,7 +198,7 @@ const createUserCommission = (done: () => void) => {
   _commission.createUserCommission({
     TargetUserID: target.value.UserID,
     StartAt: target.value.StartAt,
-    GoodID: target.value.GoodID,
+    AppGoodID: target.value.AppGoodID,
     AmountOrPercent: `${target.value.AmountOrPercent}`,
     SettleType: target.value.SettleType,
     SettleAmountType: target.value.SettleAmountType,
@@ -228,8 +228,8 @@ const createUserCommission = (done: () => void) => {
   })
 }
 interface CloneCommission {
-  FromGoodID: string;
-  ToGoodID: string;
+  FromAppGoodID: string;
+  ToAppGoodID: string;
   Value: string;
   ScalePercent: string;
 }
@@ -321,7 +321,7 @@ const onSubmit2 = (done: () => void) => {
 }
 
 onMounted(() => {
-  if (_commission.Commissions.length === 0) {
+  if (_commission.commissions(undefined).length === 0) {
     getAppCommissions(0, 100)
   }
 })
