@@ -30,8 +30,8 @@ const getAppOpLogs = (offset: number, limit: number) => {
     Offset: offset,
     Limit: limit,
     Message: {}
-  }, (error: boolean, rows: Array<oplog.OpLog>) => {
-    if (error || rows.length === 0) {
+  }, (error: boolean, rows?: Array<oplog.OpLog>) => {
+    if (error || !rows?.length) {
       return
     }
     getAppOpLogs(offset + limit, limit)
