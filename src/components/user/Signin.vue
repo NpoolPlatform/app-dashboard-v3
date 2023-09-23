@@ -65,47 +65,31 @@
 
 <script setup lang='ts'>
 import { defineAsyncComponent, ref } from 'vue'
-import {
-  useFrontendUserStore,
-  AccountType,
-  NotifyType,
-  useFrontendAppStore,
-  useLocalUserStore,
-  User,
-  useFrontendVerifyStore,
-  UsedFor,
-  encryptPassword,
-  GoogleTokenType,
-  validateVerificationCode,
-  useAdminAppCoinStore
-} from 'npool-cli-v4'
+import { user, notify, app, basetypes, utils, appcoin, notifverify, coderepo, appuserbase, constant } from 'src/npoolstore'
 import { useRouter } from 'vue-router'
 import { useReCaptcha } from 'vue-recaptcha-v3'
-import { AppID } from 'src/const/const'
-import { useI18n } from 'vue-i18n'
 import { computed } from '@vue/reactivity'
 import { getCoins } from 'src/api/coin'
-// eslint-disable-next-line @typescript-eslint/unbound-method
-const { t } = useI18n({ useScope: 'global' })
 
 const TimeoutSendBtn = defineAsyncComponent(() => import('src/components/button/TimeoutSendBtn.vue'))
 
 const account = ref('')
 const password = ref('')
 
-const user = useFrontendUserStore()
-const coderepo = useFrontendVerifyStore()
+const _user = user.useUserStore()
+const _coderepo = coderepo.useCodeRepoStore()
+const _notifverify = notifverify.useVerifyStore()
 const recaptcha = useReCaptcha()
 
 const router = useRouter()
-const app = useFrontendAppStore()
+const _app = app.useApplicationStore()
 
-const validVerifyCode = computed(() => validateVerificationCode(verifyCode.value))
+const validVerifyCode = computed(() => utils.validateVerificationCode(verifyCode.value))
 const signin = (token: string) => {
-  user.login({
+  _user.login({
     Account: account.value,
-    PasswordHash: encryptPassword(password.value),
-    AccountType: AccountType.Email,
+    PasswordHash: utils.encryptPassword(password.value),
+    AccountType: appuserbase.SignMethodType.Email,
     ManMachineSpec: token,
     EnvironmentSpec: 'NOT-USED',
     Message: {
@@ -113,10 +97,10 @@ const signin = (token: string) => {
         Title: 'MSG_SINGIN',
         Message: 'MSG_SIGNIN_FAIL',
         Popup: true,
-        Type: NotifyType.Error
+        Type: notify.NotifyType.Error
       }
     }
-  }, (u: User, error: boolean) => {
+  }, (error: boolean) => {
     if (error) {
       return
     }
@@ -124,13 +108,12 @@ const signin = (token: string) => {
   })
 }
 const verify = () => {
-  app.getApp({
-    AppID: AppID,
+  _app.getApp({
     Message: {
       Error: {
-        Title: t('MSG_GET_APP_FAIL'),
+        Title: 'MSG_GET_APP_FAIL',
         Popup: true,
-        Type: NotifyType.Error
+        Type: notify.NotifyType.Error
       }
     }
   }, () => {
@@ -138,7 +121,7 @@ const verify = () => {
   })
 }
 const _verify = () => {
-  if (!app.App.SigninVerifyEnable) {
+  if (!_app.app(undefined)?.SigninVerifyEnable) {
     void router.push({ path: '/' })
     return
   }
@@ -146,15 +129,15 @@ const _verify = () => {
   onSendCodeClick()
 }
 const getRecaptcha = () => {
-  coderepo.getGoogleToken({
+  _coderepo.getGoogleToken({
     Recaptcha: recaptcha,
-    Req: GoogleTokenType.Login,
+    Req: constant.GoogleTokenType.Login,
     Message: {
       Error: {
         Title: 'MSG_GET_GOOGLE_TOKEN',
         Message: 'MSG_GET_GOOGLE_TOKEN_FAIL',
         Popup: true,
-        Type: NotifyType.Error
+        Type: notify.NotifyType.Error
       }
     }
   }, (token: string) => {
@@ -170,35 +153,40 @@ const showVerifyDialog = ref(false)
 const verifyCode = ref('')
 
 const onSendCodeClick = () => {
-  coderepo.sendVerificationCode(account.value, AccountType.Email, UsedFor.Signin, account.value)
+  _notifverify.sendVerificationCode(
+    account.value,
+    appuserbase.SignMethodType.Email as unknown as appuserbase.SigninVerifyType,
+    basetypes.EventType.Signin,
+    account.value
+  )
 }
 
-const logined = useLocalUserStore()
+const logined = user.useLocalUserStore()
 
-const coin = useAdminAppCoinStore()
+const coin = appcoin.useAppCoinStore()
 const onVerifyClick = () => {
-  user.loginVerify({
+  _user.loginVerify({
     Account: account.value,
-    AccountType: AccountType.Email,
+    AccountType: appuserbase.SignMethodType.Email,
     UserID: logined.User?.ID,
     Token: logined.User?.LoginToken,
     VerificationCode: verifyCode.value,
     Message: {
       Error: {
-        Title: t('MSG_LOGIN_VERIFY'),
-        Message: t('MSG_LOGIN_VERIFY_FAIL'),
+        Title: 'MSG_LOGIN_VERIFY',
+        Message: 'MSG_LOGIN_VERIFY_FAIL',
         Popup: true,
-        Type: NotifyType.Error
+        Type: notify.NotifyType.Error
       }
     }
-  }, (u: User, error: boolean) => {
+  }, (error: boolean) => {
     if (error) {
       console.log('error: ')
       return
     }
     showVerifyDialog.value = false
     void router.push({ path: '/' })
-    if (coin.AppCoins.AppCoins.length === 0) { getCoins(0, 500) }
+    if (!coin.coins(undefined).length) { getCoins(0, 500) }
   })
 }
 </script>

@@ -8,7 +8,7 @@
     :loading='userLoading'
     :rows-per-page-options='[100]'
     :columns='columns'
-    @row-click='(evt, row, index) => onRowClick(row as User)'
+    @row-click='(evt, row, index) => onRowClick(row as user.User)'
   >
     <template #top-right>
       <q-input
@@ -65,10 +65,10 @@
 
 <script setup lang='ts'>
 import saveAs from 'file-saver'
-import { NotifyType, useAdminUserStore, User, formatTime, useFrontendAppStore } from 'npool-cli-v4'
-import { AppID } from 'src/const/const'
+import { notify, user, utils, app } from 'src/npoolstore'
 import { computed, defineAsyncComponent, onMounted, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
+
 // eslint-disable-next-line @typescript-eslint/unbound-method
 const { t } = useI18n({ useScope: 'global' })
 const LoadingButton = defineAsyncComponent(() => import('src/components/button/LoadingButton.vue'))
@@ -78,59 +78,60 @@ const columns = computed(() => [
     name: 'AppID',
     label: t('MSG_APP_ID'),
     sortable: true,
-    field: (row: User) => row.AppID
+    field: (row: user.User) => row.AppID
   },
   {
     name: 'UserID',
     label: t('MSG_USER_ID'),
     sortable: true,
-    field: (row: User) => row.ID
+    field: (row: user.User) => row.ID
   },
   {
     name: 'EmailAddress',
     label: t('MSG_EMAIL_ADDRESS'),
     sortable: true,
-    field: (row: User) => row.EmailAddress
+    field: (row: user.User) => row.EmailAddress
   },
   {
     name: 'PhoneNO',
     label: t('MSG_PHONE_NO'),
     sortable: true,
-    field: (row: User) => row.PhoneNO
+    field: (row: user.User) => row.PhoneNO
   },
   {
     name: 'InvitationCode',
     label: t('MSG_INVITATION_CODE'),
     sortable: true,
-    field: (row: User) => row.InvitationCode
+    field: (row: user.User) => row.InvitationCode
   },
   {
     name: 'KOL',
     label: t('MSG_KOL'),
     sortable: true,
-    field: (row: User) => row.Kol
+    field: (row: user.User) => row.Kol
   },
   {
     name: 'Roles',
     label: t('MSG_ROLES'),
     sortable: true,
-    field: (row: User) => row.Roles?.join(',')
+    field: (row: user.User) => row.Roles?.join(',')
   },
   {
     name: 'IDNUMBER',
     label: t('MSG_IDNUMBER'),
     sortable: true,
-    field: (row: User) => row.IDNumber
+    field: (row: user.User) => row.IDNumber
   },
   {
     name: 'CreatedAt',
     label: t('MSG_CREATEDAT'),
     sortable: true,
-    field: (row: User) => formatTime(row.CreatedAt)
+    field: (row: user.User) => utils.formatTime(row.CreatedAt)
   }
 ])
-const user = useAdminUserStore()
-const users = computed(() => user.Users.Users.filter((el) => {
+
+const _user = user.useUserStore()
+const users = computed(() => _user.appUsers(undefined).filter((el) => {
   let display = true
   if (start.value.length) {
     display = display && (el.CreatedAt >= new Date(start.value).getTime() / 1000)
@@ -149,11 +150,11 @@ const displayUsers = computed(() => users.value.filter((user) => {
   return display
 }))
 
-const target = ref({} as User)
+const target = ref({} as user.User)
 const showing = ref(false)
 const updating = ref(false)
 
-const onRowClick = (row: User) => {
+const onRowClick = (row: user.User) => {
   target.value = { ...row }
   showing.value = true
   updating.value = true
@@ -165,25 +166,25 @@ const onCancel = () => {
 
 const onMenuHide = () => {
   showing.value = false
-  target.value = {} as User
+  target.value = {} as user.User
 }
-const _user = useAdminUserStore()
+
 const onSubmit = (done: () => void) => {
   _user.updateAppUser({
     TargetUserID: target.value?.ID,
     EmailAddress: target.value?.EmailAddress,
     Message: {
       Error: {
-        Title: t('MSG_CREATE_INVITATION_CODE'),
-        Message: t('MSG_CREATE_INVITATION_CODE_FAIL'),
+        Title: 'MSG_CREATE_INVITATION_CODE',
+        Message: 'MSG_CREATE_INVITATION_CODE_FAIL',
         Popup: true,
-        Type: NotifyType.Error
+        Type: notify.NotifyType.Error
       },
       Info: {
-        Title: t('MSG_CREATE_INVITATION_CODE'),
-        Message: t('MSG_CREATE_INVITATION_CODE_FAIL'),
+        Title: 'MSG_CREATE_INVITATION_CODE',
+        Message: 'MSG_CREATE_INVITATION_CODE_FAIL',
         Popup: true,
-        Type: NotifyType.Success
+        Type: notify.NotifyType.Success
       }
     }
   }, (error: boolean) => {
@@ -209,26 +210,26 @@ const onExport = () => {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { CreatedAt, AddressFields, AddressFieldsString, KycStateStr, Roles, InvitationCode, InvitationCodeConfirmed, InvitationCodeID, LoginVerified, ...values } = { ...el }
     const valueArray = Object.values(values)
-    valueArray.push(AddressFieldsString.split(',').join(';'), Roles.join(';'), InvitationCode, InvitationCodeConfirmed, formatTime(CreatedAt))
+    valueArray.push(AddressFieldsString.split(',').join(';'), Roles.join(';'), InvitationCode, InvitationCodeConfirmed, utils.formatTime(CreatedAt))
     str += valueArray.join(',') + '\n'
   })
   const blob = new Blob([str], { type: 'text/plain;charset=utf-8' })
-  const filename = app.App.Name + '-Users-' + formatTime(new Date().getTime() / 1000) + '.csv'
+  const filename = _app.app(undefined)?.Name as string + '-Users-' + utils.formatTime(new Date().getTime() / 1000) + '.csv'
   saveAs(blob, filename)
 }
 
 const userLoading = ref(false)
 onMounted(() => {
-  if (user.Users.Users.length === 0) {
+  if (!_user.appUsers(undefined).length) {
     userLoading.value = true
     getUsers(0, 500)
   }
-  if (app.App === undefined) {
+  if (!_app.app(undefined)) {
     getApplication()
   }
 })
 const getUsers = (offset: number, limit: number) => {
-  user.getUsers({
+  _user.getUsers({
     Offset: offset,
     Limit: limit,
     Message: {
@@ -236,11 +237,11 @@ const getUsers = (offset: number, limit: number) => {
         Title: 'MSG_GET_USERS',
         Message: 'MSG_GET_USERS_FAIL',
         Popup: true,
-        Type: NotifyType.Error
+        Type: notify.NotifyType.Error
       }
     }
-  }, (resp: Array<User>, error: boolean) => {
-    if (error || resp.length < limit) {
+  }, (error: boolean, rows?: Array<user.User>) => {
+    if (error || !rows?.length) {
       userLoading.value = false
       return
     }
@@ -248,16 +249,15 @@ const getUsers = (offset: number, limit: number) => {
   })
 }
 
-const app = useFrontendAppStore()
+const _app = app.useApplicationStore()
 const getApplication = () => {
-  app.getApp({
-    AppID: AppID,
+  _app.getApp({
     Message: {
       Error: {
         Title: 'MSG_GET_APP',
         Message: 'MSG_GET_APP_FAIL',
         Popup: true,
-        Type: NotifyType.Error
+        Type: notify.NotifyType.Error
       }
     }
   }, () => {
