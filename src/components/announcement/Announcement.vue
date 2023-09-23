@@ -50,7 +50,7 @@
         />
         <AppLanguagePicker v-model:id='target.LangID' :updating='updating' label='MSG_LANGUAGE' />
         <q-select
-          :options='notifbase.NotifTypes'
+          :options='notifbase.NotifChannels'
           v-model='target.Channel'
           :label='$t("MSG_CHANNEL")'
           :disable='updating'
