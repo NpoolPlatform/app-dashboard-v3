@@ -51,7 +51,7 @@
         <span>{{ updating ? $t('MSG_UPDATE_COMMISSION_SETTING') : $t('MSG_CREATE_COMMISSION_SETTING') }}</span>
       </q-card-section>
       <q-card-section v-if='!updating'>
-        <AppGoodSelector v-model:id='target.GoodID' :label='$t("MSG_GOOD")' />
+        <AppGoodSelector v-model:id='target.AppGoodID' :label='$t("MSG_GOOD")' />
         <AppUserSelector v-model:id='target.UserID' />
         <q-select :options='commission.SettleTypes' v-model='target.SettleType' :label='$t("MSG_COMMISSION_SETTLE_TYPE")' />
         <q-select :options='commission.SettleAmountTypes' v-model='target.SettleAmountType' :label='$t("MSG_COMMISSION_SETTLE_AMOUNT_TYPE")' />
