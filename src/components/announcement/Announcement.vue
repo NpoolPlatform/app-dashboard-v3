@@ -127,7 +127,7 @@ const getAppAnnouncements = (offset: number, limit: number) => {
       }
     }
   }, (error: boolean, rows: Array<announcement.Announcement>) => {
-    if (error || rows.length < limit) {
+    if (error || !rows.length) {
       return
     }
     getAppAnnouncements(offset + limit, limit)

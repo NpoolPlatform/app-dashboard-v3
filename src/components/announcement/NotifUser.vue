@@ -47,7 +47,7 @@
       </q-card-section>
       <q-card-section>
         <q-select
-          :options='UsedFors'
+          :options='basetypes.EventTypes'
           v-model='target.EventType'
           :label='$t("MSG_USED_FOR")'
         />
@@ -65,14 +65,7 @@
 </template>
 
 <script setup lang='ts'>
-import {
-  formatTime,
-  NotifyType,
-  useAdminNotifUserStore,
-  UsedFors,
-  NotifUser
-} from 'npool-cli-v4'
-import { AppID } from 'src/const/const'
+import { utils, notifuser, notify, basetypes } from 'src/npoolstore'
 import { computed, defineAsyncComponent, onMounted, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 
@@ -82,8 +75,8 @@ const { t } = useI18n({ useScope: 'global' })
 const LoadingButton = defineAsyncComponent(() => import('src/components/button/LoadingButton.vue'))
 const AppUsersSelector = defineAsyncComponent(() => import('src/components/user/AppUsersSelector.vue'))
 
-const notifUser = useAdminNotifUserStore()
-const notifUsers = computed(() => notifUser.NotifUsers.NotifUsers)
+const notifUser = notifuser.useNotifUserStore()
+const notifUsers = computed(() => notifUser.users(undefined, undefined))
 
 const username = ref('')
 const displayNotifUsers = computed(() => notifUsers.value?.filter((el) => el.EmailAddress.toLocaleLowerCase()?.includes(username.value?.toLowerCase()) ||
@@ -91,7 +84,7 @@ const displayNotifUsers = computed(() => notifUsers.value?.filter((el) => el.Ema
     el.UserID.toLocaleLowerCase()?.includes(username.value?.toLowerCase())
 ))
 
-const target = ref({} as NotifUser)
+const target = ref({} as notifuser.User)
 
 const showing = ref(false)
 const updating = ref(false)
@@ -102,7 +95,7 @@ const onCreate = () => {
 }
 
 const onMenuHide = () => {
-  target.value = {} as NotifUser
+  target.value = {} as notifuser.User
   showing.value = false
 }
 
@@ -125,10 +118,10 @@ const getAppNotifUsers = (offset: number, limit: number) => {
         Title: t('MSG_GET_ANNOUNCEMENTS'),
         Message: t('MSG_GET_ANNOUNCEMENTS_FAIL'),
         Popup: true,
-        Type: NotifyType.Error
+        Type: notify.NotifyType.Error
       }
     }
-  }, (error: boolean, rows: Array<NotifUser>) => {
+  }, (error: boolean, rows: Array<notifuser.User>) => {
     if (error || rows.length < limit) {
       return
     }
@@ -141,7 +134,7 @@ const onSubmit = (done: () => void) => {
 }
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-const onRowClick = (row: NotifUser) => {
+const onRowClick = (row: notifuser.User) => {
   target.value = { ...row }
   updating.value = true
   showing.value = true
@@ -149,7 +142,6 @@ const onRowClick = (row: NotifUser) => {
 
 const createNotifUser = (done: () => void) => {
   notifUser.createNotifUser({
-    AppID: AppID,
     TargetUserID: target.value.UserID,
     EventType: target.value.EventType,
     Message: {
@@ -157,13 +149,13 @@ const createNotifUser = (done: () => void) => {
         Title: 'MSG_CREATE_NOTIF_USERS',
         Message: 'MSG_CREATE_NOTIF_USERS_FAIL',
         Popup: true,
-        Type: NotifyType.Error
+        Type: notify.NotifyType.Error
       },
       Info: {
         Title: 'MSG_CREATE_NOTIF_USERS',
         Message: 'MSG_CREATE_NOTIF_USERS_SUCCESS',
         Popup: true,
-        Type: NotifyType.Success
+        Type: notify.NotifyType.Success
       }
     }
   }, (error: boolean) => {
@@ -175,23 +167,22 @@ const createNotifUser = (done: () => void) => {
   })
 }
 
-const selectedNotifUsers = ref([] as Array<NotifUser>)
-const onDelete = (row: NotifUser) => {
+const selectedNotifUsers = ref([] as Array<notifuser.User>)
+const onDelete = (row: notifuser.User) => {
   notifUser.deleteNotifUser({
     ID: row.ID,
-    AppID: AppID,
     Message: {
       Error: {
         Title: 'MSG_DELETE_ANNOUNCEMENT',
         Message: 'MSG_DELETE_ANNOUNCEMENT_FAIL',
         Popup: true,
-        Type: NotifyType.Error
+        Type: notify.NotifyType.Error
       },
       Info: {
         Title: 'MSG_DELETE_ANNOUNCEMENT',
         Message: 'MSG_DELETE_ANNOUNCEMENT_SUCCESS',
         Popup: true,
-        Type: NotifyType.Success
+        Type: notify.NotifyType.Success
       }
     }
   }, () => {
@@ -204,61 +195,61 @@ const columns = computed(() => [
     name: 'ID',
     label: t('MSG_ID'),
     sortable: true,
-    field: (row: NotifUser) => row.ID
+    field: (row: notifuser.User) => row.ID
   },
   {
     name: 'AppID',
     label: t('MSG_APP_ID'),
     sortable: true,
-    field: (row: NotifUser) => row.AppID
+    field: (row: notifuser.User) => row.AppID
   },
   {
     name: 'EventType',
     label: t('MSG_EVENT_TYPE'),
     sortable: true,
-    field: (row: NotifUser) => row.EventType
+    field: (row: notifuser.User) => row.EventType
   },
   {
     name: 'NotifType',
     label: t('MSG_ANNOUNCEMENT_TYPE'),
     sortable: true,
-    field: (row: NotifUser) => row.NotifType
+    field: (row: notifuser.User) => row.NotifType
   },
   {
     name: 'UserID',
     label: t('USER_ID'),
     sortable: true,
-    field: (row: NotifUser) => row.UserID
+    field: (row: notifuser.User) => row.UserID
   },
   {
     name: 'EmailAddress',
     label: t('EMAIL_ADDRESS'),
     sortable: true,
-    field: (row: NotifUser) => row.EmailAddress
+    field: (row: notifuser.User) => row.EmailAddress
   },
   {
     name: 'Username',
     label: t('USERNAME'),
     sortable: true,
-    field: (row: NotifUser) => row.Username
+    field: (row: notifuser.User) => row.Username
   },
   {
     name: 'PhoneNO',
     label: t('PHONE_NO'),
     sortable: true,
-    field: (row: NotifUser) => row.PhoneNO
+    field: (row: notifuser.User) => row.PhoneNO
   },
   {
     name: 'CreatedAt',
     label: t('MSG_CREATED_AT'),
     sortable: true,
-    field: (row: NotifUser) => formatTime(row.CreatedAt)
+    field: (row: notifuser.User) => utils.formatTime(row.CreatedAt)
   },
   {
     name: 'UpdatedAt',
     label: t('MSG_UPDATED_AT'),
     sortable: true,
-    field: (row: NotifUser) => formatTime(row.UpdatedAt)
+    field: (row: notifuser.User) => utils.formatTime(row.UpdatedAt)
   }
 ])
 </script>

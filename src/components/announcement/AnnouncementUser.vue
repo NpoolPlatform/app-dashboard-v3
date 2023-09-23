@@ -47,7 +47,7 @@
       </q-card-section>
       <q-card-section>
         <AnnouncementPicker v-model:id='target.AnnouncementID' label='MSG_ANNOUNCEMENT' />
-        <AppUsersSelector v-if='targetAnnouncement?.AnnouncementType === NotifType.Multicast' v-model:id='target.UserID' label='MSG_USER' />
+        <AppUsersSelector v-if='targetAnnouncement?.AnnouncementType === notifbase.NotifType.Multicast' v-model:id='target.UserID' label='MSG_USER' />
       </q-card-section>
       <q-item class='row'>
         <LoadingButton loading :label='$t("MSG_SUBMIT")' @click='onSubmit' />
@@ -61,15 +61,7 @@
 </template>
 
 <script setup lang='ts'>
-import {
-  formatTime,
-  NotifyType,
-  useAdminAnnouncementStore,
-  useAdminAnnouncementUserStore,
-  NotifType,
-  AnnouncementUser
-} from 'npool-cli-v4'
-import { AppID } from 'src/const/const'
+import { utils, notify, announcement, announcementuser, notifbase } from 'src/npoolstore'
 import { computed, defineAsyncComponent, onMounted, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 
@@ -80,8 +72,8 @@ const LoadingButton = defineAsyncComponent(() => import('src/components/button/L
 const AnnouncementPicker = defineAsyncComponent(() => import('src/components/announcement/AnnouncementPicker.vue'))
 const AppUsersSelector = defineAsyncComponent(() => import('src/components/user/AppUsersSelector.vue'))
 
-const announcementUser = useAdminAnnouncementUserStore()
-const announcementUsers = computed(() => announcementUser.AnnouncementUsers.AnnouncementUsers)
+const announcementUser = announcementuser.useAnnouncementUserStore()
+const announcementUsers = computed(() => announcementUser.users())
 
 const username = ref('')
 const displayAnnouncementUsers = computed(() => announcementUsers.value?.filter((el) => el.EmailAddress.toLocaleLowerCase()?.includes(username.value?.toLowerCase()) ||
@@ -89,10 +81,10 @@ const displayAnnouncementUsers = computed(() => announcementUsers.value?.filter(
     el.UserID.toLocaleLowerCase()?.includes(username.value?.toLowerCase())
 ))
 
-const announcement = useAdminAnnouncementStore()
-const targetAnnouncement = computed(() => announcement.getAnnouncementByID(target.value?.AnnouncementID))
+const _announcement = announcement.useAnnouncementStore()
+const targetAnnouncement = computed(() => _announcement.announcement(undefined, target.value?.AnnouncementID))
 
-const target = ref({} as AnnouncementUser)
+const target = ref({} as announcementuser.User)
 
 const showing = ref(false)
 const updating = ref(false)
@@ -103,7 +95,7 @@ const onCreate = () => {
 }
 
 const onMenuHide = () => {
-  target.value = {} as AnnouncementUser
+  target.value = {} as announcementuser.User
   showing.value = false
 }
 
@@ -118,7 +110,7 @@ onMounted(() => {
 })
 
 const getAppAnnouncementUsers = (offset: number, limit: number) => {
-  announcementUser.getAppAnnouncementUsers({
+  announcementUser.getAnnouncementUsers({
     Offset: offset,
     Limit: limit,
     Message: {
@@ -126,10 +118,10 @@ const getAppAnnouncementUsers = (offset: number, limit: number) => {
         Title: t('MSG_GET_ANNOUNCEMENTS'),
         Message: t('MSG_GET_ANNOUNCEMENTS_FAIL'),
         Popup: true,
-        Type: NotifyType.Error
+        Type: notify.NotifyType.Error
       }
     }
-  }, (error: boolean, rows: Array<AnnouncementUser>) => {
+  }, (error: boolean, rows: Array<announcementuser.User>) => {
     if (error || rows.length < limit) {
       return
     }
@@ -142,7 +134,7 @@ const onSubmit = (done: () => void) => {
 }
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-const onRowClick = (row: AnnouncementUser) => {
+const onRowClick = (row: announcementuser.User) => {
   target.value = { ...row }
   updating.value = true
   showing.value = true
@@ -150,7 +142,6 @@ const onRowClick = (row: AnnouncementUser) => {
 
 const createAnnouncementUser = (done: () => void) => {
   announcementUser.createAnnouncementUser({
-    AppID: AppID,
     TargetUserID: target.value.UserID,
     AnnouncementID: target.value.AnnouncementID,
     Message: {
@@ -158,13 +149,13 @@ const createAnnouncementUser = (done: () => void) => {
         Title: 'MSG_CREATE_ANNOUNCEMENT_USERS',
         Message: 'MSG_CREATE_ANNOUNCEMENT_USERS_FAIL',
         Popup: true,
-        Type: NotifyType.Error
+        Type: notify.NotifyType.Error
       },
       Info: {
         Title: 'MSG_CREATE_ANNOUNCEMENT_USERS',
         Message: 'MSG_CREATE_ANNOUNCEMENT_USERS_SUCCESS',
         Popup: true,
-        Type: NotifyType.Success
+        Type: notify.NotifyType.Success
       }
     }
   }, (error: boolean) => {
@@ -176,23 +167,22 @@ const createAnnouncementUser = (done: () => void) => {
   })
 }
 
-const selectedAnnouncementUsers = ref([] as Array<AnnouncementUser>)
-const onDelete = (row: AnnouncementUser) => {
+const selectedAnnouncementUsers = ref([] as Array<announcementuser.User>)
+const onDelete = (row: announcementuser.User) => {
   announcementUser.deleteAnnouncementUser({
     ID: row.ID,
-    AppID: AppID,
     Message: {
       Error: {
         Title: 'MSG_DELETE_ANNOUNCEMENT',
         Message: 'MSG_DELETE_ANNOUNCEMENT_FAIL',
         Popup: true,
-        Type: NotifyType.Error
+        Type: notify.NotifyType.Error
       },
       Info: {
         Title: 'MSG_DELETE_ANNOUNCEMENT',
         Message: 'MSG_DELETE_ANNOUNCEMENT_SUCCESS',
         Popup: true,
-        Type: NotifyType.Success
+        Type: notify.NotifyType.Success
       }
     }
   }, () => {
@@ -205,73 +195,73 @@ const columns = computed(() => [
     name: 'ID',
     label: t('MSG_ID'),
     sortable: true,
-    field: (row: AnnouncementUser) => row.ID
+    field: (row: announcementuser.User) => row.ID
   },
   {
     name: 'AppID',
     label: t('MSG_APP_ID'),
     sortable: true,
-    field: (row: AnnouncementUser) => row.AppID
+    field: (row: announcementuser.User) => row.AppID
   },
   {
     name: 'AnnouncementID',
     label: t('MSG_ANNOUNCEMENT_ID'),
     sortable: true,
-    field: (row: AnnouncementUser) => row.AnnouncementID
+    field: (row: announcementuser.User) => row.AnnouncementID
   },
   {
     name: 'AnnouncementType',
     label: t('MSG_ANNOUNCEMENT_TYPE'),
     sortable: true,
-    field: (row: AnnouncementUser) => row.AnnouncementType
+    field: (row: announcementuser.User) => row.AnnouncementType
   },
   {
     name: 'UserID',
     label: t('USER_ID'),
     sortable: true,
-    field: (row: AnnouncementUser) => row.UserID
+    field: (row: announcementuser.User) => row.UserID
   },
   {
     name: 'EmailAddress',
     label: t('EMAIL_ADDRESS'),
     sortable: true,
-    field: (row: AnnouncementUser) => row.EmailAddress
+    field: (row: announcementuser.User) => row.EmailAddress
   },
   {
     name: 'Username',
     label: t('USERNAME'),
     sortable: true,
-    field: (row: AnnouncementUser) => row.Username
+    field: (row: announcementuser.User) => row.Username
   },
   {
     name: 'PhoneNO',
     label: t('PHONE_NO'),
     sortable: true,
-    field: (row: AnnouncementUser) => row.PhoneNO
+    field: (row: announcementuser.User) => row.PhoneNO
   },
   {
     name: 'Title',
     label: t('MSG_TITLE'),
     sortable: true,
-    field: (row: AnnouncementUser) => row.Title
+    field: (row: announcementuser.User) => row.Title
   },
   {
     name: 'Content',
     label: t('MSG_CONTENT'),
     sortable: true,
-    field: (row: AnnouncementUser) => row.Content
+    field: (row: announcementuser.User) => row.Content
   },
   {
     name: 'CreatedAt',
     label: t('MSG_CREATED_AT'),
     sortable: true,
-    field: (row: AnnouncementUser) => formatTime(row.CreatedAt)
+    field: (row: announcementuser.User) => utils.formatTime(row.CreatedAt)
   },
   {
     name: 'UpdatedAt',
     label: t('MSG_UPDATED_AT'),
     sortable: true,
-    field: (row: AnnouncementUser) => formatTime(row.UpdatedAt)
+    field: (row: announcementuser.User) => utils.formatTime(row.UpdatedAt)
   }
 ])
 </script>

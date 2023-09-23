@@ -25,18 +25,20 @@
 </template>
 
 <script setup lang='ts'>
-import { formatTime, NotifyType, useAdminNotifStore, Notif } from 'npool-cli-v4'
+import { utils, notif, notify } from 'src/npoolstore'
 import { computed, onMounted, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 
 // eslint-disable-next-line @typescript-eslint/unbound-method
 const { t } = useI18n({ useScope: 'global' })
 
-const notif = useAdminNotifStore()
-const notifs = computed(() => notif.Notifs.Notifs)
+const _notif = notif.useNotifStore()
+const notifs = computed(() => _notif.notifs(undefined, undefined))
 
 const username = ref('')
-const displayNotifs = computed(() => notif.getNotifsByName(username.value?.toLocaleLowerCase()))
+const displayNotifs = computed(() => notifs.value?.filter((el) => {
+  return el.Username?.toLowerCase()?.includes(username.value?.toLocaleLowerCase())
+}))
 
 onMounted(() => {
   if (notifs.value?.length === 0) {
@@ -45,7 +47,7 @@ onMounted(() => {
 })
 
 const getAppNotifs = (offset: number, limit: number) => {
-  notif.getAppNotifs({
+  _notif.getAppNotifs({
     Offset: offset,
     Limit: limit,
     Message: {
@@ -53,11 +55,11 @@ const getAppNotifs = (offset: number, limit: number) => {
         Title: t('MSG_GET_NOTIFS'),
         Message: t('MSG_GET_NOTIFS_FAIL'),
         Popup: true,
-        Type: NotifyType.Error
+        Type: notify.NotifyType.Error
       }
     }
-  }, (error: boolean, rows: Array<Notif>) => {
-    if (error || rows.length < limit) {
+  }, (error: boolean, rows: Array<notif.Notif>) => {
+    if (error || !rows.length) {
       return
     }
     getAppNotifs(offset + limit, limit)
@@ -69,80 +71,80 @@ const columns = computed(() => [
     name: 'ID',
     label: t('MSG_ID'),
     sortable: true,
-    field: (row: Notif) => row.ID
+    field: (row: notif.Notif) => row.ID
   },
   {
     name: 'Title',
     label: t('MSG_TITLE'),
     sortable: true,
-    field: (row: Notif) => row.Title
+    field: (row: notif.Notif) => row.Title
   },
   {
     name: 'Content',
     align: 'left',
     label: t('MSG_CONTENT'),
     sortable: true,
-    field: (row: Notif) => row.Content
+    field: (row: notif.Notif) => row.Content
   },
   {
     name: 'Channel',
     label: t('MSG_CHANNEL'),
     sortable: true,
-    field: (row: Notif) => row.Channel
+    field: (row: notif.Notif) => row.Channel
   },
   {
     name: 'UserID',
     label: t('MSG_USER_ID'),
     sortable: true,
-    field: (row: Notif) => row.UserID
+    field: (row: notif.Notif) => row.UserID
   },
   {
     name: 'EmailAddress',
     label: t('MSG_EMAIL_ADDRESS'),
     sortable: true,
-    field: (row: Notif) => row.EmailAddress
+    field: (row: notif.Notif) => row.EmailAddress
   },
   {
     name: 'PhoneNO',
     label: t('MSG_PHONE_NO'),
     sortable: true,
-    field: (row: Notif) => row.PhoneNO
+    field: (row: notif.Notif) => row.PhoneNO
   },
   {
     name: 'EventType',
     label: t('MSG_EVENT_TYPE'),
     sortable: true,
-    field: (row: Notif) => row.EventType
+    field: (row: notif.Notif) => row.EventType
   },
   {
     name: 'Notified',
     label: t('MSG_NOTIFIED'),
     sortable: true,
-    field: (row: Notif) => row.Notified
+    field: (row: notif.Notif) => row.Notified
   },
   {
     name: 'LangID',
     label: t('MSG_LANG_ID'),
     sortable: true,
-    field: (row: Notif) => row.LangID
+    field: (row: notif.Notif) => row.LangID
   },
   {
     name: 'Lang',
     label: t('MSG_LANG'),
     sortable: true,
-    field: (row: Notif) => row.Lang
+    field: (row: notif.Notif) => row.Lang
   },
   {
     name: 'CreatedAt',
     label: t('MSG_CREATED_AT'),
     sortable: true,
-    field: (row: Notif) => formatTime(row.CreatedAt)
+    field: (row: notif.Notif) => utils.formatTime(row.CreatedAt)
   },
   {
     name: 'UpdatedAt',
     label: t('MSG_UPDATED_AT'),
     sortable: true,
-    field: (row: Notif) => formatTime(row.UpdatedAt)
+    field: (row: notif.Notif) => utils.formatTime(row.UpdatedAt)
   }
 ])
 </script>

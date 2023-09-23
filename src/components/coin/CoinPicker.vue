@@ -21,7 +21,7 @@
   </q-select>
 </template>
 <script setup lang='ts'>
-import { useAdminAppCoinStore } from 'npool-cli-v4'
+import { appcoin } from 'src/npoolstore'
 import { getCoins } from 'src/api/coin'
 import { computed, defineEmits, defineProps, toRef, ref, onMounted } from 'vue'
 
@@ -37,11 +37,11 @@ const updating = toRef(props, 'updating')
 const hiddenDisabledCoins = toRef(props, 'hiddenDisabledCoins')
 const target = ref(id.value)
 
-const coin = useAdminAppCoinStore()
+const coin = appcoin.useAppCoinStore()
 const coins = computed(() => {
-  let items = coin.AppCoins.AppCoins
+  let items = coin.coins()
   if (hiddenDisabledCoins.value) {
-    items = coin.AppCoins.AppCoins.filter((el) => !el.Disabled && !el.CoinDisabled)
+    items = coin.coins().filter((el) => !el.Disabled && !el.CoinDisabled)
   }
   return Array.from(items).map((el) => {
     return {
@@ -66,7 +66,7 @@ const onUpdate = () => {
 }
 
 onMounted(() => {
-  if (coin.AppCoins.AppCoins.length === 0) {
+  if (coin.coins()?.length === 0) {
     getCoins(0, 500)
   }
 })

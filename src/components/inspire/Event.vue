@@ -41,20 +41,20 @@
         <q-select
           :disable='updating'
           :options='[
-            eventinspire.UsedFor.AffiliatePurchase,
-            eventinspire.UsedFor.Purchase,
-            eventinspire.UsedFor.Signup,
-            eventinspire.UsedFor.AffiliateSignup,
+            basetypes.EventType.AffiliatePurchase,
+            basetypes.EventType.Purchase,
+            basetypes.EventType.Signup,
+            basetypes.EventType.AffiliateSignup,
           ]'
           v-model='target.EventType'
           :label='$t("MSG_EVENT_YPE")'
         />
       </q-card-section>
       <q-card-section
-        v-if='target.EventType === eventinspire.UsedFor.AffiliatePurchase ||
-          target.EventType === eventinspire.UsedFor.Purchase ||
-          eventinspire.UsedFor.Signup ||
-          eventinspire.UsedFor.AffiliateSignup'
+        v-if='target.EventType === basetypes.EventType.AffiliatePurchase ||
+          target.EventType === basetypes.EventType.Purchase ||
+          basetypes.EventType.Signup ||
+          basetypes.EventType.AffiliateSignup'
       >
         <AppGoodSelector v-model:id='target.GoodID' v-if='!updating' :label='$t("MSG_GOOD")' />
         <CouponSelector v-model:ids='couponIDs' />
@@ -81,7 +81,7 @@
 <script setup lang='ts'>
 import { formatTime, NotifyType } from 'npool-cli-v4'
 import { getCoupons } from 'src/api/inspire'
-import { coupon, eventinspire } from 'src/npoolstore'
+import { coupon, basetypes, eventinspire } from 'src/npoolstore'
 import { computed, defineAsyncComponent, onMounted, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 // eslint-disable-next-line @typescript-eslint/unbound-method
@@ -93,7 +93,7 @@ const CouponSelector = defineAsyncComponent(() => import('src/components/inspire
 
 const _coupon = coupon.useCouponStore()
 const event = eventinspire.useEventStore()
-const events = computed(() => event.Events)
+const events = computed(() => event.events())
 const couponIDs = ref([] as Array<string>)
 
 // const username = ref('')
@@ -184,10 +184,10 @@ const createEvent = (done: () => void) => {
 }
 
 onMounted(() => {
-  if (event.Events.length === 0) {
+  if (event.events()?.length === 0) {
     getEvents(0, 500)
   }
-  if (_coupon.Coupons.length === 0) {
+  if (_coupon.coupons()?.length === 0) {
     getCoupons(0, 500)
   }
 })

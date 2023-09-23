@@ -33,7 +33,7 @@ const { t } = useI18n({ useScope: 'global' })
 
 const _coupon = allocatedCoupon.useAllocatedCouponStore()
 const username = ref('')
-const coupons = computed(() => _coupon.AllocatedCoupons.filter((el) => {
+const coupons = computed(() => _coupon.coupons(undefined).filter((el) => {
   return el.EmailAddress?.includes(username.value) ||
          el.PhoneNO?.includes(username.value) ||
          el.Username?.includes(username.value)
@@ -52,12 +52,12 @@ const getCoupons = (offset: number, limit: number) => {
         Type: NotifyType.Error
       }
     }
-  }, (error: boolean, rows: Array<allocatedCoupon.Coupon>) => {
+  }, (error: boolean, rows?: Array<allocatedCoupon.Coupon>) => {
     if (error) {
       loading.value = false
       return
     }
-    if (!rows.length) {
+    if (!rows?.length) {
       loading.value = false
       return
     }
@@ -66,7 +66,7 @@ const getCoupons = (offset: number, limit: number) => {
 }
 
 const prepare = () => {
-  if (_coupon.AllocatedCoupons.length > 0) {
+  if (_coupon.coupons().length > 0) {
     loading.value = false
     return
   }

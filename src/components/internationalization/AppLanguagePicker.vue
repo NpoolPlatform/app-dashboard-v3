@@ -23,7 +23,7 @@
 
 <script setup lang='ts'>
 import { getAppLangs } from 'src/api/g11n'
-import { useAdminAppLangStore } from 'npool-cli-v4'
+import { applang } from 'src/npoolstore'
 import { computed, defineEmits, defineProps, toRef, ref, onMounted } from 'vue'
 
 interface Props {
@@ -43,8 +43,8 @@ const myLabel = computed(() => {
 
 const target = ref(id.value)
 
-const lang = useAdminAppLangStore()
-const _langs = computed(() => lang.AppLangs.AppLangs)
+const lang = applang.useAppLangStore()
+const _langs = computed(() => lang.langs())
 const langs = computed(() => Array.from(_langs.value).map((el) => {
   return {
     value: el.LangID,
