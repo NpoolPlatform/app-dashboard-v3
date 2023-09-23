@@ -1,4 +1,4 @@
-<template>
+<!-- <template>
   <q-table
     dense
     flat
@@ -265,4 +265,4 @@ const appGoodsColumns = computed(() => [
     field: (row: AppGood) => formatTime(row.StartAt)
   }
 ])
-</script>
+</script> -->

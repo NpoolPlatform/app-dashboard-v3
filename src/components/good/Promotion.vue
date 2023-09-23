@@ -1,4 +1,4 @@
-<template>
+<!-- <template>
   <q-table
     dense
     flat
@@ -300,4 +300,4 @@ const columns = computed(() => [
     field: (row: Promotion) => formatTime(row.EndAt)
   }
 ])
-</script>
+</script> -->
