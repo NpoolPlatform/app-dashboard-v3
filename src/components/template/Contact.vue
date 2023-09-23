@@ -7,7 +7,7 @@
     row-key='ID'
     :loading='contactsLoading'
     :rows-per-page-options='[100]'
-    @row-click='(evt, row, index) => onRowClick(row as Contact)'
+    @row-click='(evt, row, index) => onRowClick(row as contact.Contact)'
   >
     <template #top-right>
       <div class='row indent flat'>
@@ -31,8 +31,8 @@
         <span>{{ $t('MSG_CREATE_CONTACT') }}</span>
       </q-card-section>
       <q-card-section>
-        <q-select :options='UsedFors' v-model='target.UsedFor' :disable='updating' :label='$t("MSG_USED_FOR")' />
-        <q-select :options='SignMethodTypes' v-model='target.AccountType' :label='$t("MSG_CONTACT_TYPE")' />
+        <q-select :options='basetypes.EventTypes' v-model='target.UsedFor' :disable='updating' :label='$t("MSG_USED_FOR")' />
+        <q-select :options='appuserbase.SignMethodTypes' v-model='target.AccountType' :label='$t("MSG_CONTACT_TYPE")' />
         <q-input v-model='target.Account' :label='$t("MSG_ACCOUNT")' />
         <q-input v-model='target.Sender' :label='$t("MSG_SENDER")' />
       </q-card-section>
@@ -50,24 +50,24 @@
 
 <script setup lang='ts'>
 import { computed, defineAsyncComponent, onMounted, ref } from 'vue'
-import { useAdminContactStore, Contact, NotifyType, UsedFors, SignMethodTypes } from 'npool-cli-v4'
+import { basetypes, notify, contact, appuserbase } from 'src/npoolstore'
 
 const LoadingButton = defineAsyncComponent(() => import('src/components/button/LoadingButton.vue'))
 
-const contact = useAdminContactStore()
-const contacts = computed(() => contact.Contacts.Contacts)
+const _contact = contact.useContactStore()
+const contacts = computed(() => _contact.contacts())
 const contactsLoading = ref(false)
 
 const showing = ref(false)
 const updating = ref(false)
 
-const target = ref({} as unknown as Contact)
+const target = ref({} as unknown as contact.Contact)
 
 const onMenuHide = () => {
-  target.value = {} as unknown as Contact
+  target.value = {} as unknown as contact.Contact
 }
 
-const onRowClick = (template: Contact) => {
+const onRowClick = (template: contact.Contact) => {
   target.value = template
   showing.value = true
   updating.value = true
@@ -88,13 +88,13 @@ const onSubmit = (done: () => void) => {
 }
 
 onMounted(() => {
-  if (contact.Contacts.Contacts.length === 0) {
+  if (contacts.value?.length === 0) {
     getContacts(0, 500)
   }
 })
 
 const getContacts = (offset: number, limit: number) => {
-  contact.getContacts({
+  _contact.getContacts({
     Offset: offset,
     Limit: limit,
     Message: {
@@ -102,11 +102,11 @@ const getContacts = (offset: number, limit: number) => {
         Title: 'MSG_GET_CONTACTS',
         Message: 'MSG_GET_CONTACTS_FAIL',
         Popup: true,
-        Type: NotifyType.Error
+        Type: notify.NotifyType.Error
       }
     }
-  }, (contacts: Array<Contact>, error: boolean) => {
-    if (error || contacts.length < limit) {
+  }, (error: boolean, rows?: Array<contact.Contact>) => {
+    if (error || !rows?.length) {
       contactsLoading.value = false
       return
     }
@@ -115,17 +115,17 @@ const getContacts = (offset: number, limit: number) => {
 }
 
 const updateContact = (done: () => void) => {
-  contact.updateContact({
+  _contact.updateContact({
     ...target.value,
     Message: {
       Error: {
         Title: 'MSG_UPDATE_CONTACT',
         Message: 'MSG_UPDATE_CONTACT_FAIL',
         Popup: true,
-        Type: NotifyType.Error
+        Type: notify.NotifyType.Error
       }
     }
-  }, (template: Contact, error: boolean) => {
+  }, (error: boolean) => {
     done()
     if (!error) {
       onCancel()
@@ -134,17 +134,17 @@ const updateContact = (done: () => void) => {
 }
 
 const createContact = (done: () => void) => {
-  contact.createContact({
+  _contact.createContact({
     ...target.value,
     Message: {
       Error: {
         Title: 'MSG_CREATE_CONTACT',
         Message: 'MSG_CREATE_CONTACT_FAIL',
         Popup: true,
-        Type: NotifyType.Error
+        Type: notify.NotifyType.Error
       }
     }
-  }, (template: Contact, error: boolean) => {
+  }, (error: boolean) => {
     done()
     if (!error) {
       onCancel()

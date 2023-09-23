@@ -7,7 +7,7 @@
     row-key='ID'
     :loading='smsLoading'
     :rows-per-page-options='[100]'
-    @row-click='(evt, row, index) => onRowClick(row as SMSTemplate)'
+    @row-click='(evt, row, index) => onRowClick(row as smsnotiftemplate.Template)'
   >
     <template #top-right>
       <div class='row indent flat'>
@@ -34,7 +34,7 @@
         <LanguagePicker v-model:language='target.LangID' :updating='updating' />
       </q-card-section>
       <q-card-section>
-        <q-select :options='UsedFors' v-model='target.UsedFor' :disable='updating' :label='$t("MSG_USED_FOR")' />
+        <q-select :options='basetypes.EventTypes' v-model='target.UsedFor' :disable='updating' :label='$t("MSG_USED_FOR")' />
         <q-input v-model='target.Subject' :label='$t("MSG_SUBJECT")' />
         <q-input v-model='target.Message' :label='$t("MSG_BODY")' type='textarea' />
       </q-card-section>
@@ -51,25 +51,25 @@
 
 <script setup lang='ts'>
 import { computed, onMounted, ref, defineAsyncComponent } from 'vue'
-import { useAdminSMSTemplateStore, SMSTemplate, NotifyType, UsedFors } from 'npool-cli-v4'
+import { basetypes, notify, smsnotiftemplate } from 'src/npoolstore'
 
 const LoadingButton = defineAsyncComponent(() => import('src/components/button/LoadingButton.vue'))
 const LanguagePicker = defineAsyncComponent(() => import('src/components/lang/LanguagePicker.vue'))
 
-const sms = useAdminSMSTemplateStore()
-const smsTemplates = computed(() => sms.SMSTemplates.SMSTemplates)
+const sms = smsnotiftemplate.useSMSTemplateStore()
+const smsTemplates = computed(() => sms.templates())
 const smsLoading = ref(false)
 
 const showing = ref(false)
 const updating = ref(false)
 
-const target = ref({} as SMSTemplate)
+const target = ref({} as smsnotiftemplate.Template)
 
 const onMenuHide = () => {
-  target.value = {} as unknown as SMSTemplate
+  target.value = {} as unknown as smsnotiftemplate.Template
 }
 
-const onRowClick = (template: SMSTemplate) => {
+const onRowClick = (template: smsnotiftemplate.Template) => {
   target.value = { ...template }
   showing.value = true
   updating.value = true
@@ -89,7 +89,7 @@ const onSubmit = (done: () => void) => {
   updating.value ? updateSMSTemplate(done) : createSMSTemplate(done)
 }
 onMounted(() => {
-  if (sms.SMSTemplates.SMSTemplates.length === 0) {
+  if (smsTemplates?.value?.length === 0) {
     getSMSTemplates(0, 500)
   }
 })
@@ -103,11 +103,11 @@ const getSMSTemplates = (offset: number, limit: number) => {
         Title: 'MSG_GET_EMAIL_TEMPLATES',
         Message: 'MSG_GET_EMAIL_TEMPLATES_FAIL',
         Popup: true,
-        Type: NotifyType.Error
+        Type: notify.NotifyType.Error
       }
     }
-  }, (smsTemplates: Array<SMSTemplate>, error: boolean) => {
-    if (error || smsTemplates.length < limit) {
+  }, (error: boolean, rows?: Array<smsnotiftemplate.Template>) => {
+    if (error || !rows?.length) {
       smsLoading.value = false
       return
     }
@@ -126,10 +126,10 @@ const createSMSTemplate = (done: () => void) => {
         Title: 'MSG_CREATE_SMS_TEMPLATE',
         Message: 'MSG_CREATE_SMS_TEMPLATE_FAIL',
         Popup: true,
-        Type: NotifyType.Error
+        Type: notify.NotifyType.Error
       }
     }
-  }, (template: SMSTemplate, error: boolean) => {
+  }, (error: boolean) => {
     done()
     if (!error) {
       onCancel()
@@ -147,10 +147,10 @@ const updateSMSTemplate = (done: () => void) => {
         Title: 'MSG_UPDATE_SMS_TEMPLATE',
         Message: 'MSG_UPDATE_SMS_TEMPLATE_FAIL',
         Popup: true,
-        Type: NotifyType.Error
+        Type: notify.NotifyType.Error
       }
     }
-  }, (template: SMSTemplate, error: boolean) => {
+  }, (error: boolean) => {
     done()
     if (!error) {
       onCancel()
