@@ -14,15 +14,15 @@
 </template>
 
 <script setup lang='ts'>
-import { useAdminUserAccountStore, Account, formatTime } from 'npool-cli-v4'
+import { useraccount, utils, accountbase, useraccountbase } from 'src/npoolstore'
 import { getAppUserAccounts } from 'src/api/account'
 import { computed, onMounted } from 'vue'
 import { useI18n } from 'vue-i18n'
 // eslint-disable-next-line @typescript-eslint/unbound-method
 const { t } = useI18n({ useScope: 'global' })
 
-const account = useAdminUserAccountStore()
-const withdrawAddress = computed(() => account.withdrawAddress)
+const account = useraccount.useUserAccountStore()
+const withdrawAddress = computed(() => account.accounts(undefined, undefined, undefined, accountbase.AccountUsedFor.UserWithdraw))
 
 onMounted(() => {
   if (withdrawAddress.value.length === 0) {
@@ -34,97 +34,97 @@ const columns = computed(() => [
   {
     name: 'ID',
     label: t('MSG_ID'),
-    field: (row: Account) => row.ID,
+    field: (row: useraccountbase.Account) => row.ID,
     sortable: true
   },
   {
     name: 'AppID',
     label: t('MSG_APP_ID'),
-    field: (row: Account) => row.AppID,
+    field: (row: useraccountbase.Account) => row.AppID,
     sortable: true
   },
   {
     name: 'AccountID',
     label: t('MSG_ACCOUNT_ID'),
-    field: (row: Account) => row.AccountID,
+    field: (row: useraccountbase.Account) => row.AccountID,
     sortable: true
   },
   {
     name: 'Address',
     label: t('MSG_ADDRESS'),
-    field: (row: Account) => row.Address,
+    field: (row: useraccountbase.Account) => row.Address,
     sortable: true
   },
   {
     name: 'UsedFor',
     label: t('MSG_USED_FOR'),
-    field: (row: Account) => row.UsedFor,
+    field: (row: useraccountbase.Account) => row.UsedFor,
     sortable: true
   },
   {
     name: 'UserID',
     label: t('MSG_USER_ID'),
-    field: (row: Account) => row.UserID,
+    field: (row: useraccountbase.Account) => row.UserID,
     sortable: true
   },
   {
     name: 'EmailAddress',
     label: t('MSG_EMAIL_ADDRESS'),
-    field: (row: Account) => row.EmailAddress,
+    field: (row: useraccountbase.Account) => row.EmailAddress,
     sortable: true
   },
   {
     name: 'PhoneNO',
     label: t('MSG_PHONE_NO'),
-    field: (row: Account) => row.PhoneNO,
+    field: (row: useraccountbase.Account) => row.PhoneNO,
     sortable: true
   },
   {
     name: 'CoinTypeID',
     label: t('MSG_COIN_TYPE_ID'),
-    field: (row: Account) => row.CoinTypeID,
+    field: (row: useraccountbase.Account) => row.CoinTypeID,
     sortable: true
   },
   {
     name: 'CoinName',
     label: t('MSG_COINNAME'),
-    field: (row: Account) => row.CoinName,
+    field: (row: useraccountbase.Account) => row.CoinName,
     sortable: true
   },
   {
     name: 'CoinEnv',
     label: t('MSG_COINENV'),
-    field: (row: Account) => row.CoinEnv,
+    field: (row: useraccountbase.Account) => row.CoinEnv,
     sortable: true
   },
   {
     name: 'CoinUnit',
     label: t('MSG_COINUNIT'),
-    field: (row: Account) => row.CoinUnit,
+    field: (row: useraccountbase.Account) => row.CoinUnit,
     sortable: true
   },
   {
     name: 'CreatedAt',
     label: t('MSG_CREATED_AT'),
-    field: (row: Account) => formatTime(row.CreatedAt),
+    field: (row: useraccountbase.Account) => utils.formatTime(row.CreatedAt),
     sortable: true
   },
   {
     name: 'Label',
     label: t('MSG_LABEL'),
-    field: (row: Account) => row.Labels?.join(','),
+    field: (row: useraccountbase.Account) => row.Labels?.join(','),
     sortable: true
   },
   {
     name: 'Active',
     label: t('MSG_ACTIVE'),
-    field: (row: Account) => row.Active,
+    field: (row: useraccountbase.Account) => row.Active,
     sortable: true
   },
   {
     name: 'Blocked',
     label: t('MSG_BLOCKED'),
-    field: (row: Account) => row.Blocked,
+    field: (row: useraccountbase.Account) => row.Blocked,
     sortable: true
   }
 ])
