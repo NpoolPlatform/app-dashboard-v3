@@ -20,26 +20,26 @@
   </q-select>
 </template>
 <script setup lang='ts'>
-import { useAdminAppGoodStore } from 'npool-cli-v4'
+import { appgood } from 'src/npoolstore'
 import { computed, defineEmits, defineProps, toRef, ref } from 'vue'
 
 interface Props {
   id: string
-  label: string
+  label?: string
 }
 
 const props = defineProps<Props>()
-const goodID = toRef(props, 'id')
+const appGoodID = toRef(props, 'id')
 const label = toRef(props, 'label')
-const target = ref(goodID.value)
+const target = ref(appGoodID.value)
 
-const appGood = useAdminAppGoodStore()
-const appGoods = computed(() => appGood.AppGoods.AppGoods)
+const appGood = appgood.useAppGoodStore()
+const appGoods = computed(() => appGood.goods(undefined))
 
 const goods = computed(() => Array.from(appGoods.value, (el) => {
   return {
-    value: el.GoodID,
-    label: `${el.GoodName} | ${el.GoodID}`
+    value: el.ID,
+    label: `${el.GoodName} | ${el.ID}`
   }
 }))
 const displayGoods = ref(goods.value)

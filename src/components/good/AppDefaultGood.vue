@@ -9,7 +9,7 @@
     row-key='ID'
     selection='single'
     :rows-per-page-options='[100]'
-    @row-click='(evt, row, index) => onRowClick(row as AppDefaultGood)'
+    @row-click='(evt, row, index) => onRowClick(row as appdefaultgood.Default)'
   >
     <template #top-right>
       <div class='row indent flat'>
@@ -41,7 +41,7 @@
         <span>{{ $t('MSG_APP_DEFAULT_GOOD') }}</span>
       </q-card-section>
       <q-card-section>
-        <AppGoodSelector v-model:id='target.GoodID' />
+        <AppGoodSelector v-model:id='target.AppGoodID' />
         <CoinPicker v-model:id='target.CoinTypeID' v-model:updating='updating' />
       </q-card-section>
       <q-item class='row'>
@@ -58,7 +58,7 @@
 </template>
 
 <script setup lang='ts'>
-import { formatTime, NotifyType, AppDefaultGood, useAdminAppDefaultGoodStore } from 'npool-cli-v4'
+import { appdefaultgood, utils, notify } from 'src/npoolstore'
 import { computed, defineAsyncComponent, onMounted, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 
@@ -69,10 +69,10 @@ const LoadingButton = defineAsyncComponent(() => import('src/components/button/L
 const CoinPicker = defineAsyncComponent(() => import('src/components/coin/CoinPicker.vue'))
 const AppGoodSelector = defineAsyncComponent(() => import('src/components/good/AppGoodSelector.vue'))
 
-const appDefaultGood = useAdminAppDefaultGoodStore()
-const appDefaultGoods = computed(() => appDefaultGood.AppDefaultGoods.AppDefaultGoods)
+const appDefaultGood = appdefaultgood.useAppDefaultGoodStore()
+const appDefaultGoods = computed(() => appDefaultGood.defaults(undefined))
 
-const target = ref({} as AppDefaultGood)
+const target = ref({} as appdefaultgood.Default)
 
 const showing = ref(false)
 const updating = ref(false)
@@ -83,7 +83,7 @@ const onCreate = () => {
 }
 
 const onMenuHide = () => {
-  target.value = {} as AppDefaultGood
+  target.value = {} as appdefaultgood.Default
   showing.value = false
 }
 
@@ -91,7 +91,7 @@ const onCancel = () => {
   onMenuHide()
 }
 
-const onRowClick = (row: AppDefaultGood) => {
+const onRowClick = (row: appdefaultgood.Default) => {
   target.value = { ...row }
   updating.value = true
   showing.value = true
@@ -106,20 +106,19 @@ const createAppDefaultGood = (done: () => void) => {
     ...target.value,
     Message: {
       Error: {
-        Title: t('MSG_CREATE_APP_DEFAULT_GOOD'),
-        Message: t('MSG_CREATE_APP_DEFAULT_GOOD_FAIL'),
+        Title: 'MSG_CREATE_APP_DEFAULT_GOOD',
+        Message: 'MSG_CREATE_APP_DEFAULT_GOOD_FAIL',
         Popup: true,
-        Type: NotifyType.Error
+        Type: notify.NotifyType.Error
       },
       Info: {
-        Title: t('MSG_CREATE_APP_DEFAULT_GOOD'),
-        Message: t('MSG_CREATE_APP_DEFAULT_GOOD_SUCCESS'),
+        Title: 'MSG_CREATE_APP_DEFAULT_GOOD',
+        Message: 'MSG_CREATE_APP_DEFAULT_GOOD_SUCCESS',
         Popup: true,
-        Type: NotifyType.Success
+        Type: notify.NotifyType.Success
       }
     }
-  }, (row: AppDefaultGood, error: boolean) => {
-    console.log('row: ', row.ID)
+  }, (error: boolean) => {
     done()
     if (error) {
       return
@@ -133,20 +132,19 @@ const updateAppDefaultGood = (done: () => void) => {
     ...target.value,
     Message: {
       Error: {
-        Title: t('MSG_UPDATE_APP_DEFAULT_GOOD'),
-        Message: t('MSG_UPDATE_APP_DEFAULT_GOOD_FAIL'),
+        Title: 'MSG_UPDATE_APP_DEFAULT_GOOD',
+        Message: 'MSG_UPDATE_APP_DEFAULT_GOOD_FAIL',
         Popup: true,
-        Type: NotifyType.Error
+        Type: notify.NotifyType.Error
       },
       Info: {
-        Title: t('MSG_UPDATE_APP_DEFAULT_GOOD'),
-        Message: t('MSG_UPDATE_APP_DEFAULT_GOOD_SUCCESS'),
+        Title: 'MSG_UPDATE_APP_DEFAULT_GOOD',
+        Message: 'MSG_UPDATE_APP_DEFAULT_GOOD_SUCCESS',
         Popup: true,
-        Type: NotifyType.Success
+        Type: notify.NotifyType.Success
       }
     }
-  }, (row: AppDefaultGood, error: boolean) => {
-    console.log('row: ', row.ID)
+  }, (error: boolean) => {
     done()
     if (error) {
       return
@@ -155,8 +153,8 @@ const updateAppDefaultGood = (done: () => void) => {
   })
 }
 
-const selectedGoods = ref([] as Array<AppDefaultGood>)
-const onDelete = (row: AppDefaultGood) => {
+const selectedGoods = ref([] as Array<appdefaultgood.Default>)
+const onDelete = (row: appdefaultgood.Default) => {
   appDefaultGood.deleteAppDefaultGood({
     ID: row.ID,
     Message: {
@@ -164,13 +162,13 @@ const onDelete = (row: AppDefaultGood) => {
         Title: 'MSG_DELETE_APP_DEFAULT_GOOD',
         Message: 'MSG_DELETE_APP_DEFAULT_GOOD_FAIL',
         Popup: true,
-        Type: NotifyType.Error
+        Type: notify.NotifyType.Error
       },
       Info: {
         Title: 'MSG_DELETE_APP_DEFAULT_GOOD',
         Message: 'MSG_DELETE_APP_DEFAULT_GOOD_SUCCESS',
         Popup: true,
-        Type: NotifyType.Success
+        Type: notify.NotifyType.Success
       }
     }
   }, () => {
@@ -190,13 +188,13 @@ const getAppDefaultGoods = (offset: number, limit: number) => {
     Limit: limit,
     Message: {
       Error: {
-        Title: t('MSG_GET_APP_DEFAULT_GOODS_FAIL'),
+        Title: 'MSG_GET_APP_DEFAULT_GOODS_FAIL',
         Popup: true,
-        Type: NotifyType.Error
+        Type: notify.NotifyType.Error
       }
     }
-  }, (rows: Array<AppDefaultGood>, error: boolean) => {
-    if (error || rows.length < limit) {
+  }, (error: boolean, rows?: Array<appdefaultgood.Default>) => {
+    if (error || !rows?.length) {
       return
     }
     getAppDefaultGoods(offset + limit, limit)
@@ -208,37 +206,37 @@ const appDefaultGoodsColumns = computed(() => [
     name: 'ID',
     label: t('MSG_ID'),
     sortable: true,
-    field: (row: AppDefaultGood) => row.ID
+    field: (row: appdefaultgood.Default) => row.ID
   },
   {
     name: 'GoodID',
     label: t('MSG_GOOD_ID'),
     sortable: true,
-    field: (row: AppDefaultGood) => row.GoodID
+    field: (row: appdefaultgood.Default) => row.GoodID
   },
   {
     name: 'CoinTypeID',
     label: t('MSG_COIN_TYPE_ID'),
     sortable: true,
-    field: (row: AppDefaultGood) => row.CoinTypeID
+    field: (row: appdefaultgood.Default) => row.CoinTypeID
   },
   {
     name: 'CoinUnit',
     label: t('MSG_COIN_UNIT'),
     sortable: true,
-    field: (row: AppDefaultGood) => row.CoinUnit
+    field: (row: appdefaultgood.Default) => row.CoinUnit
   },
   {
     name: 'CreatedAt',
     label: t('MSG_CREATED_AT'),
     sortable: true,
-    field: (row: AppDefaultGood) => formatTime(row.CreatedAt)
+    field: (row: appdefaultgood.Default) => utils.formatTime(row.CreatedAt)
   },
   {
     name: 'UpdatedAt',
     label: t('MSG_UPDATED_AT'),
     sortable: true,
-    field: (row: AppDefaultGood) => formatTime(row.UpdatedAt)
+    field: (row: appdefaultgood.Default) => utils.formatTime(row.UpdatedAt)
   }
 ])
 </script>
