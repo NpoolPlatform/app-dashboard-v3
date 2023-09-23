@@ -7,7 +7,7 @@
     row-key='ID'
     :loading='reviewLoading'
     :rows-per-page-options='[100]'
-    @row-click='(evt, row, index) => onRowClick(row as KYCReview)'
+    @row-click='(evt, row, index) => onRowClick(row as kycreview.KYCReview)'
     :columns='columns'
   >
     <template #top-right>
@@ -59,21 +59,21 @@
       </q-item>
       <q-item class='row'>
         <q-item-section>
-          <q-img :ratio='1' :src='(images?.get(ImageType.FrontImg)?.Base64 as string)' />
+          <q-img :ratio='1' :src='_kyc.image(undefined, targetUser.ID, kyc.ImageType.FrontImg)?.Base64 as string' />
         </q-item-section>
-        <q-item-section v-if='target?.DocumentType === DocumentType.IDCard'>
-          <q-img :ratio='1' :src='(images?.get(ImageType.BackImg)?.Base64 as string)' />
+        <q-item-section v-if='target?.DocumentType === kyc.DocumentType.IDCard'>
+          <q-img :ratio='1' :src='_kyc.image(undefined, targetUser.ID, kyc.ImageType.BackImg)?.Base64 as string' />
         </q-item-section>
         <q-item-section>
-          <q-img :ratio='1' :src='(images?.get(ImageType.SelfieImg)?.Base64 as string)' />
+          <q-img :ratio='1' :src='_kyc.image(undefined, targetUser.ID, kyc.ImageType.SelfieImg)?.Base64 as string' />
         </q-item-section>
       </q-item>
       <q-card-section>
         <q-input v-model='target.Message' :label='$t("MSG_COMMENT")' />
       </q-card-section>
       <q-item class='row'>
-        <q-btn class='btn round alt' :label='$t("MSG_APPROVE")' @click='updateReview(KYCReviewState.Approved)' :disable='disableUpdateBtn(target)' />
-        <q-btn class='btn round alt' :label='$t("MSG_REJECT")' @click='updateReview(KYCReviewState.Rejected)' :disable='disableUpdateBtn(target)' />
+        <q-btn class='btn round alt' :label='$t("MSG_APPROVE")' @click='updateReview(reviewbase.ReviewState.Approved)' :disable='disableUpdateBtn(target)' />
+        <q-btn class='btn round alt' :label='$t("MSG_REJECT")' @click='updateReview(reviewbase.ReviewState.Rejected)' :disable='disableUpdateBtn(target)' />
         <q-btn class='btn round' :label='$t("MSG_CANCEL")' @click='onCancel' />
       </q-item>
     </q-card>
@@ -82,203 +82,96 @@
 
 <script setup lang='ts'>
 import saveAs from 'file-saver'
-import {
-  ImageType,
-  DocumentType,
-  KYCReview,
-  User,
-  useAdminUserStore,
-  useAdminKycStore,
-  KYCReviewState,
-  formatTime,
-  useFrontendAppStore,
-  NotifyType,
-  useLocaleStore
-} from 'npool-cli-v4'
+import { kyc, kycreview, utils, notify, reviewbase, user, app } from 'src/npoolstore'
 import { AppID } from 'src/const/const'
 import { computed, onMounted, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 
 // eslint-disable-next-line @typescript-eslint/unbound-method
 const { t } = useI18n({ useScope: 'global' })
-const columns = computed(() => [
-  {
-    name: 'UserID',
-    label: t('MSG_USER_ID'),
-    field: (row: KYCReview) => row.UserID,
-    sortable: true
-  },
-  {
-    name: 'EmailAddress',
-    label: t('MSG_EMAIL_ADDRESS'),
-    field: (row: KYCReview) => row.EmailAddress,
-    sortable: true
-  },
-  {
-    name: 'PhoneNO',
-    label: t('MSG_PHONE_NO'),
-    field: (row: KYCReview) => row.PhoneNO,
-    sortable: true
-  },
-  {
-    name: 'KycID',
-    label: t('MSG_KYC_ID'),
-    field: (row: KYCReview) => row.KycID,
-    sortable: true
-  },
-  {
-    name: 'DocumentType',
-    label: t('MSG_DOCUMENT_TYPE'),
-    field: (row: KYCReview) => row.DocumentType,
-    sortable: true
-  },
-  {
-    name: 'IDNumber',
-    label: t('MSG_ID_NUMBER'),
-    field: (row: KYCReview) => row.IDNumber,
-    sortable: true
-  },
-  {
-    name: 'EntityType',
-    label: t('MSG_ENTITY_TYPE'),
-    field: (row: KYCReview) => row.EntityType,
-    sortable: true
-  },
-  {
-    name: 'ReviewID',
-    label: t('MSG_REVIEW_ID'),
-    field: (row: KYCReview) => row.ReviewID,
-    sortable: true
-  },
-  {
-    name: 'ObjectType',
-    label: t('MSG_OBJECT_TYPE'),
-    field: (row: KYCReview) => row.ObjectType,
-    sortable: true
-  },
-  {
-    name: 'Domain',
-    label: t('MSG_DOMAIN'),
-    field: (row: KYCReview) => row.Domain,
-    sortable: true
-  },
-  {
-    name: 'Reviewer',
-    label: t('MSG_REVIEWER'),
-    field: (row: KYCReview) => row.Reviewer,
-    sortable: true
-  },
-  {
-    name: 'ReviewState',
-    label: t('MSG_REVIEW_STATE'),
-    field: (row: KYCReview) => row.ReviewState,
-    sortable: true
-  },
-  {
-    name: 'KycState',
-    label: t('MSG_KYC_STATE'),
-    field: (row: KYCReview) => row.KycState,
-    sortable: true
-  },
-  {
-    name: 'Message',
-    label: t('MSG_MESSAGE'),
-    field: (row: KYCReview) => row.Message,
-    sortable: true
-  },
-  {
-    name: 'CreatedAt',
-    label: t('MSG_CREATED_AT'),
-    field: (row: KYCReview) => formatTime(row.CreatedAt),
-    sortable: true
-  },
-  {
-    name: 'UpdatedAt',
-    label: t('MSG_UPDATED_AT'),
-    field: (row: KYCReview) => formatTime(row.UpdatedAt),
-    sortable: true
-  }
-])
-const locale = useLocaleStore()
 
+const review = kycreview.useKycReviewStore()
+const reviews = computed(() => review.reviews())
 const username = ref('')
-const displayReviews = computed(() => kyc.KycReviews.KycReviews.filter((el) => {
+
+const displayReviews = computed(() => review.reviews().filter((el) => {
   return el.EmailAddress.toLowerCase().includes(username.value) || el.PhoneNO.toLowerCase().includes(username.value)
 }))
 const reviewLoading = ref(false)
 
-const disableUpdateBtn = computed(() => (review: KYCReview) => review.ReviewState === KYCReviewState.Approved || review.ReviewState === KYCReviewState.Rejected)
-const kyc = useAdminKycStore()
+const disableUpdateBtn = computed(() => (review: kycreview.KYCReview) => review.ReviewState === reviewbase.ReviewState.Approved || review.ReviewState === reviewbase.ReviewState.Rejected)
 
 const showing = ref(false)
-const target = ref({} as unknown as KYCReview)
-const images = computed(() => kyc.Images.get(target.value.KycID))
+const target = ref({} as unknown as kycreview.KYCReview)
+
+const _kyc = kyc.useKYCStore()
 
 const onMenuHide = () => {
   showing.value = false
-  target.value = {} as unknown as KYCReview
-  targetUser.value = {} as unknown as User
+  target.value = {} as unknown as kycreview.KYCReview
+  targetUser.value = {} as unknown as user.User
 }
-const targetUser = ref({} as User)
-const user = useAdminUserStore()
+const targetUser = ref({} as user.User)
+const _user = user.useUserStore()
+const users = computed(() => _user.appUsers(undefined))
 
-const onRowClick = (row: KYCReview) => {
+const onRowClick = (row: kycreview.KYCReview) => {
+  console.log('row: ', row)
   target.value = { ...row }
-  targetUser.value = { ...user.getUserByID(row.UserID) }
-  kyc.getUserKYCImage({
+  targetUser.value = { ..._user.appUser(AppID, row.UserID) as user.User }
+  _kyc.getUserKYCImage({
     TargetUserID: row.UserID,
-    ImageType: ImageType.FrontImg,
+    ImageType: kyc.ImageType.FrontImg,
     Message: {
       Error: {
         Title: t('MSG_GET_KYC_IMAGES'),
         Message: t('MSG_GET_KYC_IMAGES_FAIL'),
         Popup: true,
-        Type: NotifyType.Error
+        Type: notify.NotifyType.Error
       }
     }
-  }, row.KycID, () => {
-    kyc.getUserKYCImage({
+  }, () => {
+    _kyc.getUserKYCImage({
       TargetUserID: row.UserID,
-      ImageType: ImageType.SelfieImg,
+      ImageType: kyc.ImageType.SelfieImg,
       Message: {
         Error: {
           Title: t('MSG_GET_KYC_IMAGES'),
           Message: t('MSG_GET_KYC_IMAGES_FAIL'),
           Popup: true,
-          Type: NotifyType.Error
+          Type: notify.NotifyType.Error
         }
       }
-    }, row.KycID, () => {
-      if (target?.value?.DocumentType === DocumentType.Passport) {
+    }, () => {
+      if (target?.value?.DocumentType === kyc.DocumentType.Passport) {
         showing.value = true
         return
       }
-      kyc.getUserKYCImage({
+      _kyc.getUserKYCImage({
         TargetUserID: row.UserID,
-        ImageType: ImageType.BackImg,
+        ImageType: kyc.ImageType.BackImg,
         Message: {
           Error: {
             Title: t('MSG_GET_KYC_IMAGES'),
             Message: t('MSG_GET_KYC_IMAGES_FAIL'),
             Popup: true,
-            Type: NotifyType.Error
+            Type: notify.NotifyType.Error
           }
         }
-      }, row.KycID, () => {
+      }, () => {
         showing.value = true
       })
     })
   })
 }
 
-const updateReview = (state: KYCReviewState) => {
-  if (state === KYCReviewState.Rejected && target.value.Message.length === 0) {
+const updateReview = (state: reviewbase.ReviewState) => {
+  if (state === reviewbase.ReviewState.Rejected && target.value.Message.length === 0) {
     console.log('message is required')
     return
   }
-  kyc.updateKycReview({
+  review.updateKycReview({
     ReviewID: target.value?.ReviewID,
-    LangID: locale.AppLang?.LangID,
     State: state,
     Message: target.value.Message,
     NotifyMessage: {
@@ -286,11 +179,11 @@ const updateReview = (state: KYCReviewState) => {
         Title: t('MSG_UPDATE_KYC_REVIEW'),
         Message: t('MSG_UPDATE_KYC_REVIEW_FAIL'),
         Popup: true,
-        Type: NotifyType.Error
+        Type: notify.NotifyType.Error
       },
       Info: {}
     }
-  }, (r:KYCReview, error: boolean) => {
+  }, (error: boolean) => {
     if (error) {
       return
     }
@@ -315,29 +208,29 @@ const onExport = () => {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { FrontImg, BackImg, SelfieImg, CreatedAt, UpdatedAt, ...values } = { ...el }
     const valueArray = Object.values(values)
-    valueArray.push(formatTime(CreatedAt), formatTime(UpdatedAt))
+    valueArray.push(utils.formatTime(CreatedAt), utils.formatTime(UpdatedAt))
     str += Object.values(valueArray).join(',') + '\n'
   })
   const blob = new Blob([str], { type: 'text/plain;charset=utf-8' })
-  const filename = app.App.Name + '-Kycs-' + formatTime(new Date().getTime() / 1000) + '.csv'
+  const filename = application.app(undefined)?.Name as string + '-Kycs-' + utils.formatTime(new Date().getTime() / 1000) + '.csv'
   saveAs(blob, filename)
 }
 
 onMounted(() => {
-  if (kyc.KycReviews.KycReviews.length === 0) {
+  if (!reviews.value?.length) {
     reviewLoading.value = true
     getKycReviews(0, 500)
   }
-  if (user.Users.Users.length === 0) {
+  if (users.value?.length === 0) {
     getUsers(0, 500)
   }
-  if (app.App === undefined) {
+  if (!application.app(undefined)) {
     getApplication()
   }
 })
 
 const getUsers = (offset: number, limit: number) => {
-  user.getUsers({
+  _user.getUsers({
     Offset: offset,
     Limit: limit,
     Message: {
@@ -345,18 +238,18 @@ const getUsers = (offset: number, limit: number) => {
         Title: 'MSG_GET_USERS',
         Message: 'MSG_GET_USERS_FAIL',
         Popup: true,
-        Type: NotifyType.Error
+        Type: notify.NotifyType.Error
       }
     }
-  }, (resp: Array<User>, error: boolean) => {
-    if (error || resp.length < limit) {
+  }, (error: boolean, rows?: Array<user.User>) => {
+    if (error || !rows?.length) {
       return
     }
     getUsers(offset + limit, limit)
   })
 }
 const getKycReviews = (offset: number, limit: number) => {
-  kyc.getKycReviews({
+  review.getKycReviews({
     Offset: offset,
     Limit: limit,
     Message: {
@@ -364,27 +257,27 @@ const getKycReviews = (offset: number, limit: number) => {
         Title: t('MSG_GET_KYC_REVIEWS'),
         Message: t('MSG_GET_KYC_REVIEWS_FAIL'),
         Popup: true,
-        Type: NotifyType.Error
+        Type: notify.NotifyType.Error
       }
     }
-  }, (resp: Array<KYCReview>, error: boolean) => {
-    if (error || resp.length < limit) {
+  }, (error: boolean, rows?: Array<kycreview.KYCReview>) => {
+    if (error || !rows?.length) {
       reviewLoading.value = false
       return
     }
     getKycReviews(offset + limit, limit)
   })
 }
-const app = useFrontendAppStore()
+
+const application = app.useApplicationStore()
 const getApplication = () => {
-  app.getApp({
-    AppID: AppID,
+  application.getApp({
     Message: {
       Error: {
         Title: 'MSG_GET_APP',
         Message: 'MSG_GET_APP_FAIL',
         Popup: true,
-        Type: NotifyType.Error
+        Type: notify.NotifyType.Error
       }
     }
   }, () => {
@@ -392,4 +285,102 @@ const getApplication = () => {
   })
 }
 
+const columns = computed(() => [
+  {
+    name: 'UserID',
+    label: t('MSG_USER_ID'),
+    field: (row: kycreview.KYCReview) => row.UserID,
+    sortable: true
+  },
+  {
+    name: 'EmailAddress',
+    label: t('MSG_EMAIL_ADDRESS'),
+    field: (row: kycreview.KYCReview) => row.EmailAddress,
+    sortable: true
+  },
+  {
+    name: 'PhoneNO',
+    label: t('MSG_PHONE_NO'),
+    field: (row: kycreview.KYCReview) => row.PhoneNO,
+    sortable: true
+  },
+  {
+    name: 'KycID',
+    label: t('MSG_KYC_ID'),
+    field: (row: kycreview.KYCReview) => row.KycID,
+    sortable: true
+  },
+  {
+    name: 'DocumentType',
+    label: t('MSG_DOCUMENT_TYPE'),
+    field: (row: kycreview.KYCReview) => row.DocumentType,
+    sortable: true
+  },
+  {
+    name: 'IDNumber',
+    label: t('MSG_ID_NUMBER'),
+    field: (row: kycreview.KYCReview) => row.IDNumber,
+    sortable: true
+  },
+  {
+    name: 'EntityType',
+    label: t('MSG_ENTITY_TYPE'),
+    field: (row: kycreview.KYCReview) => row.EntityType,
+    sortable: true
+  },
+  {
+    name: 'ReviewID',
+    label: t('MSG_REVIEW_ID'),
+    field: (row: kycreview.KYCReview) => row.ReviewID,
+    sortable: true
+  },
+  {
+    name: 'ObjectType',
+    label: t('MSG_OBJECT_TYPE'),
+    field: (row: kycreview.KYCReview) => row.ObjectType,
+    sortable: true
+  },
+  {
+    name: 'Domain',
+    label: t('MSG_DOMAIN'),
+    field: (row: kycreview.KYCReview) => row.Domain,
+    sortable: true
+  },
+  {
+    name: 'Reviewer',
+    label: t('MSG_REVIEWER'),
+    field: (row: kycreview.KYCReview) => row.Reviewer,
+    sortable: true
+  },
+  {
+    name: 'ReviewState',
+    label: t('MSG_REVIEW_STATE'),
+    field: (row: kycreview.KYCReview) => row.ReviewState,
+    sortable: true
+  },
+  {
+    name: 'KycState',
+    label: t('MSG_KYC_STATE'),
+    field: (row: kycreview.KYCReview) => row.KycState,
+    sortable: true
+  },
+  {
+    name: 'Message',
+    label: t('MSG_MESSAGE'),
+    field: (row: kycreview.KYCReview) => row.Message,
+    sortable: true
+  },
+  {
+    name: 'CreatedAt',
+    label: t('MSG_CREATED_AT'),
+    field: (row: kycreview.KYCReview) => utils.formatTime(row.CreatedAt),
+    sortable: true
+  },
+  {
+    name: 'UpdatedAt',
+    label: t('MSG_UPDATED_AT'),
+    field: (row: kycreview.KYCReview) => utils.formatTime(row.UpdatedAt),
+    sortable: true
+  }
+])
 </script>
