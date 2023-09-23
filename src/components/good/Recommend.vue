@@ -66,7 +66,6 @@
 
 <script setup lang='ts'>
 import { formatTime, NotifyType, useLocalUserStore, useAdminRecommendStore, useAdminAppGoodStore, AppGood, Recommend } from 'npool-cli-v4'
-import { getRecommends } from 'src/api/good'
 import { computed, defineAsyncComponent, onMounted, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 // eslint-disable-next-line @typescript-eslint/unbound-method
@@ -170,7 +169,7 @@ const updateRecommend = (done: () => void) => {
 
 onMounted(() => {
   if (recommends.value.length === 0) {
-    getRecommends(0, 500)
+    // getRecommends(0, 500)
   }
 })
 

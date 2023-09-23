@@ -1,9 +1,9 @@
-import { NotifyType, Order, useAdminOrderStore } from 'npool-cli-v4'
+import { notify, order } from 'src/npoolstore'
 
-const order = useAdminOrderStore()
+const _order = order.useOrderStore()
 
 export const getAppOrders = (offset: number, limit: number) => {
-  order.getAppOrders({
+  _order.getAppOrders({
     Offset: offset,
     Limit: limit,
     Message: {
@@ -11,11 +11,11 @@ export const getAppOrders = (offset: number, limit: number) => {
         Title: 'MSG_GET_ORDERS',
         Message: 'MSG_GET_ORDERS_FAIL',
         Popup: true,
-        Type: NotifyType.Error
+        Type: notify.NotifyType.Error
       }
     }
-  }, (orders: Array<Order>, error: boolean) => {
-    if (error || orders.length < limit) {
+  }, (error: boolean, rows?: Array<order.Order>) => {
+    if (error || !rows?.length) {
       return
     }
     getAppOrders(offset + limit, limit)

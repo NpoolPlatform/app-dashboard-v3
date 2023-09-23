@@ -1,6 +1,6 @@
-import { NotifyType, useAdminAppCountryStore, AppCountry, useAdminAppLangStore, AppLang, useAdminMessageStore, Message } from 'npool-cli-v4'
+import { applang, appcountry, notify, g11nbase, message } from 'src/npoolstore'
 
-const country = useAdminAppCountryStore()
+const country = appcountry.useAppCountryStore()
 export const getCountries = (offset: number, limit: number) => {
   country.getAppCountries({
     Offset: offset,
@@ -10,18 +10,18 @@ export const getCountries = (offset: number, limit: number) => {
         Title: 'MSG_GET_COUNTRIES',
         Message: 'MSG_GET_COUNTRIES_FAIL',
         Popup: true,
-        Type: NotifyType.Error
+        Type: notify.NotifyType.Error
       }
     }
-  }, (error: boolean, rows: Array<AppCountry>) => {
-    if (error || rows.length === 0) {
+  }, (error: boolean, rows: Array<appcountry.Country>) => {
+    if (error || !rows.length) {
       return
     }
     getCountries(offset + limit, limit)
   })
 }
 
-const appLang = useAdminAppLangStore()
+const appLang = applang.useAppLangStore()
 export const getAppLangs = (offset: number, limit: number) => {
   appLang.getAppLangs({
     Offset: offset,
@@ -31,10 +31,10 @@ export const getAppLangs = (offset: number, limit: number) => {
         Title: 'MSG_GET_APP_LANGUAGES',
         Message: 'MSG_GET_APP_LANGUAGES_FAIL',
         Popup: true,
-        Type: NotifyType.Error
+        Type: notify.NotifyType.Error
       }
     }
-  }, (error: boolean, rows: Array<AppLang>) => {
+  }, (error: boolean, rows: Array<g11nbase.AppLang>) => {
     if (error || rows.length === 0) {
       return
     }
@@ -42,22 +42,21 @@ export const getAppLangs = (offset: number, limit: number) => {
   })
 }
 
-const message = useAdminMessageStore()
+const _message = message.useMessageStore()
 export const getMessages = (offset: number, limit: number) => {
-  message.getMessages({
+  _message.getMessages({
     Disabled: false,
     Offset: offset,
     Limit: limit,
-    NotifyMessage: {
+    Message: {
       Error: {
         Title: 'MSG_GET_APP_MESSAGES',
         Message: 'MSG_GET_APP_MESSAGES_FAIL',
-        Popup: true,
-        Type: NotifyType.Error
+        Type: notify.NotifyType.Error
       }
     }
-  }, (error: boolean, rows: Array<Message>) => {
-    if (error || rows.length === 0) {
+  }, (error: boolean, rows?: Array<g11nbase.Message>) => {
+    if (error || !rows?.length) {
       return
     }
     getMessages(offset + limit, limit)

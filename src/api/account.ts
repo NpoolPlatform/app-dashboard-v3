@@ -1,6 +1,6 @@
-import { Account, NotifyType, useAdminUserAccountStore } from 'npool-cli-v4'
+import { useraccount, notify, useraccountbase } from 'src/npoolstore'
 
-const account = useAdminUserAccountStore()
+const account = useraccount.useUserAccountStore()
 
 export const getAppUserAccounts = (offset: number, limit: number) => {
   account.getAppUserAccounts({
@@ -11,11 +11,11 @@ export const getAppUserAccounts = (offset: number, limit: number) => {
         Title: 'MSG_GET_WITHDRAW_ADDRESS_REVIEWS',
         Message: 'MSG_GET_WITHDRAW_ADDRESS_REVIEWS_FAIL',
         Popup: true,
-        Type: NotifyType.Error
+        Type: notify.NotifyType.Error
       }
     }
-  }, (resp: Array<Account>, error: boolean) => {
-    if (error || resp.length < limit) {
+  }, (error: boolean, rows?: Array<useraccountbase.Account>) => {
+    if (error || !rows?.length) {
       return
     }
     getAppUserAccounts(offset + limit, limit)

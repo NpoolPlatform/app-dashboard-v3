@@ -1,5 +1,4 @@
-import { NotifyType } from 'npool-cli-v4'
-import { coupon } from 'src/npoolstore'
+import { coupon, notify } from 'src/npoolstore'
 
 const _coupon = coupon.useCouponStore()
 export const getCoupons = (offset: number, limit: number, type?: coupon.CouponType) => {
@@ -12,7 +11,7 @@ export const getCoupons = (offset: number, limit: number, type?: coupon.CouponTy
         Title: 'MSG_GET_COUPONS',
         Message: 'MSG_GET_COUPONS_FAIL',
         Popup: true,
-        Type: NotifyType.Error
+        Type: notify.NotifyType.Error
       }
     }
   }, (error: boolean, rows?: Array<coupon.Coupon>) => {

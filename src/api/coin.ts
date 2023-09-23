@@ -1,6 +1,6 @@
-import { AppCoin, CoinDescription, NotifyType, useAdminAppCoinStore, useAdminCoinDescriptionStore } from 'npool-cli-v4'
+import { appcoin, appcoindescription, notify } from 'src/npoolstore'
 
-const coin = useAdminAppCoinStore()
+const coin = appcoin.useAppCoinStore()
 export const getCoins = (offset : number, limit: number) => {
   coin.getAppCoins({
     Offset: offset,
@@ -10,18 +10,18 @@ export const getCoins = (offset : number, limit: number) => {
         Title: 'MSG_GET_COINS',
         Message: 'MSG_GET_COINS_FAIL',
         Popup: true,
-        Type: NotifyType.Error
+        Type: notify.NotifyType.Error
       }
     }
-  }, (error: boolean, coins: Array<AppCoin>) => {
-    if (error || coins.length < limit) {
+  }, (error: boolean, rows?: Array<appcoin.AppCoin>) => {
+    if (error || !rows?.length) {
       return
     }
     getCoins(offset + limit, limit)
   })
 }
 
-const description = useAdminCoinDescriptionStore()
+const description = appcoindescription.useCoinDescriptionStore()
 export const getCoinDescriptions = (offset : number, limit: number) => {
   description.getCoinDescriptions({
     Offset: offset,
@@ -31,11 +31,11 @@ export const getCoinDescriptions = (offset : number, limit: number) => {
         Title: 'MSG_GET_COIN_DESCRIPTIONS',
         Message: 'MSG_GET_COIN_DESCRIPTIONS_FAIL',
         Popup: true,
-        Type: NotifyType.Error
+        Type: notify.NotifyType.Error
       }
     }
-  }, (error: boolean, descriptions: Array<CoinDescription>) => {
-    if (error || descriptions.length < limit) {
+  }, (error: boolean, rows?: Array<appcoindescription.CoinDescription>) => {
+    if (error || !rows?.length) {
       return
     }
     getCoinDescriptions(offset + limit, limit)
