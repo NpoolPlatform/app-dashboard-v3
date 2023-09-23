@@ -83,9 +83,9 @@
                 <td class='units'>
                   {{ _good.TotalUnits }}{{ $t(_good.GoodUnit) }}
                 </td>
-                <td>{{ _good.TotalAmount }} <span class='price-coin-name'>{{ PriceCoinName }}</span></td>
+                <td>{{ _good.TotalAmount }} <span class='price-coin-name'>{{ constant.PriceCoinName }}</span></td>
                 <td class='commission'>
-                  {{ _good.TotalCommission }} <span class='price-coin-name'>{{ PriceCoinName }}</span>
+                  {{ _good.TotalCommission }} <span class='price-coin-name'>{{ constant.PriceCoinName }}</span>
                 </td>
               </tr>
             </div>
@@ -149,9 +149,9 @@
                 <td class='units'>
                   {{ _good.TotalUnits }}{{ $t(_good.GoodUnit) }}
                 </td>
-                <td>{{ _good.TotalAmount }} <span class='price-coin-name'>{{ PriceCoinName }}</span></td>
+                <td>{{ _good.TotalAmount }} <span class='price-coin-name'>{{ constant.PriceCoinName }}</span></td>
                 <td class='commission'>
-                  {{ _good.TotalCommission }} <span class='price-coin-name'>{{ PriceCoinName }}</span>
+                  {{ _good.TotalCommission }} <span class='price-coin-name'>{{ constant.PriceCoinName }}</span>
                 </td>
               </tr>
             </div>
@@ -166,22 +166,19 @@
   <RegistrationCard />
 </template>
 <script setup lang='ts'>
-import {
-  PriceCoinName
-} from 'npool-cli-v2'
-import { formatTime, NotifyType, useAdminUserStore, User, useAdminRegistrationStore, InvalidID, useAdminAppGoodStore } from 'npool-cli-v4'
 import { getUsers } from 'src/api/user'
 import { computed, defineAsyncComponent, onMounted, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { achievement } from 'src/npoolstore'
+import { achievement, registration, user, appgood, notify, constant, utils } from 'src/npoolstore'
+import { InvalidID } from 'src/npoolstore/const'
 
 // eslint-disable-next-line @typescript-eslint/unbound-method
 const { t } = useI18n({ useScope: 'global' })
 
 const RegistrationCard = defineAsyncComponent(() => import('src/components/inspire/Registration.vue'))
 
-const user = useAdminUserStore()
-const users = computed(() => user.Users.Users)
+const _user = user.useUserStore()
+const users = computed(() => _user.appUsers(undefined))
 
 const username = ref('')
 const displayUsers = computed(() => users.value.filter((user) => {
@@ -190,16 +187,20 @@ const displayUsers = computed(() => users.value.filter((user) => {
         user.PhoneNO?.toLowerCase().includes(username.value.toLowerCase())
 }))
 
-const selectedUser = ref([] as Array<User>)
+const selectedUser = ref([] as Array<user.User>)
 const curUserID = computed(() => selectedUser.value.length ? selectedUser.value[0].ID : InvalidID)
 
-const regInvitation = useAdminRegistrationStore()
-const inviteeIDs = computed(() => regInvitation.inviteeIDs(curUserID.value))
+const regInvitation = registration.useRegistrationStore()
+const inviteeIDs = computed(() => {
+  const ids = [] as Array<string>
+  regInvitation.invitees(undefined, curUserID.value).forEach((el) => ids.push(el.InviteeID))
+  return ids
+})
 
 const _userInviters = ref([] as Array<string>)
 const getInviterIDs = (userID: string) => {
   userInviters.value.push(userID)
-  const root = regInvitation.Registrations.Registrations.find(item => item.InviteeID === userID)
+  const root = regInvitation.registrations().find(item => item.InviteeID === userID)
   if (!root) {
     return userInviters.value
   }
@@ -210,14 +211,14 @@ const userInviters = computed(() => _userInviters.value)
 const _achievement = achievement.useAchievementStore()
 const Achievements = computed(() => _achievement.achievements(curUserID.value))
 const inviteeAchievements = computed(() => {
-  let _data = _achievement.inviteeAchievements(curUserID.value)
+  let _data = _achievement.inviteeAchievements(undefined, curUserID.value)
   if (currentKolState.value.Label !== 'ALL') {
     _data = _data.filter((el) => el.Kol === currentKolState.value.Value)
   }
   return _data
 })
 
-const _inviterAchievements = computed(() => _achievement.inviterAchievements(curUserID.value))
+const _inviterAchievements = computed(() => _achievement.inviterAchievements(undefined, curUserID.value))
 const inviterAchievements = computed(() => {
   let _data = [] as Array<achievement.Achievement>
   userInviters.value.forEach((ID) => {
@@ -234,8 +235,8 @@ const inviterAchievements = computed(() => {
 
 const loading = ref(false)
 
-const good = useAdminAppGoodStore()
-const getDisplayNames = computed(() => (goodID: string) => good.getGoodByID(goodID)?.DisplayNames)
+const good = appgood.useAppGoodStore()
+const getDisplayNames = computed(() => (appGoodID: string) => good.good(undefined, appGoodID)?.DisplayNames)
 
 watch(curUserID, () => {
   _userInviters.value = []
@@ -261,7 +262,7 @@ const getUserAchievements = (offset: number, limit: number) => {
       Error: {
         Title: t('MSG_GET_GOOD_ACHIEVEMENT_FAIL'),
         Popup: true,
-        Type: NotifyType.Error
+        Type: notify.NotifyType.Error
       }
     }
   }, (error: boolean, rows?: Array<achievement.Achievement>) => {
@@ -298,7 +299,7 @@ const KOLOptions = ref([
 const currentKolState = ref(KOLOptions.value[0])
 
 onMounted(() => {
-  if (user.Users.Users.length === 0) {
+  if (!users.value?.length) {
     getUsers(0, 100)
   }
 })
@@ -308,43 +309,43 @@ const uColumns = computed(() => [
     name: 'AppID',
     label: t('MSG_APP_ID'),
     sortable: true,
-    field: (row: User) => row.AppID
+    field: (row: user.User) => row.AppID
   },
   {
     name: 'UserID',
     label: t('MSG_USER_ID'),
     sortable: true,
-    field: (row: User) => row.ID
+    field: (row: user.User) => row.ID
   },
   {
     name: 'EmailAddress',
     label: t('MSG_EMAIL_ADDRESS'),
     sortable: true,
-    field: (row: User) => row.EmailAddress
+    field: (row: user.User) => row.EmailAddress
   },
   {
     name: 'PhoneNO',
     label: t('MSG_PHONE_NO'),
     sortable: true,
-    field: (row: User) => row.PhoneNO
+    field: (row: user.User) => row.PhoneNO
   },
   {
     name: 'Roles',
     label: t('MSG_ROLES'),
     sortable: true,
-    field: (row: User) => row.Roles?.join(',')
+    field: (row: user.User) => row.Roles?.join(',')
   },
   {
     name: 'IDNUMBER',
     label: t('MSG_IDNUMBER'),
     sortable: true,
-    field: (row: User) => row.IDNumber
+    field: (row: user.User) => row.IDNumber
   },
   {
     name: 'CreatedAt',
     label: t('MSG_CREATEDAT'),
     sortable: true,
-    field: (row: User) => formatTime(row.CreatedAt)
+    field: (row: user.User) => utils.formatTime(row.CreatedAt)
   }
 ])
 

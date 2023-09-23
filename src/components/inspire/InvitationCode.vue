@@ -81,7 +81,7 @@
 </template>
 
 <script setup lang='ts'>
-import { formatTime, NotifyType, useAdminUserStore, User, useAdminInvitationCodeStore, InvitationCode } from 'npool-cli-v4'
+import { utils, invitationcode, user, notify } from 'src/npoolstore'
 import { getUsers } from 'src/api/user'
 import { computed, onMounted, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
@@ -89,16 +89,16 @@ import { useI18n } from 'vue-i18n'
 // eslint-disable-next-line @typescript-eslint/unbound-method
 const { t } = useI18n({ useScope: 'global' })
 
-const code = useAdminInvitationCodeStore()
-const codes = computed(() => code.InvitationCodes.InvitationCodes)
+const code = invitationcode.useInvitationCodeStore()
+const codes = computed(() => code.invitationCodes(undefined))
 
 const _code = ref('')
 const displayCodes = computed(() => codes.value.filter((el) => {
   return el.EmailAddress?.includes(_code.value) || el.InvitationCode?.includes(_code.value) || el.PhoneNO?.includes(_code.value)
 }))
 
-const user = useAdminUserStore()
-const users = computed(() => user.Users.Users)
+const _user = user.useUserStore()
+const users = computed(() => _user.appUsers(undefined))
 
 const username = ref('')
 const start = ref('')
@@ -116,7 +116,7 @@ const displayUsers = computed(() => users.value.filter((user) => {
   return display
 }))
 
-const selectedUser = ref([] as Array<User>)
+const selectedUser = ref([] as Array<user.User>)
 
 const onCreateInvitationCodeClick = () => {
   addInvitationCode()
@@ -131,13 +131,13 @@ const addInvitationCode = (idx = 0) => {
         Title: t('MSG_CREATE_INVITATION_CODE'),
         Message: t('MSG_CREATE_INVITATION_CODE_FAIL'),
         Popup: true,
-        Type: NotifyType.Error
+        Type: notify.NotifyType.Error
       },
       Info: {
         Title: t('MSG_CREATE_INVITATION_CODE'),
         Message: t('MSG_CREATE_INVITATION_CODE_FAIL'),
         Popup: true,
-        Type: NotifyType.Success
+        Type: notify.NotifyType.Success
       }
     }
   }, () => {
@@ -150,7 +150,6 @@ const addInvitationCode = (idx = 0) => {
   })
 }
 
-const _user = useAdminUserStore()
 const onSetKolClick = () => {
   selectedUser.value?.forEach((el) => {
     _user.updateAppUser({
@@ -161,13 +160,13 @@ const onSetKolClick = () => {
           Title: t('MSG_CREATE_INVITATION_CODE'),
           Message: t('MSG_CREATE_INVITATION_CODE_FAIL'),
           Popup: true,
-          Type: NotifyType.Error
+          Type: notify.NotifyType.Error
         },
         Info: {
           Title: t('MSG_CREATE_INVITATION_CODE'),
           Message: t('MSG_CREATE_INVITATION_CODE_FAIL'),
           Popup: true,
-          Type: NotifyType.Success
+          Type: notify.NotifyType.Success
         }
       }
     }, (error: boolean) => {
@@ -183,7 +182,7 @@ onMounted(() => {
   if (codes.value?.length === 0) {
     getInvitationCodes(0, 500)
   }
-  if (user.Users.Users.length === 0) {
+  if (!users.value?.length) {
     getUsers(0, 500)
   }
 })
@@ -193,11 +192,8 @@ const getInvitationCodes = (offset: number, limit: number) => {
     Offset: offset,
     Limit: limit,
     Message: {}
-  }, (error: boolean, rows: Array<InvitationCode>) => {
-    if (error) {
-      return
-    }
-    if (!rows.length) {
+  }, (error: boolean, rows: Array<invitationcode.InvitationCode>) => {
+    if (error || !rows.length) {
       return
     }
     getInvitationCodes(offset + limit, limit)
@@ -208,55 +204,55 @@ const columns = computed(() => [
     name: 'AppID',
     label: t('MSG_APP_ID'),
     sortable: true,
-    field: (row: User) => row.AppID
+    field: (row: user.User) => row.AppID
   },
   {
     name: 'UserID',
     label: t('MSG_USER_ID'),
     sortable: true,
-    field: (row: User) => row.ID
+    field: (row: user.User) => row.ID
   },
   {
     name: 'EmailAddress',
     label: t('MSG_EMAIL_ADDRESS'),
     sortable: true,
-    field: (row: User) => row.EmailAddress
+    field: (row: user.User) => row.EmailAddress
   },
   {
     name: 'PhoneNO',
     label: t('MSG_PHONE_NO'),
     sortable: true,
-    field: (row: User) => row.PhoneNO
+    field: (row: user.User) => row.PhoneNO
   },
   {
     name: 'InvitationCode',
     label: t('MSG_INVITATION_CODE'),
     sortable: true,
-    field: (row: User) => row.InvitationCode
+    field: (row: user.User) => row.InvitationCode
   },
   {
     name: 'KOL',
     label: t('MSG_KOL'),
     sortable: true,
-    field: (row: User) => row.Kol
+    field: (row: user.User) => row.Kol
   },
   {
     name: 'Roles',
     label: t('MSG_ROLES'),
     sortable: true,
-    field: (row: User) => row.Roles?.join(',')
+    field: (row: user.User) => row.Roles?.join(',')
   },
   {
     name: 'IDNUMBER',
     label: t('MSG_IDNUMBER'),
     sortable: true,
-    field: (row: User) => row.IDNumber
+    field: (row: user.User) => row.IDNumber
   },
   {
     name: 'CreatedAt',
     label: t('MSG_CREATEDAT'),
     sortable: true,
-    field: (row: User) => formatTime(row.CreatedAt)
+    field: (row: user.User) => utils.formatTime(row.CreatedAt)
   }
 ])
 
@@ -265,55 +261,55 @@ const invitationCodeColumns = computed(() => [
     name: 'AppID',
     label: t('MSG_APP_ID'),
     sortable: true,
-    field: (row: InvitationCode) => row.AppID
+    field: (row: invitationcode.InvitationCode) => row.AppID
   },
   {
     name: 'UserID',
     label: t('MSG_USER_ID'),
     sortable: true,
-    field: (row: InvitationCode) => row.UserID
+    field: (row: invitationcode.InvitationCode) => row.UserID
   },
   {
     name: 'Username',
     label: t('MSG_USERNAME'),
     sortable: true,
-    field: (row: InvitationCode) => row.Username
+    field: (row: invitationcode.InvitationCode) => row.Username
   },
   {
     name: 'EmailAddress',
     label: t('MSG_EMAIL_ADDRESS'),
     sortable: true,
-    field: (row: InvitationCode) => row.EmailAddress
+    field: (row: invitationcode.InvitationCode) => row.EmailAddress
   },
   {
     name: 'PhoneNO',
     label: t('MSG_PHONE_NO'),
     sortable: true,
-    field: (row: InvitationCode) => row.PhoneNO
+    field: (row: invitationcode.InvitationCode) => row.PhoneNO
   },
   {
     name: 'InvitationCode',
     label: t('MSG_INVITATION_CODE'),
     sortable: true,
-    field: (row: InvitationCode) => row.InvitationCode
+    field: (row: invitationcode.InvitationCode) => row.InvitationCode
   },
   {
     name: 'Disabled',
     label: t('MSG_DISABLED'),
     sortable: true,
-    field: (row: InvitationCode) => row.Disabled
+    field: (row: invitationcode.InvitationCode) => row.Disabled
   },
   {
     name: 'CreatedAt',
     label: t('MSG_CREATED_AT'),
     sortable: true,
-    field: (row: InvitationCode) => formatTime(row.CreatedAt)
+    field: (row: invitationcode.InvitationCode) => utils.formatTime(row.CreatedAt)
   },
   {
     name: 'UpdatedAt',
     label: t('MSG_UPDATED_AT'),
     sortable: true,
-    field: (row: InvitationCode) => formatTime(row.UpdatedAt)
+    field: (row: invitationcode.InvitationCode) => utils.formatTime(row.UpdatedAt)
   }
 ])
 </script>

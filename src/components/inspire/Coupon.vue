@@ -11,42 +11,42 @@
 </template>
 
 <script setup lang='ts'>
-import { NotifyType } from 'npool-cli-v4'
 import { computed, onMounted, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { coupon } from 'src/npoolstore'
+import { coupon, notify } from 'src/npoolstore'
 
 // eslint-disable-next-line @typescript-eslint/unbound-method
 const { t } = useI18n({ useScope: 'global' })
 
 const _coupon = coupon.useCouponStore()
-const coupons = computed(() => _coupon.Coupons)
+const coupons = computed(() => _coupon.coupons())
 const loading = ref(true)
 
-const prepare = () => {
-  if (_coupon.Coupons.length > 0) {
-    loading.value = false
-    return
-  }
-  loading.value = true
+const getCoupons = (offset: number, limit: number) => {
   _coupon.getCoupons({
-    Offset: 0,
-    Limit: 100,
+    Offset: offset,
+    Limit: limit,
     Message: {
       Error: {
         Title: t('MSG_GET_COUPONS'),
         Message: t('MSG_GET_COUPONS_FAIL'),
         Popup: true,
-        Type: NotifyType.Error
+        Type: notify.NotifyType.Error
       }
     }
-  }, () => {
-    loading.value = false
+  }, (error: boolean, rows?: Array<coupon.Coupon>) => {
+    if (error || !rows?.length) {
+      loading.value = false
+      return
+    }
+    getCoupons(offset + limit, limit)
   })
 }
 
 onMounted(() => {
-  prepare()
+  if (!coupons.value?.length) {
+    getCoupons(0, 100)
+  }
 })
 
 </script>

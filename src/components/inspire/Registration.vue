@@ -6,7 +6,7 @@
     :rows='displayRegistrations'
     row-key='ID'
     :rows-per-page-options='[100]'
-    @row-click='(evt, row, index) => onRowClick(row as Registration)'
+    @row-click='(evt, row, index) => onRowClick(row as registration.Registration)'
   >
     <template #top-right>
       <div class='row indent flat'>
@@ -56,7 +56,7 @@
 </template>
 
 <script setup lang='ts'>
-import { NotifyType, useAdminRegistrationStore, Registration } from 'npool-cli-v4'
+import { registration, notify } from 'src/npoolstore'
 import { computed, defineAsyncComponent, onMounted, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import AppUserSelector from '../user/AppUserSelector.vue'
@@ -65,8 +65,8 @@ const { t } = useI18n({ useScope: 'global' })
 
 const LoadingButton = defineAsyncComponent(() => import('src/components/button/LoadingButton.vue'))
 
-const registration = useAdminRegistrationStore()
-const registrations = computed(() => registration.Registrations.Registrations)
+const _registration = registration.useRegistrationStore()
+const registrations = computed(() => _registration.registrations())
 
 const invitee = ref('')
 const inviter = ref('')
@@ -92,18 +92,18 @@ const displayRegistrations = computed(() => registrations.value.filter((el) => {
   return display
 }))
 
-const target = ref({} as Registration)
+const target = ref({} as registration.Registration)
 const showing = ref(false)
 const updating = ref(false)
 
-const onRowClick = (row: Registration) => {
+const onRowClick = (row: registration.Registration) => {
   target.value = { ...row }
   showing.value = true
   updating.value = true
 }
 const onMenuHide = () => {
   showing.value = false
-  target.value = {} as Registration
+  target.value = {} as registration.Registration
 }
 
 const onCancel = () => {
@@ -111,7 +111,7 @@ const onCancel = () => {
 }
 
 const onSubmit = (done: () => void) => {
-  registration.updateRegistration({
+  _registration.updateRegistration({
     ID: target.value.ID,
     InviterID: target.value.InviterID,
     Message: {
@@ -119,7 +119,7 @@ const onSubmit = (done: () => void) => {
         Title: t('MSG_UPDATE_REGISTRATION'),
         Message: t('MSG_UPDATE_REGISTRATION_FAIL'),
         Popup: true,
-        Type: NotifyType.Error
+        Type: notify.NotifyType.Error
       }
     }
   }, (error: boolean) => {
@@ -138,17 +138,17 @@ onMounted(() => {
 })
 
 const getRegistrations = (offset: number, limit: number) => {
-  registration.getRegistrations({
+  _registration.getRegistrations({
     Offset: offset,
     Limit: limit,
     Message: {
       Error: {
         Title: t('MSG_GET_REGISTRATIONS_FAIL'),
         Popup: true,
-        Type: NotifyType.Error
+        Type: notify.NotifyType.Error
       }
     }
-  }, (error: boolean, rows: Array<Registration>) => {
+  }, (error: boolean, rows: Array<registration.Registration>) => {
     if (error) {
       return
     }

@@ -104,7 +104,7 @@
         <span>{{ $t('MSG_RECONCILE') }}</span>
       </q-card-section>
       <q-card-section>
-        <AppGoodSelector v-model:id='reconcileRequest.GoodID' :label='$t("MSG_GOOD")' />
+        <AppGoodSelector v-model:id='reconcileRequest.AppGoodID' :label='$t("MSG_GOOD")' />
       </q-card-section>
       <q-item class='row'>
         <LoadingButton loading :label='$t("MSG_RECONCILE")' @click='onSubmit2' />
@@ -118,11 +118,9 @@
 </template>
 
 <script setup lang='ts'>
-import { NotifyType, useAdminReconcileStore } from 'npool-cli-v4'
-import { ReconcileRequest } from 'npool-cli-v4/dist/store/admin/inspire/reconcile/types'
 import { computed, defineAsyncComponent, onMounted, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { commission } from 'src/npoolstore'
+import { commission, reconcile, notify } from 'src/npoolstore'
 
 // eslint-disable-next-line @typescript-eslint/unbound-method
 const { t } = useI18n({ useScope: 'global' })
@@ -177,13 +175,13 @@ const updateCommission = (done: () => void) => {
         Title: t('MSG_UPDATE_COMMISSION'),
         Message: t('MSG_UPDATE_COMMISSION_FAIL'),
         Popup: true,
-        Type: NotifyType.Error
+        Type: notify.NotifyType.Error
       },
       Info: {
         Title: t('MSG_UPDATE_COMMISSION'),
         Message: t('MSG_UPDATE_COMMISSION_FAIL'),
         Popup: true,
-        Type: NotifyType.Success
+        Type: notify.NotifyType.Success
       }
     }
   }, (error: boolean) => {
@@ -210,13 +208,13 @@ const createUserCommission = (done: () => void) => {
         Title: t('MSG_CREATE_COMMISSION'),
         Message: t('MSG_CREATE_COMMISSION_FAIL'),
         Popup: true,
-        Type: NotifyType.Error
+        Type: notify.NotifyType.Error
       },
       Info: {
         Title: t('MSG_CREATE_COMMISSION'),
         Message: t('MSG_CREATE_COMMISSION_FAIL'),
         Popup: true,
-        Type: NotifyType.Success
+        Type: notify.NotifyType.Success
       }
     }
   }, (error: boolean) => {
@@ -259,13 +257,13 @@ const onSubmit1 = (done: () => void) => {
         Title: t('MSG_CLONE_COMMISSION'),
         Message: t('MSG_CLONE_COMMISSION_FAIL'),
         Popup: true,
-        Type: NotifyType.Error
+        Type: notify.NotifyType.Error
       },
       Info: {
         Title: t('MSG_CLONE_COMMISSION'),
         Message: t('MSG_CLONE_COMMISSION_FAIL'),
         Popup: true,
-        Type: NotifyType.Success
+        Type: notify.NotifyType.Success
       }
     }
   }, (error: boolean) => {
@@ -277,12 +275,12 @@ const onSubmit1 = (done: () => void) => {
   })
 }
 
-const reconcileRequest = ref({} as ReconcileRequest)
+const reconcileRequest = ref({} as reconcile.ReconcileRequest)
 const showing2 = ref(false)
 
 const onMenuHide2 = () => {
   showing2.value = false
-  reconcileRequest.value = {} as ReconcileRequest
+  reconcileRequest.value = {} as reconcile.ReconcileRequest
 }
 
 const onCancel2 = () => {
@@ -290,25 +288,25 @@ const onCancel2 = () => {
 }
 const onReconcile = () => {
   showing2.value = true
-  reconcileRequest.value = {} as ReconcileRequest
+  reconcileRequest.value = {} as reconcile.ReconcileRequest
 }
 
-const reconcile = useAdminReconcileStore()
+const _reconcile = reconcile.useReconcileStore()
 const onSubmit2 = (done: () => void) => {
-  reconcile.reconcile({
+  _reconcile.reconcile({
     ...reconcileRequest.value,
     Message: {
       Error: {
         Title: t('MSG_RECONCILE'),
         Message: t('MSG_RECONCILE_FAIL'),
         Popup: true,
-        Type: NotifyType.Error
+        Type: notify.NotifyType.Error
       },
       Info: {
         Title: t('MSG_RECONCILE'),
         Message: t('MSG_RECONCILE_FAIL'),
         Popup: true,
-        Type: NotifyType.Success
+        Type: notify.NotifyType.Success
       }
     }
   }, (error: boolean) => {
@@ -334,7 +332,7 @@ const getAppCommissions = (offset: number, limit: number) => {
       Error: {
         Title: t('MSG_GET_COMMISSIONS_FAIL'),
         Popup: true,
-        Type: NotifyType.Error
+        Type: notify.NotifyType.Error
       }
     }
   }, (error: boolean, rows?: Array<commission.Commission>) => {

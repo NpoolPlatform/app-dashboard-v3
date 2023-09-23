@@ -79,9 +79,8 @@
 </template>
 
 <script setup lang='ts'>
-import { formatTime, NotifyType } from 'npool-cli-v4'
 import { getCoupons } from 'src/api/inspire'
-import { coupon, basetypes, eventinspire } from 'src/npoolstore'
+import { coupon, basetypes, eventinspire, utils, notify } from 'src/npoolstore'
 import { computed, defineAsyncComponent, onMounted, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 // eslint-disable-next-line @typescript-eslint/unbound-method
@@ -138,13 +137,13 @@ const updateEvent = (done: () => void) => {
         Title: t('MSG_UPDATE_EVENT'),
         Message: t('MSG_UPDATE_EVENT_FAIL'),
         Popup: true,
-        Type: NotifyType.Error
+        Type: notify.NotifyType.Error
       },
       Info: {
         Title: t('MSG_UPDATE_EVENT'),
         Message: t('MSG_UPDATE_EVENT_SUCCESS'),
         Popup: true,
-        Type: NotifyType.Success
+        Type: notify.NotifyType.Success
       }
     }
   }, (error: boolean) => {
@@ -165,13 +164,13 @@ const createEvent = (done: () => void) => {
         Title: t('MSG_CREATE_EVENT'),
         Message: t('MSG_CREATE_EVENT_FAIL'),
         Popup: true,
-        Type: NotifyType.Error
+        Type: notify.NotifyType.Error
       },
       Info: {
         Title: t('MSG_CREATE_EVENT'),
         Message: t('MSG_CREATE_EVENT_FAIL'),
         Popup: true,
-        Type: NotifyType.Success
+        Type: notify.NotifyType.Success
       }
     }
   }, (error: boolean) => {
@@ -200,7 +199,7 @@ const getEvents = (offset: number, limit: number) => {
       Error: {
         Title: t('MSG_GET_EVENT_FAIL'),
         Popup: true,
-        Type: NotifyType.Error
+        Type: notify.NotifyType.Error
       }
     }
   }, (error: boolean, rows?: Array<eventinspire.Event>) => {
@@ -277,13 +276,13 @@ const columns = computed(() => [
     name: 'CreatedAt',
     label: t('MSG_CREATED_AT'),
     sortable: true,
-    field: (row: eventinspire.Event) => formatTime(row.CreatedAt)
+    field: (row: eventinspire.Event) => utils.formatTime(row.CreatedAt)
   },
   {
     name: 'UpdatedAt',
     label: t('MSG_UPDATED_AT'),
     sortable: true,
-    field: (row: eventinspire.Event) => formatTime(row.UpdatedAt)
+    field: (row: eventinspire.Event) => utils.formatTime(row.UpdatedAt)
   }
 ])
 </script>

@@ -58,10 +58,9 @@
 </template>
 
 <script setup lang='ts'>
-import { formatTime, NotifyType, useAdminUserStore, User } from 'npool-cli-v4'
 import { computed, onMounted, watch, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { allocatedCoupon, coupon } from 'src/npoolstore'
+import { allocatedCoupon, coupon, user, utils, notify } from 'src/npoolstore'
 
 // eslint-disable-next-line @typescript-eslint/unbound-method
 const { t } = useI18n({ useScope: 'global' })
@@ -70,43 +69,43 @@ const columns = computed(() => [
     name: 'AppID',
     label: t('MSG_APP_ID'),
     sortable: true,
-    field: (row: User) => row.AppID
+    field: (row: user.User) => row.AppID
   },
   {
     name: 'UserID',
     label: t('MSG_USER_ID'),
     sortable: true,
-    field: (row: User) => row.ID
+    field: (row: user.User) => row.ID
   },
   {
     name: 'EmailAddress',
     label: t('MSG_EMAIL_ADDRESS'),
     sortable: true,
-    field: (row: User) => row.EmailAddress
+    field: (row: user.User) => row.EmailAddress
   },
   {
     name: 'PhoneNO',
     label: t('MSG_PHONE_NO'),
     sortable: true,
-    field: (row: User) => row.PhoneNO
+    field: (row: user.User) => row.PhoneNO
   },
   {
     name: 'Roles',
     label: t('MSG_ROLES'),
     sortable: true,
-    field: (row: User) => row.Roles?.join(',')
+    field: (row: user.User) => row.Roles?.join(',')
   },
   {
     name: 'IDNUMBER',
     label: t('MSG_IDNUMBER'),
     sortable: true,
-    field: (row: User) => row.IDNumber
+    field: (row: user.User) => row.IDNumber
   },
   {
     name: 'CreatedAt',
     label: t('MSG_CREATEDAT'),
     sortable: true,
-    field: (row: User) => formatTime(row.CreatedAt)
+    field: (row: user.User) => utils.formatTime(row.CreatedAt)
   }
 ])
 
@@ -119,13 +118,13 @@ const coupons = computed(() => _coupon.coupons(undefined).filter((el) => el.Coup
   }
 }))
 
-const user = useAdminUserStore()
-const users = computed(() => user.Users.Users)
+const _user = user.useUserStore()
+const users = computed(() => _user.appUsers(undefined))
 const username = ref('')
 const displayUsers = computed(() => users.value.filter((el) => {
   return el.EmailAddress?.includes(username.value) || el.PhoneNO?.includes(username.value)
 }))
-const selectedUsers = ref([] as Array<User>)
+const selectedUsers = ref([] as Array<user.User>)
 
 const loading = ref(false)
 const couponID = ref(undefined as unknown as string)
@@ -137,7 +136,7 @@ watch(selectedCoupon, () => {
 })
 
 const getUsers = (offset: number, limit: number) => {
-  user.getUsers({
+  _user.getUsers({
     Offset: offset,
     Limit: limit,
     Message: {
@@ -145,17 +144,18 @@ const getUsers = (offset: number, limit: number) => {
         Title: 'MSG_GET_USERS',
         Message: 'MSG_GET_USERS_FAIL',
         Popup: true,
-        Type: NotifyType.Error
+        Type: notify.NotifyType.Error
       }
     }
-  }, (resp: Array<User>, error: boolean) => {
-    if (error || resp.length < limit) {
+  }, (error: boolean, rows?: Array<user.User>) => {
+    if (error || !rows?.length) {
       loading.value = false
       return
     }
     getUsers(offset + limit, limit)
   })
 }
+
 const prepare = () => {
   _coupon.getCoupons({
     Offset: 0,
@@ -165,14 +165,14 @@ const prepare = () => {
         Title: t('MSG_GET_COUPONS'),
         Message: t('MSG_GET_COUPONS_FAIL'),
         Popup: true,
-        Type: NotifyType.Error
+        Type: notify.NotifyType.Error
       }
     }
   }, () => {
     // TODO
   })
 
-  if (user.Users.Users.length === 0) {
+  if (!users.value?.length) {
     loading.value = true
     getUsers(0, 500)
   }
@@ -202,7 +202,7 @@ const onSubmit = () => {
           Title: t('MSG_CREATE_USER_COUPONS'),
           Message: t('MSG_CREATE_USER_COUPONS_FAIL'),
           Popup: true,
-          Type: NotifyType.Error
+          Type: notify.NotifyType.Error
         }
       }
     }, () => {

@@ -23,10 +23,9 @@
 </template>
 
 <script setup lang='ts'>
-import { NotifyType } from 'npool-cli-v4'
 import { computed, onMounted, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { allocatedCoupon } from 'src/npoolstore'
+import { allocatedCoupon, notify } from 'src/npoolstore'
 
 // eslint-disable-next-line @typescript-eslint/unbound-method
 const { t } = useI18n({ useScope: 'global' })
@@ -49,7 +48,7 @@ const getCoupons = (offset: number, limit: number) => {
         Title: t('MSG_GET_COUPONS'),
         Message: t('MSG_GET_COUPONS_FAIL'),
         Popup: true,
-        Type: NotifyType.Error
+        Type: notify.NotifyType.Error
       }
     }
   }, (error: boolean, rows?: Array<allocatedCoupon.Coupon>) => {
