@@ -1,19 +1,19 @@
 <script setup lang='ts'>
 import { getMessages } from 'src/api/g11n'
-import { useAdminAppLangStore, AppLang, useLocaleStore, useAdminMessageStore, useAdminAppGoodStore } from 'npool-cli-v4'
+import { applang, message, appgood, _locale, g11nbase } from 'src/npoolstore'
 import { onMounted, computed } from 'vue'
 import { getAppGoods } from 'src/api/good'
 
-const lang = useAdminAppLangStore()
-const langs = computed(() => lang.AppLangs.AppLangs)
+const lang = applang.useAppLangStore()
+const langs = computed(() => lang.langs())
 
-const message = useAdminMessageStore()
-const messages = computed(() => message.Messages.Messages)
+const _message = message.useMessageStore()
+const messages = computed(() => _message.messages(undefined, undefined, undefined))
 
-const appGood = useAdminAppGoodStore()
-const appGoods = computed(() => appGood.AppGoods.AppGoods)
+const appGood = appgood.useAppGoodStore()
+const appGoods = computed(() => appGood.goods())
 
-const locale = useLocaleStore()
+const locale = _locale.useLocaleStore()
 
 onMounted(() => {
   if (langs.value.length === 0) {
@@ -33,7 +33,7 @@ const getAppLangs = (offset: number, limit: number) => {
     Limit: limit,
     Message: {
     }
-  }, (error: boolean, rows: Array<AppLang>) => {
+  }, (error: boolean, rows: Array<g11nbase.AppLang>) => {
     if (error || rows.length === 0) {
       if (!error) {
         locale.setLangs(langs.value)
