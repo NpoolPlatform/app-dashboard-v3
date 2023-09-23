@@ -20,10 +20,10 @@
         <span>{{ $t('MSG_CREATE_OFFLINE_ORDER') }}</span>
       </q-card-section>
       <q-card-section>
-        <q-item-label>{{ $t('MSG_TOTAL') }}: {{ good?.Total }}</q-item-label>
-        <q-item-label>{{ $t('MSG_LOCKED') }}: {{ good?.Locked }}</q-item-label>
-        <q-item-label>{{ $t('MSG_IN_SERVICE') }}: {{ good?.InService }}</q-item-label>
-        <AppGoodSelector v-model:id='target.GoodID' />
+        <q-item-label>{{ $t('MSG_TOTAL') }}: {{ good?.GoodTotal }}</q-item-label>
+        <q-item-label>{{ $t('MSG_LOCKED') }}: {{ good?.AppGoodLocked }}</q-item-label>
+        <q-item-label>{{ $t('MSG_IN_SERVICE') }}: {{ good?.AppGoodInService }}</q-item-label>
+        <AppGoodSelector v-model:id='target.AppGoodID' />
         <AppUserSelector v-model:id='target.TargetUserID' />
         <q-input
           v-model='target.Units' :label='$t("MSG_PURCHASE_UNITS")' type='number' min='1'
@@ -46,8 +46,7 @@
 </template>
 
 <script setup lang='ts'>
-import { NotifyType, useAdminOrderStore, Order, OrderType, useAdminAppGoodStore, useAdminAppCoinStore } from 'npool-cli-v4'
-import { CreateUserOrderRequest } from 'npool-cli-v4/dist/store/admin/order/order/types'
+import { order, appgood, notify, appcoin } from 'src/npoolstore'
 import { getCoins } from 'src/api/coin'
 import { defineAsyncComponent, computed, ref, onMounted } from 'vue'
 import { useI18n } from 'vue-i18n'
@@ -60,17 +59,17 @@ const LoadingButton = defineAsyncComponent(() => import('src/components/button/L
 const AppGoodSelector = defineAsyncComponent(() => import('src/components/good/AppGoodSelector.vue'))
 const AppUserSelector = defineAsyncComponent(() => import('src/components/user/AppUserSelector.vue'))
 
-const coin = useAdminAppCoinStore()
-const coins = computed(() => coin.AppCoins.AppCoins)
+const coin = appcoin.useAppCoinStore()
+const coins = computed(() => coin.coins(undefined))
 
-const appGood = useAdminAppGoodStore()
-const good = computed(() => appGood.getGoodByID(target.value?.GoodID))
-const maxUnits = computed(() => !good.value ? 0 : (Number(good.value.Total) - Number(good.value.Locked) - Number(good.value.InService)))
+const appGood = appgood.useAppGoodStore()
+const good = computed(() => appGood.good(undefined, target.value?.AppGoodID))
+const maxUnits = computed(() => !good.value ? 0 : (Number(good.value.GoodTotal) - Number(good.value.AppGoodLocked) - Number(good.value.AppGoodInService)))
 
 const target = ref({
-  OrderType: OrderType.Offline,
+  OrderType: order.OrderType.Offline,
   Units: '1'
-} as CreateUserOrderRequest)
+} as order.CreateUserOrderRequest)
 
 const _payCoinID = computed(() => {
   const index = coins.value.findIndex((el) => {
@@ -91,23 +90,23 @@ const onCreate = () => {
 const onMenuHide = () => {
   showing.value = false
   target.value = {
-    OrderType: OrderType.Offline,
+    OrderType: order.OrderType.Offline,
     Units: '1'
-  } as CreateUserOrderRequest
+  } as order.CreateUserOrderRequest
 }
 
 const onCancel = () => {
   onMenuHide()
 }
 
-const order = useAdminOrderStore()
+const _order = order.useOrderStore()
 const onSubmit = (done: ()=> void) => {
   if (Number(target.value?.Units) > maxUnits.value) {
     console.log('purchase units', target.value?.Units, 'max units', maxUnits.value)
     done()
     return
   }
-  order.createUserOrder({
+  _order.createUserOrder({
     ...target.value,
     PaymentCoinID: _payCoinID.value,
     Message: {
@@ -115,10 +114,10 @@ const onSubmit = (done: ()=> void) => {
         Title: t('MSG_CREATE_ORDER'),
         Message: t('MSG_CREATE_ORDER_FAIL'),
         Popup: true,
-        Type: NotifyType.Error
+        Type: notify.NotifyType.Error
       }
     }
-  }, (order: Order, error: boolean) => {
+  }, (error: boolean) => {
     done()
     if (error) {
       return
@@ -128,7 +127,7 @@ const onSubmit = (done: ()=> void) => {
 }
 
 onMounted(() => {
-  if (coin.AppCoins.AppCoins.length === 0) {
+  if (!coins.value?.length) {
     getCoins(0, 100)
   }
 })
