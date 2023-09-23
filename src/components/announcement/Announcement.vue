@@ -6,7 +6,7 @@
     :rows='announcements'
     row-key='ID'
     :rows-per-page-options='[100]'
-    @row-click='(evt, row, index) => onRowClick(row as Announcement)'
+    @row-click='(evt, row, index) => onRowClick(row as announcement.Announcement)'
     selection='single'
     v-model:selected='selectedAnnouncements'
     :columns='columns'
@@ -44,13 +44,13 @@
         <q-input v-model='target.Title' :label='$t("MSG_TITLE")' />
         <q-input v-model='target.Content' :label='$t("MSG_CONTENT")' />
         <q-select
-          :options='NotifTypes'
+          :options='notifbase.NotifTypes'
           v-model='target.AnnouncementType'
           :label='$t("MSG_ANNOUNCEMENT_TYPE")'
         />
         <AppLanguagePicker v-model:id='target.LangID' :updating='updating' label='MSG_LANGUAGE' />
         <q-select
-          :options='NotifChannels'
+          :options='notifbase.NotifChannels'
           v-model='target.Channel'
           :label='$t("MSG_CHANNEL")'
           :disable='updating'
@@ -73,14 +73,7 @@
 </template>
 
 <script setup lang='ts'>
-import {
-  formatTime,
-  NotifyType,
-  useAdminAnnouncementStore,
-  Announcement,
-  NotifChannels,
-  NotifTypes
-} from 'npool-cli-v4'
+import { utils, notify, announcement, notifbase } from 'src/npoolstore'
 import { computed, defineAsyncComponent, onMounted, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 
@@ -93,10 +86,10 @@ const AppLanguagePicker = defineAsyncComponent(() => import('src/components/inte
 const AnnouncementUser = defineAsyncComponent(() => import('src/components/announcement/AnnouncementUser.vue'))
 const State = defineAsyncComponent(() => import('src/components/announcement/State.vue'))
 
-const announcement = useAdminAnnouncementStore()
-const announcements = computed(() => announcement.announcements)
+const _announcement = announcement.useAnnouncementStore()
+const announcements = computed(() => _announcement.announcements(undefined))
 
-const target = ref({} as Announcement)
+const target = ref({} as announcement.Announcement)
 
 const showing = ref(false)
 const updating = ref(false)
@@ -107,7 +100,7 @@ const onCreate = () => {
 }
 
 const onMenuHide = () => {
-  target.value = {} as Announcement
+  target.value = {} as announcement.Announcement
   showing.value = false
 }
 
@@ -122,18 +115,18 @@ onMounted(() => {
 })
 
 const getAppAnnouncements = (offset: number, limit: number) => {
-  announcement.getAppAnnouncements({
+  _announcement.getAppAnnouncements({
     Offset: offset,
     Limit: limit,
     Message: {
       Error: {
-        Title: t('MSG_GET_ANNOUNCEMENTS'),
-        Message: t('MSG_GET_ANNOUNCEMENTS_FAIL'),
+        Title: 'MSG_GET_ANNOUNCEMENTS',
+        Message: 'MSG_GET_ANNOUNCEMENTS_FAIL',
         Popup: true,
-        Type: NotifyType.Error
+        Type: notify.NotifyType.Error
       }
     }
-  }, (error: boolean, rows: Array<Announcement>) => {
+  }, (error: boolean, rows: Array<announcement.Announcement>) => {
     if (error || rows.length < limit) {
       return
     }
@@ -145,27 +138,27 @@ const onSubmit = (done: () => void) => {
   updating.value ? updateAnnouncement(done) : createAnnouncement(done)
 }
 
-const onRowClick = (row: Announcement) => {
+const onRowClick = (row: announcement.Announcement) => {
   target.value = { ...row }
   updating.value = true
   showing.value = true
 }
 
 const updateAnnouncement = (done: () => void) => {
-  announcement.updateAnnouncement({
+  _announcement.updateAnnouncement({
     ...target.value,
     Message: {
       Error: {
         Title: 'MSG_UPDATE_ANNOUNCEMENT',
         Message: 'MSG_UPDATE_ANNOUNCEMENT_FAIL',
         Popup: true,
-        Type: NotifyType.Error
+        Type: notify.NotifyType.Error
       },
       Info: {
         Title: 'MSG_UPDATE_ANNOUNCEMENT',
         Message: 'MSG_UPDATE_ANNOUNCEMENT_SUCCESS',
         Popup: true,
-        Type: NotifyType.Success
+        Type: notify.NotifyType.Success
       }
     }
   }, (error: boolean) => {
@@ -178,7 +171,7 @@ const updateAnnouncement = (done: () => void) => {
 }
 
 const createAnnouncement = (done: () => void) => {
-  announcement.createAnnouncement({
+  _announcement.createAnnouncement({
     ...target.value,
     TargetLangID: target.value?.LangID,
     Message: {
@@ -186,13 +179,13 @@ const createAnnouncement = (done: () => void) => {
         Title: 'MSG_CREATE_ANNOUNCEMENT',
         Message: 'MSG_CREATE_ANNOUNCEMENT_FAIL',
         Popup: true,
-        Type: NotifyType.Error
+        Type: notify.NotifyType.Error
       },
       Info: {
         Title: 'MSG_CREATE_ANNOUNCEMENT',
         Message: 'MSG_CREATE_ANNOUNCEMENT_SUCCESS',
         Popup: true,
-        Type: NotifyType.Success
+        Type: notify.NotifyType.Success
       }
     }
   }, (error: boolean) => {
@@ -204,22 +197,22 @@ const createAnnouncement = (done: () => void) => {
   })
 }
 
-const selectedAnnouncements = ref([] as Array<Announcement>)
-const onDelete = (row: Announcement) => {
-  announcement.deleteAnnouncement({
+const selectedAnnouncements = ref([] as Array<announcement.Announcement>)
+const onDelete = (row: announcement.Announcement) => {
+  _announcement.deleteAnnouncement({
     ID: row.ID,
     Message: {
       Error: {
         Title: 'MSG_DELETE_ANNOUNCEMENT',
         Message: 'MSG_DELETE_ANNOUNCEMENT_FAIL',
         Popup: true,
-        Type: NotifyType.Error
+        Type: notify.NotifyType.Error
       },
       Info: {
         Title: 'MSG_DELETE_ANNOUNCEMENT',
         Message: 'MSG_DELETE_ANNOUNCEMENT_SUCCESS',
         Popup: true,
-        Type: NotifyType.Success
+        Type: notify.NotifyType.Success
       }
     }
   }, () => {
@@ -232,61 +225,61 @@ const columns = computed(() => [
     name: 'ID',
     label: t('MSG_ID'),
     sortable: true,
-    field: (row: Announcement) => row.ID
+    field: (row: announcement.Announcement) => row.ID
   },
   {
     name: 'AppID',
     label: t('MSG_APP_ID'),
     sortable: true,
-    field: (row: Announcement) => row.AppID
+    field: (row: announcement.Announcement) => row.AppID
   },
   {
     name: 'LangID',
     label: t('MSG_LANG_ID'),
     sortable: true,
-    field: (row: Announcement) => row.LangID
+    field: (row: announcement.Announcement) => row.LangID
   },
   {
     name: 'Title',
     label: t('MSG_TITLE'),
     sortable: true,
-    field: (row: Announcement) => row.Title
+    field: (row: announcement.Announcement) => row.Title
   },
   {
     name: 'Type',
     label: t('MSG_TYPE'),
     sortable: true,
-    field: (row: Announcement) => row.AnnouncementType
+    field: (row: announcement.Announcement) => row.AnnouncementType
   },
   {
     name: 'Content',
     label: t('MSG_CONTENT'),
     sortable: true,
-    field: (row: Announcement) => row.Content
+    field: (row: announcement.Announcement) => row.Content
   },
   {
     name: 'Channel',
     label: t('MSG_CHANNEL'),
     sortable: true,
-    field: (row: Announcement) => row.Channel
+    field: (row: announcement.Announcement) => row.Channel
   },
   {
     name: 'CreatedAt',
     label: t('MSG_CREATED_AT'),
     sortable: true,
-    field: (row: Announcement) => formatTime(row.CreatedAt)
+    field: (row: announcement.Announcement) => utils.formatTime(row.CreatedAt)
   },
   {
     name: 'StartAt',
     label: t('MSG_START_AT'),
     sortable: true,
-    field: (row: Announcement) => formatTime(row.StartAt)
+    field: (row: announcement.Announcement) => utils.formatTime(row.StartAt)
   },
   {
     name: 'END_AT',
     label: t('MSG_END_AT'),
     sortable: true,
-    field: (row: Announcement) => formatTime(row.EndAt)
+    field: (row: announcement.Announcement) => utils.formatTime(row.EndAt)
   }
 ])
 </script>
