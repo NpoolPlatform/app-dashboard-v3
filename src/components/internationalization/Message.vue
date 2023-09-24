@@ -185,9 +185,8 @@ const onExport = () => {
     data.push(el)
     resultMap.set(el.LangID, data)
   })
-  resultMap.forEach((values, _key) => {
+  resultMap.forEach((values) => {
     if (values.length > 0) {
-      console.log('_key: ', _key)
       const blob = new Blob([JSON.stringify(values)], { type: 'text/plain;charset=utf-8' })
       const filename = 'messages-' + values[0].Lang + '-' + utils.formatTime(new Date().getTime() / 1000) + '.json'
       saveAs(blob, filename)

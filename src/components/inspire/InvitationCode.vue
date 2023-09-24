@@ -169,11 +169,8 @@ const onSetKolClick = () => {
           Type: notify.NotifyType.Success
         }
       }
-    }, (error: boolean) => {
-      if (error) {
-        return
-      }
-      console.log()
+    }, () => {
+      // TODO
     })
   })
 }

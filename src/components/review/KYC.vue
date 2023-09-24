@@ -116,7 +116,6 @@ const _user = user.useUserStore()
 const users = computed(() => _user.appUsers(undefined))
 
 const onRowClick = (row: kycreview.KYCReview) => {
-  console.log('row: ', row)
   target.value = { ...row }
   targetUser.value = { ..._user.appUser(AppID, row.UserID) as user.User }
   _kyc.getUserKYCImage({
@@ -167,7 +166,6 @@ const onRowClick = (row: kycreview.KYCReview) => {
 
 const updateReview = (state: reviewbase.ReviewState) => {
   if (state === reviewbase.ReviewState.Rejected && target.value.Message.length === 0) {
-    console.log('message is required')
     return
   }
   review.updateKycReview({

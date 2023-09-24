@@ -115,7 +115,6 @@ const onApprove = (done: () => void) => {
 
 const onReject = (done: () => void) => {
   if (target.value.Message.trim().length <= 0) {
-    console.log('need message')
     done()
     return
   }

@@ -152,7 +152,6 @@ const updateEmailTemplate = (done: () => void) => {
       const emails = el.match(/[\d\w]+\b@[a-zA-ZA-z0-9]+\.[a-z]+/g)
       emails?.forEach((al) => {
         if (!utils.validateEmailAddress(al)) {
-          console.log('invalid email address', al)
           flag = true
         }
       })
@@ -163,7 +162,6 @@ const updateEmailTemplate = (done: () => void) => {
       const emails = el.match(/[\d\w]+\b@[a-zA-ZA-z0-9]+\.[a-z]+/g)
       emails?.forEach((al) => {
         if (!utils.validateEmailAddress(al)) {
-          console.log('invalid email address', al)
           flag = true
         }
       })
@@ -205,7 +203,6 @@ const createEmailTemplate = (done: () => void) => {
       const emails = el.match(/[\d\w]+\b@[a-zA-ZA-z0-9]+\.[a-z]+/g)
       emails?.forEach((al) => {
         if (!utils.validateEmailAddress(al)) {
-          console.log('invalid email address', al)
           flag = true
         }
       })
@@ -216,7 +213,6 @@ const createEmailTemplate = (done: () => void) => {
       const emails = el.match(/[\d\w]+\b@[a-zA-ZA-z0-9]+\.[a-z]+/g)
       emails?.forEach((al) => {
         if (!utils.validateEmailAddress(al)) {
-          console.log('invalid email address', al)
           flag = true
         }
       })

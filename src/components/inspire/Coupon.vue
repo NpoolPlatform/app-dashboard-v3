@@ -20,9 +20,10 @@ const { t } = useI18n({ useScope: 'global' })
 
 const _coupon = coupon.useCouponStore()
 const coupons = computed(() => _coupon.coupons())
-const loading = ref(true)
+const loading = ref(false)
 
 const getCoupons = (offset: number, limit: number) => {
+  loading.value = true
   _coupon.getCoupons({
     Offset: offset,
     Limit: limit,

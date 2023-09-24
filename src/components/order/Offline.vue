@@ -104,7 +104,6 @@ const onCancel = () => {
 const _order = order.useOrderStore()
 const onSubmit = (done: ()=> void) => {
   if (Number(target.value?.Units) > maxUnits.value) {
-    console.log('purchase units', target.value?.Units, 'max units', maxUnits.value)
     done()
     return
   }
