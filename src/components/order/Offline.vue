@@ -32,6 +32,16 @@
           :rules='[ val => val <= maxUnits || `Max Purchase Units: ${maxUnits}`]'
         />
       </q-card-section>
+      <q-card-section>
+        <q-btn-toggle
+          v-model='orderType'
+          rounded
+          :options='[
+            {label: order.OrderType.Offline, value: order.OrderType.Offline},
+            {label: order.OrderType.Airdrop, value: order.OrderType.Airdrop}
+          ]'
+        />
+      </q-card-section>
       <q-item class='row'>
         <LoadingButton :loading='true' @click='onSubmit' :label='$t("MSG_SUBMIT")' />
         <q-btn class='btn round' :label='$t("MSG_CANCEL")' @click='onCancel' />
@@ -62,24 +72,17 @@ const AppUserSelector = defineAsyncComponent(() => import('src/components/user/A
 const coin = appcoin.useAppCoinStore()
 const coins = computed(() => coin.coins(undefined))
 
+const orderType = ref(order.OrderType.Offline as order.OrderType.Airdrop | order.OrderType.Offline)
+
 const appGood = appgood.useAppGoodStore()
 const good = computed(() => appGood.good(undefined, target.value?.AppGoodID))
 const maxUnits = computed(() => !good.value ? 0 : (Number(good.value.GoodTotal) - Number(good.value.AppGoodLocked) - Number(good.value.AppGoodInService)))
 
 const target = ref({
   OrderType: order.OrderType.Offline,
-  Units: '1'
+  Units: '1',
+  InvestmentType: order.InvestmentType.FullPayment
 } as order.CreateUserOrderRequest)
-
-const _payCoinID = computed(() => {
-  const index = coins.value.findIndex((el) => {
-    return (el.ENV === good.value?.CoinEnv) && (el.Name?.toLowerCase().replace(/ /, '').includes('usdttrc20') || el.Name?.toLowerCase().replace(/ /, '').includes('tethertrc20'))
-  })
-  if (index < 0) {
-    return undefined as unknown as string
-  }
-  return coins.value[index].CoinTypeID
-})
 
 const showing = ref(false)
 
@@ -91,7 +94,8 @@ const onMenuHide = () => {
   showing.value = false
   target.value = {
     OrderType: order.OrderType.Offline,
-    Units: '1'
+    Units: '1',
+    InvestmentType: order.InvestmentType.FullPayment
   } as order.CreateUserOrderRequest
 }
 
@@ -108,7 +112,6 @@ const onSubmit = (done: ()=> void) => {
   }
   _order.createUserOrder({
     ...target.value,
-    PaymentCoinID: _payCoinID.value,
     Message: {
       Error: {
         Title: t('MSG_CREATE_ORDER'),
