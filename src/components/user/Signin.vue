@@ -181,7 +181,7 @@ const onVerifyClick = () => {
     }
   }, (error: boolean) => {
     if (error) {
-      console.log('error: ')
+      void router.push({ path: '/signin' })
       return
     }
     showVerifyDialog.value = false
