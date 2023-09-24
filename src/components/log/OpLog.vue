@@ -21,7 +21,7 @@ const opLogs = computed(() => log.OpLogs)
 
 onMounted(() => {
   if (opLogs.value.length === 0) {
-    getAppOpLogs(0, 500)
+    getAppOpLogs(0, 10)
   }
 })
 
