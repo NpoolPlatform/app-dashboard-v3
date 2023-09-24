@@ -34,7 +34,7 @@
       </q-card-section>
       <q-card-section>
         <q-btn-toggle
-          v-model='orderType'
+          v-model='target.OrderType'
           rounded
           :options='[
             {label: order.OrderType.Offline, value: order.OrderType.Offline},
@@ -71,8 +71,6 @@ const AppUserSelector = defineAsyncComponent(() => import('src/components/user/A
 
 const coin = appcoin.useAppCoinStore()
 const coins = computed(() => coin.coins(undefined))
-
-const orderType = ref(order.OrderType.Offline as order.OrderType.Airdrop | order.OrderType.Offline)
 
 const appGood = appgood.useAppGoodStore()
 const good = computed(() => appGood.good(undefined, target.value?.AppGoodID))
