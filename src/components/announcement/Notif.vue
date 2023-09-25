@@ -36,9 +36,10 @@ const _notif = notif.useNotifStore()
 const notifs = computed(() => _notif.notifs(undefined, undefined))
 
 const username = ref('')
-const displayNotifs = computed(() => notifs.value?.filter((el) => {
-  return el.Username?.toLowerCase()?.includes(username.value?.toLocaleLowerCase())
-}))
+const displayNotifs = computed(() => notifs.value?.filter((el) =>
+  el.EmailAddress.toLocaleLowerCase()?.includes(username.value?.toLowerCase()) ||
+  el.PhoneNO.toLocaleLowerCase()?.includes(username.value?.toLowerCase())
+))
 
 onMounted(() => {
   if (notifs.value?.length === 0) {

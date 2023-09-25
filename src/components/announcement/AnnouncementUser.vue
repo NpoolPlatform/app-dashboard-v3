@@ -76,9 +76,10 @@ const announcementUser = announcementuser.useAnnouncementUserStore()
 const announcementUsers = computed(() => announcementUser.users())
 
 const username = ref('')
-const displayAnnouncementUsers = computed(() => announcementUsers.value?.filter((el) => el.EmailAddress.toLocaleLowerCase()?.includes(username.value?.toLowerCase()) ||
-    el.PhoneNO.toLocaleLowerCase()?.includes(username.value?.toLowerCase()) ||
-    el.UserID.toLocaleLowerCase()?.includes(username.value?.toLowerCase())
+const displayAnnouncementUsers = computed(() => announcementUsers.value?.filter((el) =>
+  el.EmailAddress.toLocaleLowerCase()?.includes(username.value?.toLowerCase()) ||
+  el.PhoneNO.toLocaleLowerCase()?.includes(username.value?.toLowerCase()) ||
+  el.UserID.toLocaleLowerCase()?.includes(username.value?.toLowerCase())
 ))
 
 const _announcement = announcement.useAnnouncementStore()
