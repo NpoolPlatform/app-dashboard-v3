@@ -165,8 +165,8 @@ const orderLoading = ref(false)
 const good = appgood.useAppGoodStore()
 
 onMounted(() => {
-  if (!_order.orders(undefined)) {
-    getAppOrders(0, 500)
+  if (!_order.orders(undefined).length) {
+    getAppOrders(0, 100)
   }
 
   if (_app.app() === undefined) {
