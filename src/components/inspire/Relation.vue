@@ -192,24 +192,24 @@ const curUserID = computed(() => selectedUser.value.length ? selectedUser.value[
 
 const regInvitation = registration.useRegistrationStore()
 const inviteeIDs = computed(() => {
-  const ids = [] as Array<string>
+  const ids = [curUserID.value] as Array<string>
   regInvitation.invitees(undefined, curUserID.value).forEach((el) => ids.push(el.InviteeID))
   return ids
 })
 
 const _userInviters = ref([] as Array<string>)
 const getInviterIDs = (userID: string) => {
-  userInviters.value.push(userID)
+  _userInviters.value.push(userID)
   const root = regInvitation.registrations().find(item => item.InviteeID === userID)
   if (!root) {
-    return userInviters.value
+    return _userInviters.value
   }
   getInviterIDs(root.InviterID)
 }
 const userInviters = computed(() => _userInviters.value)
 
 const _achievement = achievement.useAchievementStore()
-const Achievements = computed(() => _achievement.achievements(curUserID.value))
+const achievements = computed(() => _achievement.achievements(curUserID.value))
 const inviteeAchievements = computed(() => {
   let _data = _achievement.inviteeAchievements(undefined, curUserID.value)
   if (currentKolState.value.Label !== 'ALL') {
@@ -244,7 +244,7 @@ watch(curUserID, () => {
     return
   }
   getInviterIDs(curUserID.value)
-  if (Achievements.value.length <= 1) {
+  if (achievements.value.length <= 1) {
     loading.value = true
     getUserAchievements(0, 100)
   }
@@ -252,6 +252,7 @@ watch(curUserID, () => {
 
 const getUserAchievements = (offset: number, limit: number) => {
   if (!inviteeIDs.value.length) {
+    loading.value = false
     return
   }
   _achievement.getUserAchievements({
