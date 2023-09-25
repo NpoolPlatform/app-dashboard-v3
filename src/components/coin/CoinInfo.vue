@@ -39,7 +39,6 @@
         <q-input type='number' v-model.number='target.SettlePercent' :label='$t("MSG_COIN_SETTLE_PERCENT")' />
         <q-input v-model='target.DisplayIndex' :label='$t("MSG_DISPLAY_INDEX")' />
         <q-input v-model='settleTips' :label='$t("MSG_SETTLE_TIPS")' />
-        <q-input type='number' v-model='target.DailyRewardAmount' :label='$t("MSG_DAILY_REWARD_AMOUNT")' />
         <!-- <q-select dense :options='CoinEnvironments' v-model='target.ENV' :label='$t("MSG_COIN_ENVIRONMENT")' /> -->
         <q-input
           v-model='target.MaxAmountPerWithdraw'
