@@ -72,7 +72,7 @@
                 <th>Total Sales</th>
                 <th>Commission</th>
               </tr>
-              <tr v-for='(_good,index) in props.row.Achievements' :key='index'>
+              <tr v-for='(_good,index) in getSortAchievements(props.row.Achievements)' :key='index'>
                 <td class='name'>
                   {{ getDisplayNames(_good.GoodID)?.[4]? $t(getDisplayNames(_good.GoodID)?.[4] as string) : _good.CoinName }}
                 </td>
@@ -138,7 +138,7 @@
                 <th>Total Sales</th>
                 <th>Commission</th>
               </tr>
-              <tr v-for='(_good,index) in props.row.Achievements' :key='index'>
+              <tr v-for='(_good,index) in getSortAchievements(props.row.Achievements)' :key='index'>
                 <td class='name'>
                   {{ getDisplayNames(_good.GoodID)?.[4]? $t(getDisplayNames(_good.GoodID)?.[4] as string) : _good.CoinName }}
                 </td>
@@ -171,6 +171,7 @@ import { computed, defineAsyncComponent, onMounted, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { achievement, registration, user, appgood, notify, constant, utils } from 'src/npoolstore'
 import { InvalidID } from 'src/npoolstore/const'
+import { GoodAchievement } from 'src/npoolstore/inspire/achievement'
 
 // eslint-disable-next-line @typescript-eslint/unbound-method
 const { t } = useI18n({ useScope: 'global' })
@@ -233,6 +234,10 @@ const inviterAchievements = computed(() => {
   return _data
 })
 
+const getSortAchievements = computed(() => (achievements: Array<GoodAchievement>) => {
+  const rows = achievements.sort((a, b) => a.GoodName.localeCompare(b.GoodName, 'zh-CN'))
+  return rows
+})
 const loading = ref(false)
 
 const good = appgood.useAppGoodStore()
