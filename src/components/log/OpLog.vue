@@ -4,37 +4,48 @@
     flat
     :title='$t("MSG_OP_LOGS")'
     :rows='opLogs'
-    row-key='ID'
-    :rows-per-page-options='[100]'
+    v-model:pagination='pagination'
+    :rows-per-page-options='[10]'
+    row-key='EntID'
+    :loading='loading'
+    @request='getLogs'
   />
-  <q-card-section class='bg-primary text-white'>
-    {{ $t('MSG_ADVERTISEMENT_POSITION') }}
-  </q-card-section>
 </template>
 
 <script setup lang='ts'>
-import { oplog } from 'src/npoolstore'
-import { computed, onMounted } from 'vue'
+import { sdk } from 'src/npoolstore'
+import { computed, onMounted, ref } from 'vue'
 
-const log = oplog.useOpLogStore()
-const opLogs = computed(() => log.OpLogs)
+interface Pagination {
+  sortBy?: string
+  descending?: boolean
+  page: number
+  rowsPerPage: number
+  rowsNumber?: number
+}
+
+const opLogs = computed(() => sdk.opLogs.value)
+const totalRows = computed(() => sdk.totalRows.value || 0)
+
+const pagination = ref({
+  page: 1,
+  rowsPerPage: 10,
+  rowsNumber: totalRows.value
+} as Pagination)
+
+const loading = ref(false)
+const getLogs = () => {
+  loading.value = true
+  sdk.getOpLogs(pagination.value.page, pagination.value.page++, () => {
+    loading.value = false
+  })
+}
 
 onMounted(() => {
   if (opLogs.value.length === 0) {
-    getAppOpLogs(0, 10)
+    sdk.getOpLogs(0, 1, (_: boolean, __: number, totalRows: number) => {
+      pagination.value.rowsNumber = totalRows
+    })
   }
 })
-
-const getAppOpLogs = (offset: number, limit: number) => {
-  log.getAppOpLogs({
-    Offset: offset,
-    Limit: limit,
-    Message: {}
-  }, (error: boolean, rows?: Array<oplog.OpLog>) => {
-    if (error || !rows?.length) {
-      return
-    }
-    getAppOpLogs(offset + limit, limit)
-  })
-}
 </script>
