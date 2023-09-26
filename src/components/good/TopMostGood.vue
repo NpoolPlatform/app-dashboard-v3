@@ -5,6 +5,7 @@
     :title='$t("MSG_TOPMOST_GOODS")'
     :rows='topMostGoods'
     row-key='ID'
+    :columns='columns'
     :rows-per-page-options='[100]'
     @row-click='(evt, row, index) => onRowClick(row as topmostgood.TopMostGood)'
   >
@@ -59,7 +60,7 @@
 
 <script setup lang='ts'>
 import { computed, defineAsyncComponent, onMounted, ref } from 'vue'
-import { topmostgood, sdk } from 'src/npoolstore'
+import { topmostgood, sdk, utils } from 'src/npoolstore'
 
 const LoadingButton = defineAsyncComponent(() => import('src/components/button/LoadingButton.vue'))
 const AppGoodSelector = defineAsyncComponent(() => import('src/components/good/AppGoodSelector.vue'))
@@ -92,19 +93,23 @@ const onCancel = () => {
 }
 
 const onSubmit = (done: () => void) => {
-  let error = true
   if (updating.value) {
-    sdk.updateTopMostGood(target.value, (err: boolean) => {
-      error = err
+    sdk.updateTopMostGood(target.value, (error: boolean) => {
+      done()
+      if (error) {
+        return
+      }
+      onMenuHide()
     })
   } else {
-    sdk.createTopMostGood(target.value, (err: boolean) => {
-      error = err
+    sdk.createTopMostGood(target.value, (error: boolean) => {
+      done()
+      if (error) {
+        return
+      }
+      onMenuHide()
     })
   }
-  done()
-  if (error) return
-  onMenuHide()
 }
 
 onMounted(() => {
@@ -112,4 +117,85 @@ onMounted(() => {
     sdk.getTopMostGoods(0, 0)
   }
 })
+
+const columns = computed(() => [
+  {
+    name: 'ID',
+    label: 'MSG_ID',
+    sortable: true,
+    field: (row: topmostgood.TopMostGood) => row.ID
+  },
+  {
+    name: 'AppID',
+    label: 'MSG_APP_ID',
+    sortable: true,
+    field: (row: topmostgood.TopMostGood) => row.AppID
+  },
+  {
+    name: 'AppGoodID',
+    label: 'MSG_APP_GOOD_ID',
+    sortable: true,
+    field: (row: topmostgood.TopMostGood) => row.AppGoodID
+  },
+  {
+    name: 'AppGoodName',
+    label: 'MSG_APP_GOOD_NAME',
+    sortable: true,
+    field: (row: topmostgood.TopMostGood) => row.AppGoodName
+  },
+  {
+    name: 'CoinTypeID',
+    label: 'MSG_CoinTypeID',
+    sortable: true,
+    field: (row: topmostgood.TopMostGood) => row.CoinTypeID
+  },
+  {
+    name: 'CoinName',
+    label: 'MSG_COIN_NAME',
+    sortable: true,
+    field: (row: topmostgood.TopMostGood) => row.CoinName
+  },
+  {
+    name: 'CoinUnit',
+    label: 'MSG_COIN_UNIT',
+    sortable: true,
+    field: (row: topmostgood.TopMostGood) => row.CoinUnit
+  },
+  {
+    name: 'TopMostID',
+    label: 'MSG_TOP_MOST_ID',
+    sortable: true,
+    field: (row: topmostgood.TopMostGood) => row.TopMostID
+  },
+  {
+    name: 'TopMostTitle',
+    label: 'MSG_TOP_MOST_TITLE',
+    sortable: true,
+    field: (row: topmostgood.TopMostGood) => row.TopMostTitle
+  },
+  {
+    name: 'TopMostType',
+    label: 'MSG_TOP_MOST_TYPE',
+    sortable: true,
+    field: (row: topmostgood.TopMostGood) => row.TopMostType
+  },
+  {
+    name: 'Price',
+    label: 'MSG_PRICE',
+    sortable: true,
+    field: (row: topmostgood.TopMostGood) => row.Price
+  },
+  {
+    name: 'Posters',
+    label: 'MSG_POSTERS',
+    sortable: true,
+    field: (row: topmostgood.TopMostGood) => row.Posters?.join(',')
+  },
+  {
+    name: 'CreatedAt',
+    label: 'MSG_CREATED_AT',
+    sortable: true,
+    field: (row: topmostgood.TopMostGood) => utils.formatTime(row.CreatedAt)
+  }
+])
 </script>
