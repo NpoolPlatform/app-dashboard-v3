@@ -5,6 +5,7 @@
     :title='$t("MSG_TOPMOST")'
     :rows='topMosts'
     row-key='ID'
+    :columns='columns'
     :rows-per-page-options='[100]'
     @row-click='(evt, row, index) => onRowClick(row as topmost.TopMost)'
   >
@@ -70,7 +71,7 @@
 
 <script setup lang='ts'>
 import { computed, defineAsyncComponent, onMounted, ref } from 'vue'
-import { topmost, sdk } from 'src/npoolstore'
+import { topmost, sdk, utils } from 'src/npoolstore'
 
 const LoadingButton = defineAsyncComponent(() => import('src/components/button/LoadingButton.vue'))
 const DateTimePicker = defineAsyncComponent(() => import('src/components/date/DateTimePicker.vue'))
@@ -103,19 +104,19 @@ const onCancel = () => {
 }
 
 const onSubmit = (done: () => void) => {
-  let error = true
   if (updating.value) {
-    sdk.updateTopMost(target.value, (err: boolean) => {
-      error = err
+    sdk.updateTopMost(target.value, (error: boolean) => {
+      done()
+      if (error) return
+      onMenuHide()
     })
   } else {
-    sdk.createTopMost(target.value, (err: boolean) => {
-      error = err
+    sdk.createTopMost(target.value, (error: boolean) => {
+      done()
+      if (error) return
+      onMenuHide()
     })
   }
-  done()
-  if (error) return
-  onMenuHide()
 }
 
 onMounted(() => {
@@ -123,4 +124,91 @@ onMounted(() => {
     sdk.getTopMosts(0, 0)
   }
 })
+
+const columns = computed(() => [
+  {
+    name: 'ID',
+    label: 'MSG_ID',
+    sortable: true,
+    field: (row: topmost.TopMost) => row.ID
+  },
+  {
+    name: 'AppID',
+    label: 'MSG_APP_ID',
+    sortable: true,
+    field: (row: topmost.TopMost) => row.AppID
+  },
+  {
+    name: 'TopMostType',
+    label: 'MSG_TOP_MOST_TYPE',
+    sortable: true,
+    field: (row: topmost.TopMost) => row.TopMostType
+  },
+  {
+    name: 'Title',
+    label: 'MSG_TITLE',
+    sortable: true,
+    field: (row: topmost.TopMost) => row.Title
+  },
+  {
+    name: 'Message',
+    label: 'MSG_MESSAGE',
+    sortable: true,
+    field: (row: topmost.TopMost) => row.Message
+  },
+  {
+    name: 'StartAt',
+    label: 'MSG_START_AT',
+    sortable: true,
+    field: (row: topmost.TopMost) => utils.formatTime(row.StartAt + 60 * new Date().getTimezoneOffset(), undefined) + ' UTC'
+  },
+  {
+    name: 'EndAt',
+    label: 'MSG_END_AT',
+    sortable: true,
+    field: (row: topmost.TopMost) => utils.formatTime(row.EndAt + 60 * new Date().getTimezoneOffset(), undefined) + ' UTC'
+  },
+  {
+    name: 'ThresholdCredits',
+    label: 'MSG_CREDIT',
+    sortable: true,
+    field: (row: topmost.TopMost) => row.ThresholdCredits
+  },
+  {
+    name: 'RegisterElapsedSeconds',
+    label: 'MSG_REGISTER_ELAPSED_SECONDS',
+    sortable: true,
+    field: (row: topmost.TopMost) => row.RegisterElapsedSeconds
+  },
+  {
+    name: 'ThresholdPurchases',
+    label: 'MSG_THRESHOLD_PURCHASES',
+    sortable: true,
+    field: (row: topmost.TopMost) => row.ThresholdPurchases
+  },
+  {
+    name: 'ThresholdPaymentAmount',
+    label: 'MSG_PAYMENT_AMOUNT',
+    sortable: true,
+    field: (row: topmost.TopMost) => row.ThresholdPaymentAmount
+  },
+  {
+    name: 'KycMust',
+    label: 'MSG_KYC_MUST',
+    sortable: true,
+    field: (row: topmost.TopMost) => row.KycMust
+  },
+  {
+    name: 'Posters',
+    label: 'MSG_POSTERS',
+    sortable: true,
+    field: (row: topmost.TopMost) => row.Posters?.join(',')
+  },
+  {
+    name: 'CreatedAt',
+    label: 'MSG_CREATED_AT',
+    sortable: true,
+    field: (row: topmost.TopMost) => utils.formatTime(row.CreatedAt)
+  }
+])
 </script>
