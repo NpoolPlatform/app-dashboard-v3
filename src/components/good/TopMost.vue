@@ -103,7 +103,6 @@ const onCancel = () => {
 }
 
 const onSubmit = (done: () => void) => {
-  showing.value = false
   let error = true
   if (updating.value) {
     sdk.updateTopMost(target.value, (err: boolean) => {
