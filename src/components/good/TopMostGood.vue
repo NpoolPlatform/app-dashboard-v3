@@ -27,7 +27,7 @@
   >
     <q-card class='popup-menu'>
       <q-card-section>
-        <span>{{ $t('MSG_TOPMOST') }}</span>
+        <span>{{ $t('MSG_TOPMOST_GOOD') }}</span>
       </q-card-section>
       <q-card-section>
         <AppGoodSelector :label='$t("MSG_APP_GOODS")' v-model:id='target.AppGoodID' />
