@@ -160,13 +160,13 @@ const columns = computed(() => [
     name: 'StartAt',
     label: 'MSG_START_AT',
     sortable: true,
-    field: (row: topmost.TopMost) => utils.formatTime(row.StartAt + 60 * new Date().getTimezoneOffset(), undefined) + ' UTC'
+    field: (row: topmost.TopMost) => utils.formatTime(row.StartAt, undefined, new Date().getTimezoneOffset()) + ' UTC'
   },
   {
     name: 'EndAt',
     label: 'MSG_END_AT',
     sortable: true,
-    field: (row: topmost.TopMost) => utils.formatTime(row.EndAt + 60 * new Date().getTimezoneOffset(), undefined) + ' UTC'
+    field: (row: topmost.TopMost) => utils.formatTime(row.EndAt, undefined, new Date().getTimezoneOffset()) + ' UTC'
   },
   {
     name: 'ThresholdCredits',
@@ -208,7 +208,7 @@ const columns = computed(() => [
     name: 'CreatedAt',
     label: 'MSG_CREATED_AT',
     sortable: true,
-    field: (row: topmost.TopMost) => utils.formatTime(row.CreatedAt)
+    field: (row: topmost.TopMost) => utils.formatTime(row.CreatedAt, undefined, new Date().getTimezoneOffset()) + ' UTC'
   }
 ])
 </script>
