@@ -30,7 +30,8 @@
         <span>{{ $t('MSG_TOPMOST_GOOD') }}</span>
       </q-card-section>
       <q-card-section>
-        <AppGoodSelector :label='$t("MSG_APP_GOODS")' v-model:id='target.AppGoodID' />
+        <AppGoodSelector :label='$t("MSG_APP_GOOD")' v-model:id='target.AppGoodID' />
+        <TopMostSelector :label='$t("MSG_TOP_MOST")' v-model:id='target.TopMostID' />
       </q-card-section>
       <q-card-section>
         <q-input v-model='target.Price' :label='$t("MSG_PRICE")' />
@@ -62,6 +63,7 @@ import { topmostgood, sdk } from 'src/npoolstore'
 
 const LoadingButton = defineAsyncComponent(() => import('src/components/button/LoadingButton.vue'))
 const AppGoodSelector = defineAsyncComponent(() => import('src/components/good/AppGoodSelector.vue'))
+const TopMostSelector = defineAsyncComponent(() => import('src/components/good/TopMostSelector.vue'))
 
 const topMostGoods = computed(() => sdk.topMostGoods.value)
 const target = ref({} as topmostgood.TopMostGood)
