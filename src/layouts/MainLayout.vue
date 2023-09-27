@@ -16,7 +16,7 @@
 
 <script setup lang='ts'>
 import { defineAsyncComponent, onMounted, watch, computed } from 'vue'
-import { notify, requesterror, user, _locale, applang } from 'src/npoolstore'
+import { notify, requesterror, user } from 'src/npoolstore'
 import { useRouter } from 'vue-router'
 import 'src/api/app'
 
@@ -30,19 +30,7 @@ const errorswitcher = requesterror.useErrorStore()
 const trigger = computed(() => errorswitcher.ErrorTrigger)
 const router = useRouter()
 const notification = notify.useNotificationStore()
-
-const locale = _locale.useLocaleStore()
-
 const logined = user.useLocalUserStore()
-const lang = applang.useAppLangStore()
-const _lang = computed(() => lang.lang(undefined, logined.selectedLangID))
-
-watch(_lang, () => {
-  if (!_lang.value) {
-    return
-  }
-  locale.setLang(_lang.value)
-})
 
 watch(trigger, () => {
   if (!trigger.value) {
@@ -65,10 +53,6 @@ onMounted(() => {
       }
     })
   })
-  if (!_lang.value) {
-    return
-  }
-  locale.setLang(_lang.value)
 })
 </script>
 
