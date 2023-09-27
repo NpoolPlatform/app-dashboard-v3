@@ -33,7 +33,7 @@
       <q-card-section>
         <q-input v-model='target.Title' :label='$t("MSG_TITLE")' />
         <q-input v-model='target.Message' :label='$t("MSG_MESSAGE")' />
-        <q-select :options='goodbase.GoodTypeMostTypes' v-model='target.TopMostType' :label='$t("MSG_TOPMOST_TYPE")' />
+        <q-select :options='goodbase.GoodTypeMostTypes' :disable='updating' v-model='target.TopMostType' :label='$t("MSG_TOPMOST_TYPE")' />
         <q-input v-model='target.ThresholdCredits' :label='$t("MSG_THRESHOLD_PAYMENT_CREDITS")' />
         <q-input v-model='target.ThresholdPaymentAmount' :label='$t("MSG_THRESHOLD_PAYMENT_AMOUNT")' />
         <q-input v-model.number='target.RegisterElapsedSeconds' :label='$t("MSG_REGISTER_ELAPSED_SECONDS")' />
