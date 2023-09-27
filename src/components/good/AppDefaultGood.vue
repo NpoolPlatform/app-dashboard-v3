@@ -42,7 +42,7 @@
       </q-card-section>
       <q-card-section>
         <AppGoodSelector v-model:id='target.AppGoodID' />
-        <CoinPicker v-model:id='target.CoinTypeID' v-model:updating='updating' />
+        <!-- <CoinPicker v-model:id='target.CoinTypeID' v-model:updating='updating' /> -->
       </q-card-section>
       <q-item class='row'>
         <LoadingButton loading :label='$t("MSG_SUBMIT")' @click='onSubmit' />
@@ -66,7 +66,7 @@ import { useI18n } from 'vue-i18n'
 const { t } = useI18n({ useScope: 'global' })
 
 const LoadingButton = defineAsyncComponent(() => import('src/components/button/LoadingButton.vue'))
-const CoinPicker = defineAsyncComponent(() => import('src/components/coin/CoinPicker.vue'))
+// const CoinPicker = defineAsyncComponent(() => import('src/components/coin/CoinPicker.vue'))
 const AppGoodSelector = defineAsyncComponent(() => import('src/components/good/AppGoodSelector.vue'))
 
 const appDefaultGood = appdefaultgood.useAppDefaultGoodStore()
