@@ -145,7 +145,7 @@ const columns = computed(() => [
   },
   {
     name: 'CoinTypeID',
-    label: 'MSG_CoinTypeID',
+    label: 'MSG_COINTYPEID',
     sortable: true,
     field: (row: topmostgood.TopMostGood) => row.CoinTypeID
   },
