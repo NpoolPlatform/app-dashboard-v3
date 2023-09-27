@@ -1,14 +1,8 @@
 <script setup lang='ts'>
-import { getMessages } from 'src/api/g11n'
-import { applang, message, appgood, _locale, g11nbase } from 'src/npoolstore'
 import { onMounted, computed, watch } from 'vue'
-import { getAppGoods } from 'src/api/good'
-
-const lang = applang.useAppLangStore()
-const langs = computed(() => lang.langs())
-
-const appGood = appgood.useAppGoodStore()
-const appGoods = computed(() => appGood.goods())
+import { _locale, notify, applang, message, g11nbase, user } from 'src/npoolstore'
+import { useSettingStore } from 'src/localstore'
+import { useRouter } from 'vue-router'
 
 const locale = _locale.useLocaleStore()
 const langID = computed(() => locale.langID())
@@ -19,18 +13,39 @@ const messages = computed(() => _message.messages(undefined, langID.value, undef
 watch(langID, () => {
   if (messages.value.length === 0) {
     getMessages(0, 100)
+    return
   }
+  _setting.LangThrottling = false
+})
+
+const lang = applang.useAppLangStore()
+const router = useRouter()
+const _setting = useSettingStore()
+const logined = user.useLocalUserStore()
+const langName = computed(() => router.currentRoute.value.path.split('/')?.[1])
+const targetLangID = computed(() => lang.langID(undefined, langName.value) || logined.selectedLangID || lang.mainLangID(undefined))
+
+const setLang = () => {
+  const _lang = lang.lang(undefined, targetLangID.value)
+  if (!_lang) {
+    return
+  }
+  setTimeout(() => {
+    if (_setting.LangThrottling) {
+      setLang()
+      return
+    }
+    locale.setLang(_lang)
+  }, 1000)
+}
+
+watch(targetLangID, () => {
+  setLang()
 })
 
 onMounted(() => {
-  if (langs.value.length === 0) {
+  if (!lang.langs(undefined).length) {
     getAppLangs(0, 100)
-  }
-  if (messages.value.length === 0) {
-    getMessages(0, 100)
-  }
-  if (appGoods.value.length === 0) {
-    getAppGoods(0, 100)
   }
 })
 
@@ -39,15 +54,43 @@ const getAppLangs = (offset: number, limit: number) => {
     Offset: offset,
     Limit: limit,
     Message: {
+      Error: {
+        Title: 'MSG_GET_LANG_MESSAGES',
+        Message: 'MSG_GET_LANG_MESSAGES_FAIL',
+        Popup: true,
+        Type: notify.NotifyType.Error
+      }
     }
   }, (error: boolean, rows: Array<g11nbase.AppLang>) => {
-    if (error || rows.length === 0) {
-      if (!error) {
-        locale.setLangs(langs.value)
-      }
+    if (error || rows.length < limit) {
+      setLang()
+      getMessages(0, 100)
       return
     }
     getAppLangs(offset + limit, limit)
+  })
+}
+
+const getMessages = (offset: number, limit: number) => {
+  _setting.LangThrottling = true
+  _message.getMessages({
+    Disabled: false,
+    Offset: offset,
+    Limit: limit,
+    Message: {
+      Error: {
+        Title: 'MSG_GET_LANG_MESSAGES',
+        Message: 'MSG_GET_LANG_MESSAGES_FAIL',
+        Popup: true,
+        Type: notify.NotifyType.Error
+      }
+    }
+  }, (error: boolean, rows?: Array<g11nbase.Message>) => {
+    if (error || !rows?.length) {
+      _setting.LangThrottling = false
+      return
+    }
+    getMessages(offset + limit, limit)
   })
 }
 </script>
