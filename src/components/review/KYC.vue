@@ -95,7 +95,7 @@ const reviews = computed(() => review.reviews())
 const username = ref('')
 
 const displayReviews = computed(() => review.reviews().filter((el) => {
-  return el.EmailAddress.toLowerCase().includes(username.value) || el.PhoneNO.toLowerCase().includes(username.value)
+  return el.EmailAddress.toLowerCase().includes(username.value?.toLowerCase()) || el.PhoneNO.toLowerCase().includes(username.value?.toLowerCase())
 }))
 const reviewLoading = ref(false)
 
