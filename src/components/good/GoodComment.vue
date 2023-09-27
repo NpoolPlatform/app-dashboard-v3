@@ -87,7 +87,7 @@ const columns = computed(() => [
     name: 'CreatedAt',
     label: 'MSG_CREATED_AT',
     sortable: true,
-    field: (row: goodcomment.Comment) => utils.formatTime(row.CreatedAt, undefined, new Date().getTimezoneOffset()) + ' UTC'
+    field: (row: goodcomment.Comment) => utils.formatTime(row.CreatedAt, undefined)
   }
 ])
 </script>
