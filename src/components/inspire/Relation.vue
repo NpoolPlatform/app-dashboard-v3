@@ -74,9 +74,9 @@
               </tr>
               <tr v-for='(_good,index) in getSortAchievements(props.row.Achievements)' :key='index'>
                 <td class='name'>
-                  {{ getDisplayNames(_good.GoodID)?.[4]? $t(getDisplayNames(_good.GoodID)?.[4] as string) : _good.CoinName }}
+                  {{ getDisplayNames(_good.AppGoodID)?.[4]? $t(getDisplayNames(_good.AppGoodID)?.[4] as string) : _good.CoinName }}
                 </td>
-                <td>{{ _good?.GoodID }}</td>
+                <td>{{ _good?.AppGoodID }}</td>
                 <td>
                   {{ _good.CommissionValue }} <span>%</span>
                 </td>
