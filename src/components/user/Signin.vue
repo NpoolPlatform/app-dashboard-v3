@@ -121,6 +121,7 @@ const verify = () => {
   })
 }
 const _verify = () => {
+  _user.$reset()
   if (!_app.app(undefined)?.SigninVerifyEnable) {
     void router.push({ path: '/' })
     return
@@ -184,6 +185,7 @@ const onVerifyClick = () => {
       void router.push({ path: '/signin' })
       return
     }
+    _user.$reset()
     showVerifyDialog.value = false
     void router.push({ path: '/' })
     if (!coin.coins(undefined).length) { getCoins(0, 500) }
