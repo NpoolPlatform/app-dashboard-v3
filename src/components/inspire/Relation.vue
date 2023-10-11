@@ -74,7 +74,15 @@
               </tr>
               <tr v-for='(_good,index) in getSortAchievements(props.row.Achievements)' :key='index'>
                 <td class='name'>
-                  {{ getDisplayNames(_good.AppGoodID)?.[4]? $t(getDisplayNames(_good.AppGoodID)?.[4] as string) : _good.GoodName }}
+                  <span v-if='$t(getDisplayNames(_good.AppGoodID) as string)?.length <= 15'>
+                    {{ $t(getDisplayNames(_good.AppGoodID) as string) }}
+                  </span>
+                  <div v-else class='good-name'>
+                    {{ $t(getDisplayNames(_good.AppGoodID) as string)?.substring(0, 15) + '...' }}
+                    <q-tooltip class='bg-white text-black shadow-2'>
+                      {{ $t(getDisplayNames(_good.AppGoodID) as string) }}
+                    </q-tooltip>
+                  </div>
                 </td>
                 <td>{{ _good?.AppGoodID }}</td>
                 <td>
@@ -140,9 +148,17 @@
               </tr>
               <tr v-for='(_good,index) in getSortAchievements(props.row.Achievements)' :key='index'>
                 <td class='name'>
-                  {{ getDisplayNames(_good.GoodID)?.[4]? $t(getDisplayNames(_good.GoodID)?.[4] as string) : _good.CoinName }}
+                  <span v-if='$t(getDisplayNames(_good.AppGoodID) as string)?.length <= 15'>
+                    {{ $t(getDisplayNames(_good.AppGoodID) as string) }}
+                  </span>
+                  <div v-else class='good-name'>
+                    {{ $t(getDisplayNames(_good.AppGoodID) as string)?.substring(0, 15) + '...' }}
+                    <q-tooltip class='bg-white text-black shadow-2'>
+                      {{ $t(getDisplayNames(_good.AppGoodID) as string) }}
+                    </q-tooltip>
+                  </div>
                 </td>
-                <td>{{ _good?.GoodID }}</td>
+                <td>{{ _good?.AppGoodID }}</td>
                 <td>
                   {{ _good.CommissionValue }} <span>%</span>
                 </td>
@@ -241,7 +257,7 @@ const getSortAchievements = computed(() => (achievements: Array<GoodAchievement>
 const loading = ref(false)
 
 const good = appgood.useAppGoodStore()
-const getDisplayNames = computed(() => (appGoodID: string) => good.good(undefined, appGoodID)?.DisplayNames)
+const getDisplayNames = computed(() => (appGoodID: string) => good.good(undefined, appGoodID)?.DisplayNames?.[4] ? good.good(undefined, appGoodID)?.DisplayNames?.[4] : good.good(undefined, appGoodID)?.GoodName)
 
 watch(curUserID, () => {
   _userInviters.value = []
@@ -370,8 +386,10 @@ const columns = [
 .price-coin-name
   font-size: 5px
 ::v-deep .name
-  max-width: 120px
-  width: 100px
+  max-width: 160px
+  width: 160px
+  overflow: hidden
+  white-space:nowrap
 ::v-deep .units
   width: 70px
   overflow: hidden
