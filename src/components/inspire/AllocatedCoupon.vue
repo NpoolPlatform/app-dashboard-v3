@@ -25,12 +25,12 @@
 <script setup lang='ts'>
 import { computed, onMounted, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { allocatedCoupon, notify } from 'src/npoolstore'
+import { allocatedcoupon, notify } from 'src/npoolstore'
 
 // eslint-disable-next-line @typescript-eslint/unbound-method
 const { t } = useI18n({ useScope: 'global' })
 
-const _coupon = allocatedCoupon.useAllocatedCouponStore()
+const _coupon = allocatedcoupon.useAllocatedCouponStore()
 const username = ref('')
 const coupons = computed(() => _coupon.coupons(undefined).filter((el) => {
   return el.EmailAddress?.includes(username.value) ||
@@ -51,7 +51,7 @@ const getCoupons = (offset: number, limit: number) => {
         Type: notify.NotifyType.Error
       }
     }
-  }, (error: boolean, rows?: Array<allocatedCoupon.Coupon>) => {
+  }, (error: boolean, rows?: Array<allocatedcoupon.Coupon>) => {
     if (error) {
       loading.value = false
       return

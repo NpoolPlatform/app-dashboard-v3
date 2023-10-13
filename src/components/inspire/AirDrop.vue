@@ -60,7 +60,7 @@
 <script setup lang='ts'>
 import { computed, onMounted, watch, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { allocatedCoupon, coupon, user, utils, notify } from 'src/npoolstore'
+import { allocatedcoupon, coupon, user, utils, notify } from 'src/npoolstore'
 
 // eslint-disable-next-line @typescript-eslint/unbound-method
 const { t } = useI18n({ useScope: 'global' })
@@ -109,7 +109,7 @@ const columns = computed(() => [
   }
 ])
 
-const _allocatedCoupon = allocatedCoupon.useAllocatedCouponStore()
+const _allocatedCoupon = allocatedcoupon.useAllocatedCouponStore()
 const _coupon = coupon.useCouponStore()
 const coupons = computed(() => _coupon.coupons(undefined).filter((el) => el.CouponType !== coupon.CouponType.SpecialOffer).map((el) => {
   return {
