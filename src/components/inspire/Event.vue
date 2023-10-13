@@ -57,7 +57,7 @@
           basetypes.EventType.AffiliateSignup'
       >
         <AppGoodSelector v-model:id='target.GoodID' v-if='!updating' :label='$t("MSG_GOOD")' />
-        <CouponSelector v-model:ids='couponIDs' />
+        <MultiCouponSelector v-model:ids='couponIDs' />
       </q-card-section>
       <q-card-section>
         <q-input type='number' v-model='target.Credits' :label='$t("MSG_CREDIT")' />
@@ -88,7 +88,7 @@ const { t } = useI18n({ useScope: 'global' })
 
 const LoadingButton = defineAsyncComponent(() => import('src/components/button/LoadingButton.vue'))
 const AppGoodSelector = defineAsyncComponent(() => import('src/components/good/AppGoodSelector.vue'))
-const CouponSelector = defineAsyncComponent(() => import('src/components/inspire/CouponSelector.vue'))
+const MultiCouponSelector = defineAsyncComponent(() => import('src/components/inspire/MultiCouponSelector.vue'))
 
 const _coupon = coupon.useCouponStore()
 const event = eventinspire.useEventStore()
