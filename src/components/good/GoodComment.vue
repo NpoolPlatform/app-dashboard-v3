@@ -5,17 +5,41 @@
     :title='$t("MSG_GOOD_COMMENTS")'
     :rows='comments'
     row-key='ID'
-    :columns='columns'
+    :columns='(columns as any)'
     :rows-per-page-options='[100]'
-  />
+    selection='single'
+    v-model:selected='selectedComments'
+  >
+    <template #top-right>
+      <div class='row indent flat'>
+        <q-btn
+          dense
+          flat
+          class='btn flat'
+          :label='$t("MSG_DELETE")'
+          :disable='selectedComments?.length == 0'
+          @click='onDelete'
+        />
+      </div>
+    </template>
+  </q-table>
 </template>
 
 <script setup lang='ts'>
-import { computed, onMounted } from 'vue'
+import { computed, onMounted, ref } from 'vue'
 import { goodcomment, sdk, utils } from 'src/npoolstore'
+import { Comment } from 'src/npoolstore/good/good/comment'
 
 const comments = computed(() => sdk.comments.value)
+const selectedComments = ref([] as Array<Comment>)
 
+const onDelete = () => {
+  if (selectedComments.value?.length > 0) {
+    sdk.deleteAppGoodComment(selectedComments.value?.[0], () => {
+      // TODO
+    })
+  }
+}
 onMounted(() => {
   if (!comments.value?.length) {
     sdk.getComments(0, 0)
@@ -58,6 +82,12 @@ const columns = computed(() => [
     label: 'MSG_GOOD_ID',
     sortable: true,
     field: (row: goodcomment.Comment) => row.GoodID
+  },
+  {
+    name: 'GoodID',
+    label: 'MSG_APP_GOOD_ID',
+    sortable: true,
+    field: (row: goodcomment.Comment) => row.AppGoodID
   },
   {
     name: 'GoodName',
