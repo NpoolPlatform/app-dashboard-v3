@@ -21,8 +21,7 @@
   </q-select>
 </template>
 <script setup lang='ts'>
-import { user } from 'src/npoolstore'
-import { getUsers } from 'src/api/user'
+import { user, sdk } from 'src/npoolstore'
 import { computed, defineEmits, defineProps, toRef, ref, onMounted } from 'vue'
 
 interface Props {
@@ -59,7 +58,7 @@ const onUpdate = () => {
 
 onMounted(() => {
   if (!users.value?.length) {
-    getUsers(0, 500)
+    sdk.getUsers(0, 0)
   }
 })
 </script>
