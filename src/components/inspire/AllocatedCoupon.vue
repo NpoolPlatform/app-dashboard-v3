@@ -38,7 +38,7 @@
       </q-card-section>
       <q-card-section>
         <AppUserSelector v-model:id='target.UserID' />
-        <CouponSelector :id='target.CouponID' />
+        <CouponSelector v-model:id='target.CouponID' />
       </q-card-section>
       <q-item class='row'>
         <LoadingButton loading :label='$t("MSG_SUBMIT")' @click='onSubmit' />
