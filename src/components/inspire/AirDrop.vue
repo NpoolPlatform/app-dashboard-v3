@@ -109,7 +109,7 @@ const columns = computed(() => [
   }
 ])
 
-const _allocatedCoupon = allocatedcoupon.useAllocatedCouponStore()
+const _allocatedcoupon = allocatedcoupon.useAllocatedCouponStore()
 const _coupon = coupon.useCouponStore()
 const coupons = computed(() => _coupon.coupons(undefined).filter((el) => el.CouponType !== coupon.CouponType.SpecialOffer).map((el) => {
   return {
@@ -194,7 +194,7 @@ const onMenuHide = () => {
 const onSubmit = () => {
   showing.value = false
   selectedUsers.value.forEach((user) => {
-    _allocatedCoupon.createCoupon({
+    _allocatedcoupon.createCoupon({
       TargetUserID: user.ID,
       CouponID: couponID.value,
       Message: {

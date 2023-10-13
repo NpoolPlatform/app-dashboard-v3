@@ -55,7 +55,7 @@
       </q-item>
     </q-card>
   </q-dialog>
-
+  <CouponScope />
   <AllocatedCoupon />
 </template>
 
@@ -65,6 +65,7 @@ import { coupon, sdk, utils } from 'src/npoolstore'
 const DateTimePicker = defineAsyncComponent(() => import('src/components/date/DateTimePicker.vue'))
 const LoadingButton = defineAsyncComponent(() => import('src/components/button/LoadingButton.vue'))
 const AllocatedCoupon = defineAsyncComponent(() => import('src/components/inspire/AllocatedCoupon.vue'))
+const CouponScope = defineAsyncComponent(() => import('src/components/inspire/CouponScope.vue'))
 
 import { useI18n } from 'vue-i18n'
 
@@ -152,6 +153,12 @@ const columns = computed(() => [
     label: t('MSG_TYPE'),
     sortable: true,
     field: (row: coupon.Coupon) => row.CouponType
+  },
+  {
+    name: 'Scope',
+    label: t('MSG_COUPON_SCOPE'),
+    sortable: true,
+    field: (row: coupon.Coupon) => row.CouponScope
   },
   {
     name: 'Denomination',
