@@ -7,6 +7,7 @@
     row-key='ID'
     :rows-per-page-options='[100]'
     selection='single'
+    :columns='columns'
     v-model:selected='selectedScopes'
   >
     <template #top-right>
@@ -61,10 +62,14 @@
 
 <script setup lang='ts'>
 import { computed, defineAsyncComponent, onMounted, ref } from 'vue'
-import { couponscope, coupon, sdk } from 'src/npoolstore'
+import { couponscope, coupon, sdk, utils } from 'src/npoolstore'
 const CouponSelector = defineAsyncComponent(() => import('src/components/inspire/CouponSelector.vue'))
 const AppGoodSelector = defineAsyncComponent(() => import('src/components/good/AppGoodSelector.vue'))
 const LoadingButton = defineAsyncComponent(() => import('src/components/button/LoadingButton.vue'))
+import { useI18n } from 'vue-i18n'
+
+// eslint-disable-next-line @typescript-eslint/unbound-method
+const { t } = useI18n({ useScope: 'global' })
 
 const scope = couponscope.useScopeStore()
 const username = ref('')
@@ -112,5 +117,68 @@ onMounted(() => {
     sdk.getScopes(0, 0)
   }
 })
+
+const columns = computed(() => [
+  {
+    name: 'ID',
+    label: t('MSG_ID'),
+    sortable: true,
+    field: (row: couponscope.Scope) => row.ID
+  },
+  {
+    name: 'AppID',
+    label: t('MSG_APP_ID'),
+    sortable: true,
+    field: (row: couponscope.Scope) => row.AppID
+  },
+  {
+    name: 'AppGoodID',
+    label: t('MSG_APP_GOOD_ID'),
+    sortable: true,
+    field: (row: couponscope.Scope) => row.AppGoodID
+  },
+  {
+    name: 'GoodName',
+    label: t('MSG_MESSAGE'),
+    sortable: true,
+    field: (row: couponscope.Scope) => row.GoodName
+  },
+  {
+    name: 'Type',
+    label: t('MSG_TYPE'),
+    sortable: true,
+    field: (row: couponscope.Scope) => row.CouponType
+  },
+  {
+    name: 'Scope',
+    label: t('MSG_COUPON_SCOPE'),
+    sortable: true,
+    field: (row: couponscope.Scope) => row.CouponScope
+  },
+  {
+    name: 'CouponID',
+    label: t('MSG_COUPON_ID'),
+    sortable: true,
+    field: (row: couponscope.Scope) => row.CouponID
+  },
+  {
+    name: 'CouponName',
+    label: t('MSG_COUPON_NAME'),
+    sortable: true,
+    field: (row: couponscope.Scope) => row.CouponName
+  },
+  {
+    name: 'CouponScope',
+    label: t('MSG_SCOPE'),
+    sortable: true,
+    field: (row: couponscope.Scope) => row.CouponScope
+  },
+  {
+    name: 'CreatedAt',
+    label: t('MSG_CREATED_AT'),
+    sortable: true,
+    field: (row: couponscope.Scope) => utils.formatTime(row.CreatedAt)
+  }
+])
 
 </script>
