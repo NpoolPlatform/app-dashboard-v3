@@ -5,7 +5,7 @@
     :title='$t("MSG_ALLOCATED_COUPONS")'
     :rows='coupons'
     row-key='ID'
-    :rows-per-page-options='[10]'
+    :rows-per-page-options='[100]'
   >
     <template #top-right>
       <div class='row indent flat'>
@@ -104,9 +104,14 @@ const onCancel = () => {
 >>>>>>> e523645 (add allocated coupon)
 }
 
-const onSubmit = () => {
-  // TODO
-  console.log('coupon: ', target.value)
+const onSubmit = (done: () => void) => {
+  sdk.createAllocatedCoupon(target.value, (error: boolean) => {
+    done()
+    if (error) {
+      return
+    }
+    onMenuHide()
+  })
 }
 
 onMounted(() => {

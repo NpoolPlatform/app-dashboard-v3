@@ -30,7 +30,7 @@ const _coupon = coupon.useCouponStore()
 const myCoupons = computed(() => _coupon.coupons().filter((el) => el.CouponType !== coupon.CouponType.SpecialOffer && _coupon.valid(undefined, el.ID)))
 const coupons = computed(() => myCoupons.value.map((el) => {
   return {
-    value: el,
+    value: el.ID,
     label: `${el.ID} | ${el.Name} | ${el.CouponType} | ${el.Denomination}`
   }
 }))
