@@ -2,7 +2,7 @@
   <q-table
     dense
     flat
-    :title='$t("MSG_COUPONS")'
+    :title='$t("MSG_ALLOCATED_COUPONS")'
     :rows='coupons'
     row-key='ID'
     :rows-per-page-options='[10]'
