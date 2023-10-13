@@ -90,7 +90,7 @@ const onSubmit = (done: () => void) => {
 
 onMounted(() => {
   if (!coupons.value?.length) {
-    sdk.getAllocatedCoupons(0, 1)
+    sdk.getAllocatedCoupons(0, 0)
   }
 })
 
