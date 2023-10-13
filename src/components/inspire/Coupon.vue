@@ -55,6 +55,8 @@
       </q-item>
     </q-card>
   </q-dialog>
+
+  <AllocatedCoupon />
 </template>
 
 <script setup lang='ts'>
@@ -62,6 +64,7 @@ import { computed, defineAsyncComponent, onMounted, ref } from 'vue'
 import { coupon, sdk, utils } from 'src/npoolstore'
 const DateTimePicker = defineAsyncComponent(() => import('src/components/date/DateTimePicker.vue'))
 const LoadingButton = defineAsyncComponent(() => import('src/components/button/LoadingButton.vue'))
+const AllocatedCoupon = defineAsyncComponent(() => import('src/components/inspire/AllocatedCoupon.vue'))
 
 import { useI18n } from 'vue-i18n'
 
