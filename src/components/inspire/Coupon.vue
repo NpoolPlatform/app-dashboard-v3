@@ -5,7 +5,6 @@
     :title='$t("MSG_COUPONS")'
     :rows='coupons'
     row-key='ID'
-    :loading='loading'
     :rows-per-page-options='[100]'
     @row-click='(evt, row, index) => onRowClick(row as coupon.Coupon)'
   >
@@ -59,17 +58,12 @@
 
 <script setup lang='ts'>
 import { computed, defineAsyncComponent, onMounted, ref } from 'vue'
-import { useI18n } from 'vue-i18n'
-import { coupon, notify, sdk } from 'src/npoolstore'
+import { coupon, sdk } from 'src/npoolstore'
 const DateTimePicker = defineAsyncComponent(() => import('src/components/date/DateTimePicker.vue'))
 const LoadingButton = defineAsyncComponent(() => import('src/components/button/LoadingButton.vue'))
 
-// eslint-disable-next-line @typescript-eslint/unbound-method
-const { t } = useI18n({ useScope: 'global' })
-
 const _coupon = coupon.useCouponStore()
 const coupons = computed(() => _coupon.coupons())
-const loading = ref(false)
 
 const target = ref({} as coupon.Coupon)
 const showing = ref(false)
@@ -113,31 +107,9 @@ const onSubmit = (done: () => void) => {
   })
 }
 
-const getCoupons = (offset: number, limit: number) => {
-  loading.value = true
-  _coupon.getCoupons({
-    Offset: offset,
-    Limit: limit,
-    Message: {
-      Error: {
-        Title: t('MSG_GET_COUPONS'),
-        Message: t('MSG_GET_COUPONS_FAIL'),
-        Popup: true,
-        Type: notify.NotifyType.Error
-      }
-    }
-  }, (error: boolean, rows?: Array<coupon.Coupon>) => {
-    if (error || !rows?.length) {
-      loading.value = false
-      return
-    }
-    getCoupons(offset + limit, limit)
-  })
-}
-
 onMounted(() => {
   if (!coupons.value?.length) {
-    getCoupons(0, 100)
+    sdk.getCoupons(0, 1)
   }
 })
 

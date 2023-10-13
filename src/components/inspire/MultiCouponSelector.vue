@@ -10,6 +10,7 @@
     @update:model-value='onUpdate'
     use-input
     @filter='onFilter'
+    multiple
   />
 </template>
 <script setup lang='ts'>
@@ -18,12 +19,12 @@ import { computed, defineEmits, defineProps, toRef, ref, onMounted } from 'vue'
 import { getCoupons } from 'src/api/inspire'
 
 interface Props {
-    id: string
-    updating?: boolean
+  ids: string[]
+  updating?: boolean
 }
 
 const props = defineProps<Props>()
-const _id = toRef(props, 'id')
+const ids = toRef(props, 'ids')
 const updating = toRef(props, 'updating')
 
 const _coupon = coupon.useCouponStore()
@@ -35,7 +36,7 @@ const coupons = computed(() => myCoupons.value.map((el) => {
   }
 }))
 const displayCoupons = ref(coupons.value)
-const target = ref(_id.value)
+const target = ref(displayCoupons.value.filter((el) => ids.value.findIndex((el1) => el1 === el.value.ID) >= 0).map((el) => el.value))
 
 const onFilter = (val: string, doneFn: (callbackFn: () => void) => void) => {
   doneFn(() => {
@@ -45,9 +46,10 @@ const onFilter = (val: string, doneFn: (callbackFn: () => void) => void) => {
   })
 }
 
-const emit = defineEmits<{(e: 'update:id', id: string): void}>()
+const emit = defineEmits<{(e: 'update:ids', ids: string[]): void}>()
 const onUpdate = () => {
-  emit('update:id', target.value)
+  const _ids = target.value.map((el) => el.ID)
+  emit('update:ids', _ids)
 }
 
 onMounted(() => {

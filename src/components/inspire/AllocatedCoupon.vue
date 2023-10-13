@@ -5,7 +5,6 @@
     :title='$t("MSG_COUPONS")'
     :rows='coupons'
     row-key='ID'
-    :loading='loading'
     :rows-per-page-options='[10]'
   >
     <template #top-right>
@@ -18,17 +17,43 @@
           :label='$t("MSG_USERNAME")'
         />
       </div>
+      <q-btn
+        dense
+        flat
+        class='btn flat'
+        :label='$t("MSG_CREATE")'
+        @click='onCreate'
+      />
     </template>
   </q-table>
+
+  <q-dialog
+    v-model='showing'
+    @hide='onMenuHide'
+    position='right'
+  >
+    <q-card class='popup-menu'>
+      <q-card-section>
+        <span>{{ $t('MSG_COUPON') }}</span>
+      </q-card-section>
+      <q-card-section>
+        <AppUserSelector v-model:id='target.UserID' />
+        <CouponSelector :id='target.CouponID' />
+      </q-card-section>
+      <q-item class='row'>
+        <LoadingButton loading :label='$t("MSG_SUBMIT")' @click='onSubmit' />
+        <q-btn class='btn round' :label='$t("MSG_CANCEL")' @click='onCancel' />
+      </q-item>
+    </q-card>
+  </q-dialog>
 </template>
 
 <script setup lang='ts'>
-import { computed, onMounted, ref } from 'vue'
-import { useI18n } from 'vue-i18n'
-import { allocatedCoupon, notify } from 'src/npoolstore'
-
-// eslint-disable-next-line @typescript-eslint/unbound-method
-const { t } = useI18n({ useScope: 'global' })
+import { computed, defineAsyncComponent, onMounted, ref } from 'vue'
+import { allocatedCoupon, sdk } from 'src/npoolstore'
+const CouponSelector = defineAsyncComponent(() => import('src/components/inspire/CouponSelector.vue'))
+const AppUserSelector = defineAsyncComponent(() => import('src/components/user/AppUserSelector.vue'))
+const LoadingButton = defineAsyncComponent(() => import('src/components/button/LoadingButton.vue'))
 
 const _coupon = allocatedCoupon.useAllocatedCouponStore()
 const username = ref('')
@@ -37,44 +62,31 @@ const coupons = computed(() => _coupon.coupons(undefined).filter((el) => {
          el.PhoneNO?.includes(username.value) ||
          el.Username?.includes(username.value)
 }))
-const loading = ref(true)
 
-const getCoupons = (offset: number, limit: number) => {
-  _coupon.getCoupons({
-    Offset: offset,
-    Limit: limit,
-    Message: {
-      Error: {
-        Title: t('MSG_GET_COUPONS'),
-        Message: t('MSG_GET_COUPONS_FAIL'),
-        Popup: true,
-        Type: notify.NotifyType.Error
-      }
-    }
-  }, (error: boolean, rows?: Array<allocatedCoupon.Coupon>) => {
-    if (error) {
-      loading.value = false
-      return
-    }
-    if (!rows?.length) {
-      loading.value = false
-      return
-    }
-    getCoupons(offset + limit, limit)
-  })
+const target = ref({} as allocatedCoupon.Coupon)
+const showing = ref(false)
+
+const onCreate = () => {
+  target.value = {} as allocatedCoupon.Coupon
+  showing.value = true
+}
+const onMenuHide = () => {
+  showing.value = false
+  target.value = {} as allocatedCoupon.Coupon
+}
+const onCancel = () => {
+  onMenuHide()
 }
 
-const prepare = () => {
-  if (_coupon.coupons().length > 0) {
-    loading.value = false
-    return
-  }
-  loading.value = true
-  getCoupons(0, 100)
+const onSubmit = () => {
+  // TODO
+  console.log('coupon: ', target.value)
 }
 
 onMounted(() => {
-  prepare()
+  if (!coupons.value?.length) {
+    sdk.getAllocatedCoupons(0, 1)
+  }
 })
 
 </script>
