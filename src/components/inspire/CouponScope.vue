@@ -16,7 +16,7 @@
           flat
           class='small'
           v-model='username'
-          :label='$t("MSG_USERNAME")'
+          :label='$t("MSG_COUPON_ID")'
         />
       </div>
     </template>
