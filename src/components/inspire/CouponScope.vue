@@ -8,7 +8,6 @@
     :rows-per-page-options='[100]'
     selection='single'
     :columns='columns'
-    v-model:selected='selectedScopes'
   >
     <template #top-right>
       <div class='row indent flat'>
@@ -20,52 +19,13 @@
           :label='$t("MSG_USERNAME")'
         />
       </div>
-      <q-btn
-        dense
-        flat
-        class='btn flat'
-        :label='$t("MSG_DELETE")'
-        :disable='selectedScopes?.length === 0'
-        @click='onDelete'
-      />
-      <q-btn
-        dense
-        flat
-        class='btn flat'
-        :label='$t("MSG_CREATE")'
-        @click='onCreate'
-      />
     </template>
   </q-table>
-
-  <q-dialog
-    v-model='showing'
-    @hide='onMenuHide'
-    position='right'
-  >
-    <q-card class='popup-menu'>
-      <q-card-section>
-        <span>{{ $t('MSG_COUPON') }}</span>
-      </q-card-section>
-      <q-card-section>
-        <AppGoodSelector v-model:id='target.AppGoodID' :label='"MSG_APP_GOOD"' />
-        <CouponSelector v-model:id='target.CouponID' />
-        <q-select :options='coupon.CouponScopes' v-model='_scope' disable :label='$t("MSG_COUPON_SCOPE")' />
-      </q-card-section>
-      <q-item class='row'>
-        <LoadingButton loading :label='$t("MSG_SUBMIT")' @click='onSubmit' />
-        <q-btn class='btn round' :label='$t("MSG_CANCEL")' @click='onCancel' />
-      </q-item>
-    </q-card>
-  </q-dialog>
 </template>
 
 <script setup lang='ts'>
-import { computed, defineAsyncComponent, onMounted, ref } from 'vue'
-import { couponscope, coupon, sdk, utils } from 'src/npoolstore'
-const CouponSelector = defineAsyncComponent(() => import('src/components/inspire/CouponSelector.vue'))
-const AppGoodSelector = defineAsyncComponent(() => import('src/components/good/AppGoodSelector.vue'))
-const LoadingButton = defineAsyncComponent(() => import('src/components/button/LoadingButton.vue'))
+import { computed, onMounted, ref } from 'vue'
+import { couponscope, sdk, utils } from 'src/npoolstore'
 import { useI18n } from 'vue-i18n'
 
 // eslint-disable-next-line @typescript-eslint/unbound-method
@@ -78,40 +38,6 @@ const scopes = computed(() => scope.scopes(undefined).filter((el) => {
            el.CouponID?.includes(username.value)
 }))
 
-const target = ref({} as couponscope.Scope)
-const showing = ref(false)
-
-const onCreate = () => {
-  target.value = {} as couponscope.Scope
-  showing.value = true
-}
-const onMenuHide = () => {
-  showing.value = false
-  target.value = {} as couponscope.Scope
-}
-const onCancel = () => {
-  onMenuHide()
-}
-
-const _coupon = coupon.useCouponStore()
-const _scope = computed(() => _coupon.coupon(undefined, target.value?.CouponID)?.CouponScope)
-
-const onSubmit = (done: () => void) => {
-  sdk.createScope(target.value, (error: boolean) => {
-    done()
-    if (error) {
-      return
-    }
-    onMenuHide()
-  })
-}
-
-const selectedScopes = ref([] as Array<couponscope.Scope>)
-const onDelete = () => {
-  sdk.deleteScope(selectedScopes.value?.[0], () => {
-    // TODO
-  })
-}
 onMounted(() => {
   if (!scopes.value?.length) {
     sdk.getScopes(0, 0)
