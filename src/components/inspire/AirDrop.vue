@@ -40,11 +40,7 @@
         <span>{{ $t('MSG_CREATE_EVENT_COUPON') }}</span>
       </q-card-section>
       <q-card-section>
-        <q-select
-          :options='coupons'
-          v-model='selectedCoupon'
-          :label='$t("MSG_COUPON")'
-        />
+        <CouponSelector v-model:id='target.ID' />
       </q-card-section>
       <q-item class='row'>
         <q-btn class='btn round alt' :label='$t("MSG_SUBMIT")' @click='onSubmit' />
@@ -58,12 +54,85 @@
 </template>
 
 <script setup lang='ts'>
-import { computed, onMounted, watch, ref } from 'vue'
+import { computed, onMounted, ref, defineAsyncComponent } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { allocatedcoupon, coupon, user, utils, notify } from 'src/npoolstore'
+const CouponSelector = defineAsyncComponent(() => import('src/components/inspire/CouponSelector.vue'))
 
 // eslint-disable-next-line @typescript-eslint/unbound-method
 const { t } = useI18n({ useScope: 'global' })
+
+const _allocatedcoupon = allocatedcoupon.useAllocatedCouponStore()
+
+const _user = user.useUserStore()
+const users = computed(() => _user.appUsers(undefined))
+const username = ref('')
+const displayUsers = computed(() => users.value.filter((el) => {
+  return el.EmailAddress?.includes(username.value) || el.PhoneNO?.includes(username.value)
+}))
+const selectedUsers = ref([] as Array<user.User>)
+
+const loading = ref(false)
+const target = ref({} as coupon.Coupon)
+
+const getUsers = (offset: number, limit: number) => {
+  _user.getUsers({
+    Offset: offset,
+    Limit: limit,
+    Message: {
+      Error: {
+        Title: 'MSG_GET_USERS',
+        Message: 'MSG_GET_USERS_FAIL',
+        Popup: true,
+        Type: notify.NotifyType.Error
+      }
+    }
+  }, (error: boolean, rows?: Array<user.User>) => {
+    if (error || !rows?.length) {
+      loading.value = false
+      return
+    }
+    getUsers(offset + limit, limit)
+  })
+}
+
+const showing = ref(false)
+const onDo = () => {
+  showing.value = true
+}
+
+const onMenuHide = () => {
+  showing.value = false
+}
+
+const onSubmit = () => {
+  showing.value = false
+  selectedUsers.value.forEach((user) => {
+    _allocatedcoupon.createCoupon({
+      TargetUserID: user.ID,
+      CouponID: target.value?.ID,
+      Message: {
+        Error: {
+          Title: t('MSG_CREATE_USER_COUPONS'),
+          Message: t('MSG_CREATE_USER_COUPONS_FAIL'),
+          Popup: true,
+          Type: notify.NotifyType.Error
+        }
+      }
+    }, () => {
+      // TODO
+    })
+  })
+}
+
+const onCancel = () => {
+  showing.value = false
+}
+
+onMounted(() => {
+  getUsers(0, 100)
+})
+
 const columns = computed(() => [
   {
     name: 'AppID',
@@ -108,111 +177,4 @@ const columns = computed(() => [
     field: (row: user.User) => utils.formatTime(row.CreatedAt)
   }
 ])
-
-const _allocatedcoupon = allocatedcoupon.useAllocatedCouponStore()
-const _coupon = coupon.useCouponStore()
-const coupons = computed(() => _coupon.coupons(undefined).filter((el) => el.CouponType !== coupon.CouponType.SpecialOffer).map((el) => {
-  return {
-    label: el.Name + ' | ' + el.Denomination + ' | ' + el.CouponType,
-    value: el
-  }
-}))
-
-const _user = user.useUserStore()
-const users = computed(() => _user.appUsers(undefined))
-const username = ref('')
-const displayUsers = computed(() => users.value.filter((el) => {
-  return el.EmailAddress?.includes(username.value) || el.PhoneNO?.includes(username.value)
-}))
-const selectedUsers = ref([] as Array<user.User>)
-
-const loading = ref(false)
-const couponID = ref(undefined as unknown as string)
-const selectedCoupon = ref(undefined as unknown as Record<string, unknown>)
-
-watch(selectedCoupon, () => {
-  const value = selectedCoupon.value?.value as coupon.Coupon
-  couponID.value = value.ID
-})
-
-const getUsers = (offset: number, limit: number) => {
-  _user.getUsers({
-    Offset: offset,
-    Limit: limit,
-    Message: {
-      Error: {
-        Title: 'MSG_GET_USERS',
-        Message: 'MSG_GET_USERS_FAIL',
-        Popup: true,
-        Type: notify.NotifyType.Error
-      }
-    }
-  }, (error: boolean, rows?: Array<user.User>) => {
-    if (error || !rows?.length) {
-      loading.value = false
-      return
-    }
-    getUsers(offset + limit, limit)
-  })
-}
-
-const prepare = () => {
-  _coupon.getCoupons({
-    Offset: 0,
-    Limit: 100,
-    Message: {
-      Error: {
-        Title: t('MSG_GET_COUPONS'),
-        Message: t('MSG_GET_COUPONS_FAIL'),
-        Popup: true,
-        Type: notify.NotifyType.Error
-      }
-    }
-  }, () => {
-    // TODO
-  })
-
-  if (!users.value?.length) {
-    loading.value = true
-    getUsers(0, 500)
-  }
-}
-
-onMounted(() => {
-  prepare()
-})
-
-const showing = ref(false)
-const onDo = () => {
-  showing.value = true
-}
-
-const onMenuHide = () => {
-  showing.value = false
-}
-
-const onSubmit = () => {
-  showing.value = false
-  selectedUsers.value.forEach((user) => {
-    _allocatedcoupon.createCoupon({
-      TargetUserID: user.ID,
-      CouponID: couponID.value,
-      Message: {
-        Error: {
-          Title: t('MSG_CREATE_USER_COUPONS'),
-          Message: t('MSG_CREATE_USER_COUPONS_FAIL'),
-          Popup: true,
-          Type: notify.NotifyType.Error
-        }
-      }
-    }, () => {
-      // TODO
-    })
-  })
-}
-
-const onCancel = () => {
-  showing.value = false
-}
-
 </script>
