@@ -63,7 +63,24 @@
         /> -->
       </q-card-section>
       <q-card-section>
-        <DateTimePicker v-model:date='target.ServiceStartAt' label='MSG_SERVICE_START_AT' />
+        <q-select
+          :options='appgood.CancelModes'
+          v-model='target.CancelMode'
+          :label='$t("MSG_CANCEL_MODE")'
+        />
+        <q-input
+          v-model.number='target.CancellableBeforeStart'
+          :label='$t("MSG_CANCELLABLE_BEFORE_START")'
+          type='number'
+          :min='0'
+          suffix='h'
+          :disable='target.CancelMode === appgood.CancelMode.UnCancellable'
+        />
+      </q-card-section>
+      <q-card-section>
+        <q-input v-model.number='target.DisplayIndex' :label='$t("MSG_DISPLAY_INDEX")' type='number' :min='0' />
+        <q-input v-model='target.GoodBanner' :label='$t("MSG_GOOD_BANNER")' />
+        <q-input v-model='target.ProductPage' :label='$t("MSG_PRODUCT_PAGE")' />
       </q-card-section>
       <q-card-section>
         <q-select
@@ -118,11 +135,6 @@
         />
       </q-card-section>
       <q-card-section>
-        <q-input v-model.number='target.DisplayIndex' :label='$t("MSG_DISPLAY_INDEX")' type='number' :min='0' />
-        <q-input v-model='target.GoodBanner' :label='$t("MSG_GOOD_BANNER")' />
-        <q-input v-model='target.ProductPage' :label='$t("MSG_PRODUCT_PAGE")' />
-      </q-card-section>
-      <q-card-section>
         <div> <q-toggle dense v-model='openSaleActivity' :label='$t("MSG_OPEN_SALE")' /></div>
       </q-card-section>
       <q-card-section>
@@ -130,19 +142,7 @@
         <div> <DateTimePicker v-model:date='target.SaleEndAt' label='MSG_SALE_END_AT' :disabled='!openSaleActivity' /></div>
       </q-card-section>
       <q-card-section>
-        <q-select
-          :options='appgood.CancelModes'
-          v-model='target.CancelMode'
-          :label='$t("MSG_CANCEL_MODE")'
-        />
-        <q-input
-          v-model.number='target.CancellableBeforeStart'
-          :label='$t("MSG_CANCELLABLE_BEFORE_START")'
-          type='number'
-          :min='0'
-          suffix='h'
-          :disable='target.CancelMode === appgood.CancelMode.UnCancellable'
-        />
+        <DateTimePicker v-model:date='target.ServiceStartAt' label='MSG_SERVICE_START_AT' />
       </q-card-section>
       <q-card-section>
         <div><q-toggle dense v-model='target.EnableSetCommission' :label='$t("MSG_ENABLE_SET_COMMISSION")' /></div>
