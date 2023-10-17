@@ -25,18 +25,27 @@
   >
     <q-card class='popup-menu'>
       <q-card-section>
-        <span>{{ $t('MSG_CREATE_APP_GOOD') }} : {{ target.GoodName }}</span>
+        <span>{{ $t('MSG_CREATE_APP_GOOD') }}</span>
       </q-card-section>
       <q-card-section>
+        <q-input v-model='target.GoodName' :label='$t("MSG_GOOD_NAME")' />
         <q-input v-model='target.Price' :label='$t("MSG_PRICE")' type='number' :min='0' />
         <q-input v-model.number='target.PurchaseLimit' :label='$t("MSG_PURCHASE_LIMIT")' type='number' :min='0' />
         <q-input v-model.number='target.UserPurchaseLimit' :label='$t("MSG_USER_PURCHASE_LIMIT")' type='number' :min='0' />
-        <q-input v-model.number='target.DisplayIndex' :label='$t("MSG_DISPLAY_INDEX")' type='number' :min='0' />
-        <q-input v-model='descriptions' :label='$t("MSG_DESCRIPTIONS")' />
-        <q-input v-model='displayNames' :label='$t("MSG_DISPLAY_NAMES")' />
-        <q-input v-model='displayColors' :label='$t("MSG_DISPLAY_COLORS")' />
-        <q-input v-model='target.GoodBanner' :label='$t("MSG_GOOD_BANNER")' />
-        <q-input v-model='target.ProductPage' :label='$t("MSG_PRODUCT_PAGE")' />
+        <q-input
+          class='commission-percent'
+          v-model='target.TechnicalFeeRatio'
+          :label='$t("MSG_TECHNICALFEE_RATIO")'
+          type='number'
+          :min='0'
+        />
+        <q-input
+          class='commission-percent'
+          v-model='target.ElectricityFeeRatio'
+          :label='$t("MSG_ELECTRICITYFEE_RATIO")'
+          type='number'
+          :min='0'
+        />
         <!-- <q-input
           class='commission-percent'
           v-model.number='target.CommissionPercent'
@@ -45,13 +54,73 @@
           :min='0'
           suffix='%'
         /> -->
-        <q-input
+        <!-- <q-input
           class='commission-percent'
           v-model='target.DailyRewardAmount'
           :label='$t("MSG_DAILY_REWARD_AMOUNT")'
           type='number'
           :min='0'
+        /> -->
+      </q-card-section>
+      <q-card-section>
+        <DateTimePicker v-model:date='target.ServiceStartAt' label='MSG_SERVICE_START_AT' />
+      </q-card-section>
+      <q-card-section>
+        <q-select
+          label='MSG_DISPLAY_NAMES'
+          filled
+          v-model='target.DisplayNames'
+          use-input
+          use-chips
+          multiple
+          hide-dropdown-icon
+          input-debounce='0'
+          new-value-mode='add'
         />
+      </q-card-section>
+      <q-card-section>
+        <q-select
+          label='MSG_DESCRIPTIONS'
+          filled
+          v-model='target.Descriptions'
+          use-input
+          use-chips
+          multiple
+          hide-dropdown-icon
+          input-debounce='0'
+          new-value-mode='add'
+        />
+      </q-card-section>
+      <q-card-section>
+        <q-select
+          label='MSG_DISPLAY_COLORS'
+          filled
+          v-model='target.DisplayColors'
+          use-input
+          use-chips
+          multiple
+          hide-dropdown-icon
+          input-debounce='0'
+          new-value-mode='add'
+        />
+      </q-card-section>
+      <q-card-section>
+        <q-select
+          label='MSG_POSTERS'
+          filled
+          v-model='target.Posters'
+          use-input
+          use-chips
+          multiple
+          hide-dropdown-icon
+          input-debounce='0'
+          new-value-mode='add'
+        />
+      </q-card-section>
+      <q-card-section>
+        <q-input v-model.number='target.DisplayIndex' :label='$t("MSG_DISPLAY_INDEX")' type='number' :min='0' />
+        <q-input v-model='target.GoodBanner' :label='$t("MSG_GOOD_BANNER")' />
+        <q-input v-model='target.ProductPage' :label='$t("MSG_PRODUCT_PAGE")' />
       </q-card-section>
       <q-card-section>
         <div> <q-toggle dense v-model='openSaleActivity' :label='$t("MSG_OPEN_SALE")' /></div>
@@ -127,16 +196,9 @@ const onCancel = () => {
   onMenuHide()
 }
 
-const descriptions = ref('')
-const displayNames = ref('')
-const displayColors = ref('')
-
 const onRowClick = (row: appgood.Good) => {
   target.value = { ...row }
   openSaleActivity.value = target?.value?.SaleEndAt !== 0
-  descriptions.value = target?.value?.Descriptions?.join(',')
-  displayNames.value = target?.value?.DisplayNames?.join(',')
-  displayColors.value = target?.value?.DisplayColors?.join(',')
   updating.value = true
   showing.value = true
 }
@@ -157,9 +219,9 @@ const updateTarget = computed(() => {
     UserPurchaseLimit: `${target.value.UserPurchaseLimit}`,
     SaleStartAt: target.value.SaleStartAt,
     SaleEndAt: target.value.SaleEndAt,
-    Descriptions: descriptions.value?.split(','),
-    DisplayNames: displayNames.value?.split(','),
-    DisplayColors: displayColors.value?.split(','),
+    Descriptions: target.value?.Descriptions,
+    DisplayNames: target.value?.DisplayNames,
+    DisplayColors: target.value?.DisplayColors,
     GoodBanner: target.value?.GoodBanner?.length === 0 ? undefined as unknown as string : target.value?.GoodBanner,
     ProductPage: target.value?.ProductPage,
     EnableProductPage: target.value?.EnableProductPage,
@@ -167,7 +229,11 @@ const updateTarget = computed(() => {
     EnableSetCommission: target.value?.EnableSetCommission,
     CancelMode: target.value?.CancelMode,
     CancellableBeforeStart: target.value?.CancellableBeforeStart,
-    DailyRewardAmount: target.value?.DailyRewardAmount?.length > 0 ? target.value?.DailyRewardAmount : undefined as unknown as string
+    ServiceStartAt: target.value?.ServiceStartAt,
+    ElectricityFeeRatio: target.value?.ElectricityFeeRatio,
+    TechnicalFeeRatio: target.value?.TechnicalFeeRatio,
+    Posters: target.value?.Posters
+    // DailyRewardAmount: target.value?.DailyRewardAmount?.length > 0 ? target.value?.DailyRewardAmount : undefined as unknown as string
   }
 })
 
