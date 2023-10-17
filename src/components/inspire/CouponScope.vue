@@ -40,7 +40,7 @@ const scopes = computed(() => scope.scopes(undefined).filter((el) => {
 
 onMounted(() => {
   if (!scopes.value?.length) {
-    sdk.getScopes(0, 0)
+    sdk.getAppScopes(0, 0)
   }
 })
 
