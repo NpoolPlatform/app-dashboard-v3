@@ -135,13 +135,8 @@
         />
       </q-card-section>
       <q-card-section>
-        <div> <q-toggle dense v-model='openSaleActivity' :label='$t("MSG_OPEN_SALE")' /></div>
-      </q-card-section>
-      <q-card-section>
-        <div> <DateTimePicker v-model:date='target.SaleStartAt' label='MSG_SALE_START_AT' :disabled='!openSaleActivity' /></div>
-        <div> <DateTimePicker v-model:date='target.SaleEndAt' label='MSG_SALE_END_AT' :disabled='!openSaleActivity' /></div>
-      </q-card-section>
-      <q-card-section>
+        <div> <DateTimePicker v-model:date='target.SaleStartAt' label='MSG_SALE_START_AT' /></div>
+        <div> <DateTimePicker v-model:date='target.SaleEndAt' label='MSG_SALE_END_AT' /></div>
         <DateTimePicker v-model:date='target.ServiceStartAt' label='MSG_SERVICE_START_AT' />
       </q-card-section>
       <q-card-section>
@@ -182,8 +177,6 @@ const appGoods = computed(() => appGood.goods())
 
 const target = ref({} as appgood.Good)
 
-const openSaleActivity = ref(false)
-
 const showing = ref(false)
 const updating = ref(false)
 
@@ -198,7 +191,6 @@ const onCancel = () => {
 
 const onRowClick = (row: appgood.Good) => {
   target.value = { ...row }
-  openSaleActivity.value = target?.value?.SaleEndAt !== 0
   updating.value = true
   showing.value = true
 }
@@ -219,6 +211,7 @@ const updateTarget = computed(() => {
     UserPurchaseLimit: `${target.value.UserPurchaseLimit}`,
     SaleStartAt: target.value.SaleStartAt,
     SaleEndAt: target.value.SaleEndAt,
+    ServiceStartAt: target.value?.ServiceStartAt,
     Descriptions: target.value?.Descriptions,
     DisplayNames: target.value?.DisplayNames,
     DisplayColors: target.value?.DisplayColors,
@@ -229,7 +222,6 @@ const updateTarget = computed(() => {
     EnableSetCommission: target.value?.EnableSetCommission,
     CancelMode: target.value?.CancelMode,
     CancellableBeforeStart: target.value?.CancellableBeforeStart,
-    ServiceStartAt: target.value?.ServiceStartAt,
     ElectricityFeeRatio: target.value?.ElectricityFeeRatio,
     TechnicalFeeRatio: target.value?.TechnicalFeeRatio,
     Posters: target.value?.Posters
@@ -238,10 +230,6 @@ const updateTarget = computed(() => {
 })
 
 const updateAppGood = (done: () => void) => {
-  if (!openSaleActivity.value) {
-    target.value.SaleStartAt = 0
-    target.value.SaleEndAt = 0
-  }
   appGood.updateAppGood({
     ...updateTarget.value,
     Message: {
