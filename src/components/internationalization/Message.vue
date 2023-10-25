@@ -302,15 +302,16 @@ const uploadFile = (evt: Event) => {
 const importMessages = computed(() => {
   return Array.from(loadedMessages.value).map((el) => {
     return {
-      ID: undefined as unknown as string,
+      ID: el?.ID,
+      EntID: el?.EntID,
       AppName: undefined as unknown as string,
       AppID: AppID,
-      LangID: el.LangID,
-      MessageID: el.MessageID,
-      Message: el.Message,
-      GetIndex: el.GetIndex,
-      Disabled: el.Disabled,
-      Lang: el.Lang,
+      LangID: el?.LangID,
+      MessageID: el?.MessageID,
+      Message: el?.Message,
+      GetIndex: el?.GetIndex,
+      Disabled: el?.Disabled,
+      Lang: el?.Lang,
       CreatedAt: undefined as unknown as number,
       UpdatedAt: undefined as unknown as number
     } as g11nbase.Message

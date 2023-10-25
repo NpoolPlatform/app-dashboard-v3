@@ -17,7 +17,7 @@
       <q-card-section>
         <span>{{ $t('MSG_UPDATE_APP_LANGUAGE') }}</span>
       </q-card-section>
-      <q-card-section>
+      <q-card-section v-if='!updating'>
         <div><q-input v-model='target.Lang' :label='$t("MSG_LANG")' /></div>
         <div><q-input v-model='target.Logo' :label='$t("MSG_LOGO")' /></div>
         <div><q-input v-model='target.Name' :label='$t("MSG_NAME")' /></div>
