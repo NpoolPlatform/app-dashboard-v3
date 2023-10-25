@@ -302,8 +302,8 @@ const uploadFile = (evt: Event) => {
 const importMessages = computed(() => {
   return Array.from(loadedMessages.value).map((el) => {
     return {
-      ID: el?.ID,
-      EntID: el?.EntID,
+      ID: undefined as unknown as number,
+      EntID: undefined as unknown as string,
       AppName: undefined as unknown as string,
       AppID: AppID,
       LangID: el?.LangID,
