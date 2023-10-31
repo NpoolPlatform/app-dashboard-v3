@@ -7,6 +7,7 @@
     row-key='ID'
     :loading='emailLoading'
     :rows-per-page-options='[100]'
+    :columns='columns'
     @row-click='(evt, row, index) => onRowClick(row as MyEmailTemplate)'
   >
     <template #top-right>
@@ -57,11 +58,16 @@
 <script setup lang='ts'>
 import { computed, onMounted, ref, defineAsyncComponent } from 'vue'
 import { basetypes, notify, emailnotiftemplate, utils } from 'src/npoolstore'
+import { useI18n } from 'vue-i18n'
+// eslint-disable-next-line @typescript-eslint/unbound-method
+const { t } = useI18n({ useScope: 'global' })
+
 const LoadingButton = defineAsyncComponent(() => import('src/components/button/LoadingButton.vue'))
 const LanguagePicker = defineAsyncComponent(() => import('src/components/lang/LanguagePicker.vue'))
 
 interface MyEmailTemplate {
-  ID: string
+  ID: number
+  EntID: string
   LangID: string
   DefaultToUsername: string
   UsedFor: basetypes.EventType
@@ -77,6 +83,7 @@ const emailTemplates = computed(() => email.templates())
 const emails = computed(() => Array.from(emailTemplates.value).map((el) => {
   return {
     ID: el.ID,
+    EntID: el.EntID,
     LangID: el.LangID,
     DefaultToUsername: el.DefaultToUsername,
     UsedFor: el.UsedFor,
@@ -246,4 +253,67 @@ const createEmailTemplate = (done: () => void) => {
     }
   })
 }
+
+const columns = computed(() => [
+  {
+    name: 'ID',
+    label: t('MSG_ID'),
+    sortable: true,
+    field: (row: emailnotiftemplate.Template) => row.ID
+  },
+  {
+    name: 'EntID',
+    label: t('MSG_ENT_ID'),
+    sortable: true,
+    field: (row: emailnotiftemplate.Template) => row.EntID
+  },
+  {
+    name: 'AppID',
+    label: t('MSG_APP_ID'),
+    sortable: true,
+    field: (row: emailnotiftemplate.Template) => row.AppID
+  },
+  {
+    name: 'LangID',
+    label: t('MSG_LANG_ID'),
+    sortable: true,
+    field: (row: emailnotiftemplate.Template) => row.LangID
+  },
+  {
+    name: 'Sender',
+    label: t('MSG_SENDER'),
+    sortable: true,
+    field: (row: emailnotiftemplate.Template) => row.Sender
+  },
+  {
+    name: 'UsedFor',
+    label: t('MSG_USED_FOR'),
+    sortable: true,
+    field: (row: emailnotiftemplate.Template) => row.UsedFor
+  },
+  {
+    name: 'ReplyTos',
+    label: t('MSG_REPLY_TOS'),
+    sortable: true,
+    field: (row: emailnotiftemplate.Template) => row.ReplyTos?.join(',')
+  },
+  {
+    name: 'CCTos',
+    label: t('MSG_CC_TOS'),
+    sortable: true,
+    field: (row: emailnotiftemplate.Template) => row.CCTos?.join(',')
+  },
+  {
+    name: 'CreatedAt',
+    label: t('MSG_CREATED_AT'),
+    sortable: true,
+    field: (row: emailnotiftemplate.Template) => utils.formatTime(row.CreatedAt)
+  },
+  {
+    name: 'UpdatedAt',
+    label: t('MSG_UPDATED_AT'),
+    sortable: true,
+    field: (row: emailnotiftemplate.Template) => utils.formatTime(row.UpdatedAt)
+  }
+])
 </script>
