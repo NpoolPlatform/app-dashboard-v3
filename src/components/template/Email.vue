@@ -69,6 +69,7 @@ interface MyEmailTemplate {
   ID: number
   EntID: string
   LangID: string
+  AppID: string
   DefaultToUsername: string
   UsedFor: basetypes.EventType
   Sender: string
@@ -84,6 +85,7 @@ const emails = computed(() => Array.from(emailTemplates.value).map((el) => {
   return {
     ID: el.ID,
     EntID: el.EntID,
+    AppID: el.AppID,
     LangID: el.LangID,
     DefaultToUsername: el.DefaultToUsername,
     UsedFor: el.UsedFor,
