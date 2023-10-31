@@ -88,10 +88,12 @@ const emails = computed(() => Array.from(emailTemplates.value).map((el) => {
     DefaultToUsername: el.DefaultToUsername,
     UsedFor: el.UsedFor,
     Sender: el.Sender,
-    ReplyTos: el.ReplyTos.join(','),
-    CCTos: el.CCTos.join(','),
+    ReplyTos: el.ReplyTos?.join(','),
+    CCTos: el.CCTos?.join(','),
     Subject: el.Subject,
-    Body: el.Body
+    Body: el.Body,
+    CreatedAt: el.CreatedAt,
+    UpdatedAt: el.UpdatedAt
   } as MyEmailTemplate
 }))
 const emailLoading = ref(false)
@@ -295,13 +297,13 @@ const columns = computed(() => [
     name: 'ReplyTos',
     label: t('MSG_REPLY_TOS'),
     sortable: true,
-    field: (row: emailnotiftemplate.Template) => row.ReplyTos?.join(',')
+    field: (row: emailnotiftemplate.Template) => row.ReplyTos
   },
   {
     name: 'CCTos',
     label: t('MSG_CC_TOS'),
     sortable: true,
-    field: (row: emailnotiftemplate.Template) => row.CCTos?.join(',')
+    field: (row: emailnotiftemplate.Template) => row.CCTos
   },
   {
     name: 'CreatedAt',
