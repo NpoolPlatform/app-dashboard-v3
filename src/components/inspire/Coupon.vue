@@ -8,7 +8,7 @@
     :rows-per-page-options='[100]'
     :columns='columns'
   />
-  <CouponScope />
+  <AppGoodScope />
   <AllocatedCoupon />
 </template>
 
@@ -16,7 +16,7 @@
 import { computed, defineAsyncComponent, onMounted } from 'vue'
 import { coupon, sdk, utils } from 'src/npoolstore'
 const AllocatedCoupon = defineAsyncComponent(() => import('src/components/inspire/AllocatedCoupon.vue'))
-const CouponScope = defineAsyncComponent(() => import('src/components/inspire/CouponScope.vue'))
+const AppGoodScope = defineAsyncComponent(() => import('src/components/inspire/AppGoodScope.vue'))
 
 import { useI18n } from 'vue-i18n'
 

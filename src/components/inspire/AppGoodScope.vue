@@ -45,12 +45,19 @@
   >
     <q-card class='popup-menu'>
       <q-card-section>
-        <span>{{ $t('MSG_COUPON') }}</span>
+        <span>{{ $t('MSG_SCOPE') }}</span>
       </q-card-section>
       <q-card-section>
         <CouponScopeSelector v-model:id='target.ScopeID' />
         <AppGoodFromOutSelector v-model:id='target.AppGoodID' :label='"MSG_APP_GOOD"' :appgoods='displayGoods' />
-        <q-select :options='coupon.CouponScopes' v-model='target.CouponScope' :label='$t("MSG_COUPON_SCOPE")' />
+        <q-select
+          :options='[
+            coupon.CouponScope.Whitelist,
+            coupon.CouponScope.Blacklist
+          ]'
+          v-model='target.CouponScope'
+          :label='$t("MSG_COUPON_SCOPE")'
+        />
       </q-card-section>
       <q-item class='row'>
         <LoadingButton loading :label='$t("MSG_SUBMIT")' @click='onSubmit' />
@@ -98,11 +105,7 @@ const onCancel = () => {
   onMenuHide()
 }
 
-const _coupon = coupon.useCouponStore()
-const _scope = computed(() => _coupon.coupon(undefined, target.value?.CouponID)?.CouponScope)
-
 const onSubmit = (done: () => void) => {
-  target.value.CouponScope = _scope.value as CouponScope
   sdk.createAppGoodScope(target.value, (error: boolean) => {
     done()
     if (error) {
@@ -126,13 +129,18 @@ const goodID = ref('')
 const displayGoods = computed(() => appGoods.value?.filter((el) => el.GoodID === goodID.value))
 
 const _couponscope = couponscope.useScopeStore()
+const couponscopes = computed(() => _couponscope.scopes())
 
 watch(() => target.value.ScopeID, () => {
   goodID.value = _couponscope.scope(target.value.ScopeID)?.GoodID as string
+  target.value.CouponScope = _couponscope.scope(target.value?.ScopeID)?.CouponScope as CouponScope
 })
 
 onMounted(() => {
   if (!scopes.value?.length) {
+    sdk.getAppGoodScopes(0, 0)
+  }
+  if (!couponscopes.value?.length) {
     sdk.getScopes(0, 0)
   }
   if (appGoods.value.length === 0) {

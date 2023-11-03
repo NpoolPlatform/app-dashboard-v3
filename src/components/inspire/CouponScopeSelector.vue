@@ -29,7 +29,7 @@ const scopes = computed(() => scope.scopes())
 const _displayScopes = computed(() => scopes.value.map((el) => {
   return {
     value: el.ID,
-    label: `${el.ID} | ${el.CouponName} | ${el.CouponName} | ${el.CouponScope} | ${el.CouponType}`
+    label: `${el.ID} | ${el.CouponName} | ${el.CouponName} | ${el.CouponScope} | ${el.CouponType} | ${el.GoodID}`
   }
 }))
 const displayScopes = ref(_displayScopes.value)
