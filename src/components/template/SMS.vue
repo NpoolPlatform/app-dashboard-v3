@@ -122,9 +122,7 @@ const getSMSTemplates = (offset: number, limit: number) => {
 const createSMSTemplate = (done: () => void) => {
   sms.createSMSTemplate({
     TargetLangID: target.value.LangID,
-    UsedFor: target.value.UsedFor,
-    Subject: target.value.Subject,
-    Message: target.value.Message,
+    ...target.value,
     NotifyMessage: {
       Error: {
         Title: 'MSG_CREATE_SMS_TEMPLATE',
@@ -143,9 +141,7 @@ const createSMSTemplate = (done: () => void) => {
 const updateSMSTemplate = (done: () => void) => {
   sms.updateSMSTemplate({
     TargetLangID: target.value.LangID,
-    ID: target.value.ID,
-    Subject: target.value.Subject,
-    Message: target.value.Message,
+    ...target.value,
     NotifyMessage: {
       Error: {
         Title: 'MSG_UPDATE_SMS_TEMPLATE',

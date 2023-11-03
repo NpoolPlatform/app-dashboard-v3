@@ -185,6 +185,7 @@ const updateEmailTemplate = (done: () => void) => {
   email.updateEmailTemplate({
     TargetLangID: myTarget.value.LangID,
     ID: myTarget.value.ID,
+    EntID: myTarget.value.EntID,
     Sender: myTarget.value.Sender,
     ReplyTos: myTarget.value?.ReplyTos?.length === 0 ? [] : myTarget.value?.ReplyTos?.split(','),
     CCTos: myTarget.value?.CCTos?.length === 0 ? [] : myTarget.value?.CCTos?.split(','),
