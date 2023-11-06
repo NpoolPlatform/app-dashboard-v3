@@ -157,6 +157,7 @@ const selectedNotifChannels = ref([] as Array<notifchannel.TNotifChannel>)
 const onDelete = (row: notifchannel.TNotifChannel) => {
   channel.deleteNotifChannel({
     ID: row.ID,
+    EntID: row.EntID,
     Message: {
       Error: {
         Title: 'MSG_DELETE_CHANNEL',

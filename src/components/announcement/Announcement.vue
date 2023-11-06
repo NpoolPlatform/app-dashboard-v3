@@ -201,6 +201,7 @@ const selectedAnnouncements = ref([] as Array<announcement.Announcement>)
 const onDelete = (row: announcement.Announcement) => {
   _announcement.deleteAnnouncement({
     ID: row.ID,
+    EntID: row.EntID,
     Message: {
       Error: {
         Title: 'MSG_DELETE_ANNOUNCEMENT',
