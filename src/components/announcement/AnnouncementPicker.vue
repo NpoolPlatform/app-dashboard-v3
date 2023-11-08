@@ -37,8 +37,8 @@ const target = ref(id.value)
 const _announcement = announcement.useAnnouncementStore()
 const announcements = computed(() => Array.from(_announcement.announcements(undefined)).map((el) => {
   return {
-    value: el.ID,
-    label: `${el.ID} | ${el.Title} | ${el.AnnouncementType}`
+    value: el.EntID,
+    label: `${el.ID} | ${el.EntID} |  ${el.Title} | ${el.AnnouncementType}`
   }
 }))
 

@@ -55,9 +55,6 @@
       </q-item>
     </q-card>
   </q-dialog>
-  <q-card-section class='bg-primary text-white'>
-    {{ $t('MSG_ADVERTISEMENT_POSITION') }}
-  </q-card-section>
 </template>
 
 <script setup lang='ts'>
@@ -83,7 +80,7 @@ const displayAnnouncementUsers = computed(() => announcementUsers.value?.filter(
 ))
 
 const _announcement = announcement.useAnnouncementStore()
-const targetAnnouncement = computed(() => _announcement.announcement(undefined, target.value?.AnnouncementID))
+const targetAnnouncement = computed(() => _announcement.getAnnouncementByEntID(undefined, target.value?.AnnouncementID))
 
 const target = ref({} as announcementuser.User)
 
@@ -172,6 +169,7 @@ const selectedAnnouncementUsers = ref([] as Array<announcementuser.User>)
 const onDelete = (row: announcementuser.User) => {
   announcementUser.deleteAnnouncementUser({
     ID: row.ID,
+    EntID: row.EntID,
     Message: {
       Error: {
         Title: 'MSG_DELETE_ANNOUNCEMENT',

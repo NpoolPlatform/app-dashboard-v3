@@ -201,6 +201,7 @@ const selectedAnnouncements = ref([] as Array<announcement.Announcement>)
 const onDelete = (row: announcement.Announcement) => {
   _announcement.deleteAnnouncement({
     ID: row.ID,
+    EntID: row.EntID,
     Message: {
       Error: {
         Title: 'MSG_DELETE_ANNOUNCEMENT',
@@ -226,6 +227,12 @@ const columns = computed(() => [
     label: t('MSG_ID'),
     sortable: true,
     field: (row: announcement.Announcement) => row.ID
+  },
+  {
+    name: 'EntID',
+    label: t('MSG_ENT_ID'),
+    sortable: true,
+    field: (row: announcement.Announcement) => row.EntID
   },
   {
     name: 'AppID',

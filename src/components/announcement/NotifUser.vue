@@ -171,6 +171,7 @@ const selectedNotifUsers = ref([] as Array<notifuser.User>)
 const onDelete = (row: notifuser.User) => {
   notifUser.deleteNotifUser({
     ID: row.ID,
+    EntID: row.EntID,
     Message: {
       Error: {
         Title: 'MSG_DELETE_ANNOUNCEMENT',
@@ -196,6 +197,12 @@ const columns = computed(() => [
     label: t('MSG_ID'),
     sortable: true,
     field: (row: notifuser.User) => row.ID
+  },
+  {
+    name: 'EntID',
+    label: t('MSG_ENT_ID'),
+    sortable: true,
+    field: (row: notifuser.User) => row.EntID
   },
   {
     name: 'AppID',
