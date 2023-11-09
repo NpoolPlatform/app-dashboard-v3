@@ -17,7 +17,7 @@
           flat
           class='small'
           v-model='username'
-          :label='$t("MSG_USERNAME")'
+          :label='$t("MSG_NAME")'
         />
       </div>
       <q-btn
@@ -48,8 +48,8 @@
         <span>{{ $t('MSG_SCOPE') }}</span>
       </q-card-section>
       <q-card-section>
-        <CouponScopeSelector v-model:id='target.ScopeID' />
-        <AppGoodFromOutSelector v-model:id='target.AppGoodID' :label='"MSG_APP_GOOD"' :appgoods='displayGoods' />
+        <AppGoodSelector v-model:id='target.AppGoodID' :label='"MSG_APP_GOOD"' :appgoods='displayGoods' />
+        <CouponSelector v-model:id='target.CouponID' />
         <q-select
           :options='[
             coupon.CouponScope.Whitelist,
@@ -68,18 +68,17 @@
 </template>
 
 <script setup lang='ts'>
-import { computed, defineAsyncComponent, onMounted, ref, watch } from 'vue'
+import { computed, defineAsyncComponent, onMounted, ref } from 'vue'
 import { appgoodscope, coupon, sdk, utils, appgood, couponscope } from 'src/npoolstore'
 import { useI18n } from 'vue-i18n'
-import { CouponScope } from 'src/npoolstore/inspire/coupon'
 import { getAppGoods } from 'src/api/good'
 
 // eslint-disable-next-line @typescript-eslint/unbound-method
 const { t } = useI18n({ useScope: 'global' })
 
-const AppGoodFromOutSelector = defineAsyncComponent(() => import('src/components/good/AppGoodFromOutSelector.vue'))
-const CouponScopeSelector = defineAsyncComponent(() => import('src/components/inspire/CouponScopeSelector.vue'))
+const AppGoodSelector = defineAsyncComponent(() => import('src/components/good/AppGoodSelector.vue'))
 const LoadingButton = defineAsyncComponent(() => import('src/components/button/LoadingButton.vue'))
+const CouponSelector = defineAsyncComponent(() => import('src/components/inspire/CouponSelector.vue'))
 
 const scope = appgoodscope.useAppGoodScopeStore()
 const username = ref('')
@@ -130,11 +129,6 @@ const displayGoods = computed(() => appGoods.value?.filter((el) => el.GoodID ===
 
 const _couponscope = couponscope.useScopeStore()
 const couponscopes = computed(() => _couponscope.scopes())
-
-watch(() => target.value.ScopeID, () => {
-  goodID.value = _couponscope.scope(target.value.ScopeID)?.GoodID as string
-  target.value.CouponScope = _couponscope.scope(target.value?.ScopeID)?.CouponScope as CouponScope
-})
 
 onMounted(() => {
   if (!scopes.value?.length) {
