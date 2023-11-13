@@ -262,6 +262,16 @@ const columns = computed(() => [
 
 const invitationCodeColumns = computed(() => [
   {
+    name: 'ID',
+    label: t('MSG_ID'),
+    field: (row: invitationcode.InvitationCode) => row.ID
+  },
+  {
+    name: 'EntID',
+    label: t('MSG_ENT_ID'),
+    field: (row: invitationcode.InvitationCode) => row.EntID
+  },
+  {
     name: 'AppID',
     label: t('MSG_APP_ID'),
     sortable: true,

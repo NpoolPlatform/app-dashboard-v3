@@ -167,9 +167,7 @@ const onSubmit = (done: () => void) => {
 
 const updateCommission = (done: () => void) => {
   _commission.updateCommission({
-    ID: target.value.ID,
-    StartAt: target.value.StartAt,
-    Threshold: target.value.Threshold,
+    ...target.value,
     Message: {
       Error: {
         Title: t('MSG_UPDATE_COMMISSION'),
@@ -195,14 +193,7 @@ const updateCommission = (done: () => void) => {
 const createUserCommission = (done: () => void) => {
   _commission.createUserCommission({
     TargetUserID: target.value.UserID,
-    StartAt: target.value.StartAt,
-    AppGoodID: target.value.AppGoodID,
-    AmountOrPercent: `${target.value.AmountOrPercent}`,
-    SettleType: target.value.SettleType,
-    SettleAmountType: target.value.SettleAmountType,
-    SettleInterval: target.value.SettleInterval,
-    SettleMode: target.value.SettleMode,
-    Threshold: target.value.Threshold,
+    ...target.value,
     Message: {
       Error: {
         Title: t('MSG_CREATE_COMMISSION'),

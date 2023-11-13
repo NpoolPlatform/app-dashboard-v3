@@ -113,6 +113,7 @@ const onCancel = () => {
 const onSubmit = (done: () => void) => {
   _registration.updateRegistration({
     ID: target.value.ID,
+    EntID: target.value.EntID,
     InviterID: target.value.InviterID,
     Message: {
       Error: {
