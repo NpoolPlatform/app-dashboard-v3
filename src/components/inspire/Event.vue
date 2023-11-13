@@ -57,7 +57,7 @@
           basetypes.EventType.AffiliateSignup'
       >
         <AppGoodSelector v-model:id='target.GoodID' v-if='!updating' :label='$t("MSG_GOOD")' />
-        <CouponSelector v-model:ids='couponIDs' />
+        <CouponSelectors v-model:ids='couponIDs' />
       </q-card-section>
       <q-card-section>
         <q-input type='number' v-model='target.Credits' :label='$t("MSG_CREDIT")' />
@@ -88,7 +88,7 @@ const { t } = useI18n({ useScope: 'global' })
 
 const LoadingButton = defineAsyncComponent(() => import('src/components/button/LoadingButton.vue'))
 const AppGoodSelector = defineAsyncComponent(() => import('src/components/good/AppGoodSelector.vue'))
-const CouponSelector = defineAsyncComponent(() => import('src/components/inspire/CouponSelector.vue'))
+const CouponSelectors = defineAsyncComponent(() => import('src/components/inspire/CouponSelectors.vue'))
 
 const _coupon = coupon.useCouponStore()
 const event = eventinspire.useEventStore()
@@ -112,7 +112,7 @@ const onCreate = () => {
 }
 const onRowClick = (row: eventinspire.Event) => {
   target.value = { ...row }
-  couponIDs.value = target.value.Coupons.map((el) => el.ID)
+  couponIDs.value = target.value.Coupons.map((el) => el.EntID)
   showing.value = true
   updating.value = true
 }
@@ -226,6 +226,11 @@ const columns = computed(() => [
     name: 'ID',
     label: t('MSG_ID'),
     field: (row: eventinspire.Event) => row.ID
+  },
+  {
+    name: 'EntID',
+    label: t('MSG_ENT_ID'),
+    field: (row: eventinspire.Event) => row.EntID
   },
   {
     name: 'AppName',

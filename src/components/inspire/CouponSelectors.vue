@@ -10,6 +10,7 @@
     @update:model-value='onUpdate'
     use-input
     @filter='onFilter'
+    multiple
   />
 </template>
 <script setup lang='ts'>
@@ -18,14 +19,14 @@ import { computed, defineEmits, defineProps, toRef, ref, onMounted } from 'vue'
 import { getCoupons } from 'src/api/inspire'
 
 interface Props {
-  id: string
+  ids: string[]
   updating?: boolean
 }
 
 const props = defineProps<Props>()
-const id = toRef(props, 'id')
+const ids = toRef(props, 'ids')
 const updating = toRef(props, 'updating')
-const target = ref(id.value)
+const target = ref(ids.value)
 
 const _coupon = coupon.useCouponStore()
 const myCoupons = computed(() => _coupon.coupons().filter((el) => el.CouponType !== coupon.CouponType.SpecialOffer && _coupon.valid(undefined, el.ID)))
@@ -45,9 +46,9 @@ const onFilter = (val: string, doneFn: (callbackFn: () => void) => void) => {
   })
 }
 
-const emit = defineEmits<{(e: 'update:id', id: string): void}>()
+const emit = defineEmits<{(e: 'update:ids', ids: string[]): void}>()
 const onUpdate = () => {
-  emit('update:id', target.value)
+  emit('update:ids', target.value)
 }
 
 onMounted(() => {
