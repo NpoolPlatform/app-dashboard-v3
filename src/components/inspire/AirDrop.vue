@@ -40,7 +40,7 @@
         <span>{{ $t('MSG_CREATE_EVENT_COUPON') }}</span>
       </q-card-section>
       <q-card-section>
-        <CouponSelector v-model:id='target.ID' />
+        <CouponSelector v-model:id='target.EntID' />
       </q-card-section>
       <q-item class='row'>
         <q-btn class='btn round alt' :label='$t("MSG_SUBMIT")' @click='onSubmit' />
@@ -110,7 +110,7 @@ const onSubmit = () => {
   selectedUsers.value.forEach((user) => {
     _allocatedcoupon.createCoupon({
       TargetUserID: user.ID,
-      CouponID: target.value?.ID,
+      CouponID: target.value?.EntID,
       Message: {
         Error: {
           Title: t('MSG_CREATE_USER_COUPONS'),
