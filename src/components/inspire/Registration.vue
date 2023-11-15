@@ -6,6 +6,7 @@
     :rows='displayRegistrations'
     row-key='ID'
     :rows-per-page-options='[100]'
+    :columns='columns'
     @row-click='(evt, row, index) => onRowClick(row as registration.Registration)'
   >
     <template #top-right>
@@ -56,7 +57,7 @@
 </template>
 
 <script setup lang='ts'>
-import { registration, notify } from 'src/npoolstore'
+import { registration, notify, utils } from 'src/npoolstore'
 import { computed, defineAsyncComponent, onMounted, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import AppUserSelector from '../user/AppUserSelector.vue'
@@ -159,4 +160,83 @@ const getRegistrations = (offset: number, limit: number) => {
     getRegistrations(offset + limit, limit)
   })
 }
+
+const columns = computed(() => [
+  {
+    name: 'ID',
+    label: t('MSG_ID'),
+    field: (row: registration.Registration) => row.ID
+  },
+  {
+    name: 'EntID',
+    label: t('MSG_ENT_ID'),
+    field: (row: registration.Registration) => row.EntID
+  },
+  {
+    name: 'AppID',
+    label: t('MSG_APP_ID'),
+    sortable: true,
+    field: (row: registration.Registration) => row.AppID
+  },
+  {
+    name: 'InviterID',
+    label: t('MSG_INVITER_ID'),
+    sortable: true,
+    field: (row: registration.Registration) => row.InviterID
+  },
+  {
+    name: 'InviterEmailAddress',
+    label: t('MSG_INVITER_EMAIL_ADDRESS'),
+    sortable: true,
+    field: (row: registration.Registration) => row.InviterEmailAddress
+  },
+  {
+    name: 'InviterUsername',
+    label: t('MSG_INVITER_USERNAME'),
+    sortable: true,
+    field: (row: registration.Registration) => row.InviterUsername
+  },
+  {
+    name: 'InviterPhoneNO',
+    label: t('MSG_INVITER_PHONE_NO'),
+    sortable: true,
+    field: (row: registration.Registration) => row.InviterPhoneNO
+  },
+  {
+    name: 'InviteeID',
+    label: t('MSG_INVITEE_ID'),
+    sortable: true,
+    field: (row: registration.Registration) => row.InviteeID
+  },
+  {
+    name: 'InviteeEmailAddress',
+    label: t('MSG_INVITEE_EMAIL_ADDRESS'),
+    sortable: true,
+    field: (row: registration.Registration) => row.InviteeEmailAddress
+  },
+  {
+    name: 'InviteeUsername',
+    label: t('MSG_INVITEE_USERNAME'),
+    sortable: true,
+    field: (row: registration.Registration) => row.InviteeUsername
+  },
+  {
+    name: 'InviteePhoneNO',
+    label: t('MSG_INVITEE_PHONE_NO'),
+    sortable: true,
+    field: (row: registration.Registration) => row.InviteePhoneNO
+  },
+  {
+    name: 'CreatedAt',
+    label: t('MSG_CREATED_AT'),
+    sortable: true,
+    field: (row: registration.Registration) => utils.formatTime(row.CreatedAt)
+  },
+  {
+    name: 'UpdatedAt',
+    label: t('MSG_UPDATED_AT'),
+    sortable: true,
+    field: (row: registration.Registration) => utils.formatTime(row.UpdatedAt)
+  }
+])
 </script>
