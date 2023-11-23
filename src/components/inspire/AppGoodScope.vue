@@ -156,6 +156,12 @@ const columns = computed(() => [
     field: (row: appgoodscope.AppGoodScope) => row.GoodID
   },
   {
+    name: 'AppGoodID',
+    label: t('MSG_APP_GOOD_ID'),
+    sortable: true,
+    field: (row: appgoodscope.AppGoodScope) => row.AppGoodID
+  },
+  {
     name: 'GoodName',
     label: t('MSG_GOOD_NAME'),
     sortable: true,
