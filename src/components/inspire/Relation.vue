@@ -199,13 +199,13 @@ const users = computed(() => _user.appUsers(undefined))
 
 const username = ref('')
 const displayUsers = computed(() => users.value.filter((user) => {
-  return user.ID?.toLowerCase().includes(username.value.toLowerCase()) ||
+  return user.EntID?.toLowerCase().includes(username.value.toLowerCase()) ||
         user.EmailAddress?.toLowerCase().includes(username.value.toLowerCase()) ||
         user.PhoneNO?.toLowerCase().includes(username.value.toLowerCase())
 }))
 
 const selectedUser = ref([] as Array<user.User>)
-const curUserID = computed(() => selectedUser.value.length ? selectedUser.value[0].ID : InvalidID)
+const curUserID = computed(() => selectedUser.value.length ? selectedUser.value[0].EntID : InvalidID)
 
 const regInvitation = registration.useRegistrationStore()
 const inviteeIDs = computed(() => {
