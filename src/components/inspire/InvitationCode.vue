@@ -125,7 +125,7 @@ const onCreateInvitationCodeClick = () => {
 const counter = ref(0)
 const addInvitationCode = (idx = 0) => {
   code.createInvitationCode({
-    TargetUserID: selectedUser.value[idx].ID,
+    TargetUserID: selectedUser.value[idx].EntID,
     Message: {
       Error: {
         Title: t('MSG_CREATE_INVITATION_CODE'),
@@ -153,7 +153,8 @@ const addInvitationCode = (idx = 0) => {
 const onSetKolClick = () => {
   selectedUser.value?.forEach((el) => {
     _user.updateAppUser({
-      TargetUserID: el.ID,
+      ID: el.ID,
+      TargetUserID: el.EntID,
       Kol: true,
       Message: {
         Error: {
@@ -198,6 +199,12 @@ const getInvitationCodes = (offset: number, limit: number) => {
 }
 const columns = computed(() => [
   {
+    name: 'UserUintID',
+    label: t('MSG_USER_UINT_ID'),
+    sortable: true,
+    field: (row: user.User) => row.ID
+  },
+  {
     name: 'AppID',
     label: t('MSG_APP_ID'),
     sortable: true,
@@ -207,7 +214,7 @@ const columns = computed(() => [
     name: 'UserID',
     label: t('MSG_USER_ID'),
     sortable: true,
-    field: (row: user.User) => row.ID
+    field: (row: user.User) => row.EntID
   },
   {
     name: 'EmailAddress',

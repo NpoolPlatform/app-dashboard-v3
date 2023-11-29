@@ -233,7 +233,7 @@ const { t } = useI18n({ useScope: 'global' })
 const columns = computed(() => [
   {
     name: 'ID',
-    label: t('MSG_USER_ID'),
+    label: t('MSG_ID'),
     sortable: true,
     field: (row: user.User) => row.ID
   },
@@ -274,7 +274,7 @@ const columns = computed(() => [
     field: (row: user.User) => row.State
   },
   {
-    name: 'IDNUMBER',
+    name: 'IDNumber',
     label: t('MSG_IDNUMBER'),
     sortable: true,
     field: (row: user.User) => row.IDNumber
