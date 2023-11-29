@@ -328,6 +328,12 @@ onMounted(() => {
 
 const uColumns = computed(() => [
   {
+    name: 'ID',
+    label: t('MSG_ID'),
+    sortable: true,
+    field: (row: user.User) => row.ID
+  },
+  {
     name: 'AppID',
     label: t('MSG_APP_ID'),
     sortable: true,
@@ -337,7 +343,7 @@ const uColumns = computed(() => [
     name: 'UserID',
     label: t('MSG_USER_ID'),
     sortable: true,
-    field: (row: user.User) => row.ID
+    field: (row: user.User) => row.EntID
   },
   {
     name: 'EmailAddress',
@@ -358,7 +364,7 @@ const uColumns = computed(() => [
     field: (row: user.User) => row.Roles?.join(',')
   },
   {
-    name: 'IDNUMBER',
+    name: 'IDNumber',
     label: t('MSG_IDNUMBER'),
     sortable: true,
     field: (row: user.User) => row.IDNumber
