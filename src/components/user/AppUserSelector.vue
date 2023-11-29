@@ -37,7 +37,7 @@ const target = ref(id.value)
 const _user = user.useUserStore()
 const users = computed(() => Array.from(_user.appUsers(undefined)).map((el) => {
   return {
-    value: el.ID,
+    value: el.EntID,
     label: `${el.EmailAddress} | ${el.PhoneNO}`
   }
 }))
