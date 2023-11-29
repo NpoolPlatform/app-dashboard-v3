@@ -163,7 +163,7 @@
                   {{ _good.CommissionValue }} <span>%</span>
                 </td>
                 <td class='units'>
-                  {{ _good.TotalUnits }}{{ $t(_good.GoodUnit) }}
+                  {{ _good.TotalUnits }} {{ $t(_good.GoodUnit) }}
                 </td>
                 <td>{{ _good.TotalAmount }} <span class='price-coin-name'>{{ constant.PriceCoinName }}</span></td>
                 <td class='commission'>
@@ -390,7 +390,7 @@ const columns = [
 
 <style lang='sass' scoped>
 .price-coin-name
-  font-size: 5px
+  font-size: 16px
 ::v-deep .name
   max-width: 160px
   width: 160px
