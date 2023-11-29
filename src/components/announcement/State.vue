@@ -118,7 +118,7 @@ const getAppReadStates = (offset: number, limit: number) => {
 const columns = computed(() => [
   {
     name: 'ID',
-    label: t('MSG_ID'),
+    label: t('MSG_ENT_ID'),
     sortable: true,
     field: (row: announcementsendstate.SendState) => row.ID
   },

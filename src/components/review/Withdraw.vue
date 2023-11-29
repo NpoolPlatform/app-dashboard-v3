@@ -126,7 +126,7 @@ const updateReview = (done: () => void) => {
   review.updateWithdrawReview({
     ReviewID: target.value.ReviewID,
     LangID: locale.AppLang?.LangID,
-    UserID: logined.User?.ID,
+    UserID: logined.User?.EntID,
     Message: target.value.Message,
     State: target.value.State,
     NotifyMessage: {

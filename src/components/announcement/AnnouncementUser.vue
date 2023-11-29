@@ -197,6 +197,12 @@ const columns = computed(() => [
     field: (row: announcementuser.User) => row.ID
   },
   {
+    name: 'EntID',
+    label: t('MSG_ID'),
+    sortable: true,
+    field: (row: announcementuser.User) => row.EntID
+  },
+  {
     name: 'AppID',
     label: t('MSG_APP_ID'),
     sortable: true,

@@ -169,7 +169,7 @@ const onVerifyClick = () => {
   _user.loginVerify({
     Account: account.value,
     AccountType: appuserbase.SignMethodType.Email,
-    UserID: logined.User?.ID,
+    UserID: logined.User?.EntID,
     Token: logined.User?.LoginToken,
     VerificationCode: verifyCode.value,
     Message: {

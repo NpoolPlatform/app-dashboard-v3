@@ -52,6 +52,18 @@ const getAppWithdraws = (offset: number, limit: number) => {
 
 const withdrawColumns = computed(() => [
   {
+    name: 'ID',
+    label: t('MSG_COINTYPE_ID'),
+    sortable: true,
+    field: (row: ledgerwithdraw.Withdraw) => row.ID
+  },
+  {
+    name: 'EntID',
+    label: t('MSG_COINTYPE_ID'),
+    sortable: true,
+    field: (row: ledgerwithdraw.Withdraw) => row.CoinTypeID
+  },
+  {
     name: 'CoinTypeID',
     label: t('MSG_COINTYPE_ID'),
     sortable: true,

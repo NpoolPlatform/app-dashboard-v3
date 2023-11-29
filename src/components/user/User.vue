@@ -84,7 +84,7 @@ const columns = computed(() => [
     name: 'UserID',
     label: t('MSG_USER_ID'),
     sortable: true,
-    field: (row: user.User) => row.ID
+    field: (row: user.User) => row.EntID
   },
   {
     name: 'EmailAddress',
@@ -171,7 +171,8 @@ const onMenuHide = () => {
 
 const onSubmit = (done: () => void) => {
   _user.updateAppUser({
-    TargetUserID: target.value?.ID,
+    ID: target.value?.ID,
+    TargetUserID: target.value?.EntID,
     EmailAddress: target.value?.EmailAddress,
     Message: {
       Error: {
