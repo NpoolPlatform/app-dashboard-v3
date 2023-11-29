@@ -59,13 +59,13 @@
       </q-item>
       <q-item class='row'>
         <q-item-section>
-          <q-img :ratio='1' :src='_kyc.image(undefined, targetUser.ID, kyc.ImageType.FrontImg)?.Base64 as string' />
+          <q-img :ratio='1' :src='_kyc.image(undefined, targetUser.EntID, kyc.ImageType.FrontImg)?.Base64 as string' />
         </q-item-section>
         <q-item-section v-if='target?.DocumentType === kyc.DocumentType.IDCard'>
-          <q-img :ratio='1' :src='_kyc.image(undefined, targetUser.ID, kyc.ImageType.BackImg)?.Base64 as string' />
+          <q-img :ratio='1' :src='_kyc.image(undefined, targetUser.EntID, kyc.ImageType.BackImg)?.Base64 as string' />
         </q-item-section>
         <q-item-section>
-          <q-img :ratio='1' :src='_kyc.image(undefined, targetUser.ID, kyc.ImageType.SelfieImg)?.Base64 as string' />
+          <q-img :ratio='1' :src='_kyc.image(undefined, targetUser.EntID, kyc.ImageType.SelfieImg)?.Base64 as string' />
         </q-item-section>
       </q-item>
       <q-card-section>

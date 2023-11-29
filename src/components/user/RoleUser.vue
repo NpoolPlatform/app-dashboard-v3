@@ -100,14 +100,14 @@ const displayUsers = computed(() => users.value.filter((user) => user.EmailAddre
 const roleUsername = ref('')
 const selectedRoleUser = ref([] as Array<role.AppRoleUser>)
 const roleUsers = computed(() => currentRoleUsers.value.filter((el) => el.EmailAddress?.includes(roleUsername.value) || el.PhoneNO?.includes(roleUsername.value)))
-const currentRoleUsers = computed(() => selectedRole.value.length > 0 ? _role.roleUsers(undefined, selectedRole.value[0].ID) : [])
+const currentRoleUsers = computed(() => selectedRole.value.length > 0 ? _role.roleUsers(undefined, selectedRole.value[0].EntID) : [])
 
 const roleUserLoading = ref(false)
 const getRoleUsers = (offset: number, limit: number) => {
   _role.getRoleUsers({
     Offset: offset,
     Limit: limit,
-    RoleID: selectedRole.value[0]?.ID,
+    RoleID: selectedRole.value[0]?.EntID,
     Message: {
       Error: {
         Title: 'MSG_GET_ROLE_USERS',
@@ -191,8 +191,8 @@ const onAddRoleUser = () => {
     return
   }
   _role.createRoleUser({
-    TargetUserID: selectedUser.value[0].ID,
-    RoleID: selectedRole.value[0].ID,
+    TargetUserID: selectedUser.value[0].EntID,
+    RoleID: selectedRole.value[0].EntID,
     Message: {
       Error: {
         Title: 'MSG_ADD_ROLE_USER',
@@ -213,6 +213,7 @@ const onDeleteRoleUser = () => {
 
   _role.deleteRoleUser({
     ID: selectedRoleUser.value[0].ID,
+    EntID: selectedRoleUser.value[0].EntID,
     TargetUserID: selectedRoleUser.value[0].UserID,
     Message: {
       Error: {
@@ -231,6 +232,12 @@ const onDeleteRoleUser = () => {
 const { t } = useI18n({ useScope: 'global' })
 const columns = computed(() => [
   {
+    name: 'ID',
+    label: t('MSG_USER_ID'),
+    sortable: true,
+    field: (row: user.User) => row.ID
+  },
+  {
     name: 'AppID',
     label: t('MSG_APP_ID'),
     sortable: true,
@@ -240,7 +247,7 @@ const columns = computed(() => [
     name: 'UserID',
     label: t('MSG_USER_ID'),
     sortable: true,
-    field: (row: user.User) => row.ID
+    field: (row: user.User) => row.EntID
   },
   {
     name: 'EmailAddress',
