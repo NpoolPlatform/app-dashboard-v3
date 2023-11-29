@@ -43,7 +43,7 @@ const displayNotifs = computed(() => notifs.value?.filter((el) =>
 
 onMounted(() => {
   if (notifs.value?.length === 0) {
-    getAppNotifs(0, 500)
+    getAppNotifs(0, 100)
   }
 })
 
