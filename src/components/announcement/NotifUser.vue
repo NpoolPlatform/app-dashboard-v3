@@ -51,7 +51,7 @@
           v-model='target.EventType'
           :label='$t("MSG_USED_FOR")'
         />
-        <AppUsersSelector v-model:id='target.UserID' label='MSG_USER' />
+        <AppUserSelector v-model:id='target.UserID' label='MSG_USER' />
       </q-card-section>
       <q-item class='row'>
         <LoadingButton loading :label='$t("MSG_SUBMIT")' @click='onSubmit' />
@@ -73,7 +73,7 @@ import { useI18n } from 'vue-i18n'
 const { t } = useI18n({ useScope: 'global' })
 
 const LoadingButton = defineAsyncComponent(() => import('src/components/button/LoadingButton.vue'))
-const AppUsersSelector = defineAsyncComponent(() => import('src/components/user/AppUsersSelector.vue'))
+const AppUserSelector = defineAsyncComponent(() => import('src/components/user/AppUserSelector.vue'))
 
 const notifUser = notifuser.useNotifUserStore()
 const notifUsers = computed(() => notifUser.users(undefined, undefined))
