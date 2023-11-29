@@ -120,7 +120,7 @@ const _order = order.useOrderStore()
 const selectedOrderType = ref('ALL')
 const displayOrders = computed(() => _order.orders().filter((el) => {
   const name = username.value?.toLowerCase()
-  let display = el.EmailAddress?.toLowerCase().includes(name) || el.PhoneNO?.toLowerCase()?.includes(name) || el.GoodID?.toLowerCase()?.includes(name) || el.ID?.toLowerCase()?.includes(name)
+  let display = el.EmailAddress?.toLowerCase().includes(name) || el.PhoneNO?.toLowerCase()?.includes(name) || el.GoodID?.toLowerCase()?.includes(name) || el.EntID?.toLowerCase()?.includes(name)
   if (start.value.length) {
     display = display && (el.CreatedAt >= new Date(start.value).getTime() / 1000)
   }
@@ -241,6 +241,7 @@ const cancelOrder = () => {
   orderInfoDialog.value = false
   _order.updateUserOrder({
     ID: currentOrder.value.ID,
+    EntID: currentOrder.value.EntID,
     TargetUserID: currentOrder.value.UserID,
     PaymentID: currentOrder.value.PaymentID,
     Canceled: true,
@@ -266,6 +267,12 @@ const columns = computed(() => [
     label: t('MSG_ID'),
     sortable: true,
     field: (row: order.Order) => row.ID
+  },
+  {
+    name: 'EntID',
+    label: t('MSG_ENT_ID'),
+    sortable: true,
+    field: (row: order.Order) => row.EntID
   },
   {
     name: 'AppID',
