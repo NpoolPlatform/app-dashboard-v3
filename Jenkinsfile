@@ -89,6 +89,7 @@ pipeline {
                 patch=$(( $patch + 1 ))
                 git reset --hard
                 git checkout $tag
+                git submodule update --init --recursive
                 ;;
             esac
             tag=$major.$minor.$patch
@@ -175,6 +176,7 @@ pipeline {
           tag=`git describe --tags $revlist`
           git reset --hard
           git checkout $tag
+          git submodule update --init --recursive
           set +e
           PATH=/usr/local/bin:$PATH:./node_modules/@quasar/app/bin command quasar
           rc=$?
@@ -337,6 +339,7 @@ pipeline {
 
           git reset --hard
           git checkout $tag
+          git submodule update --init --recursive
 
           sed -i "s/npool\\.top/$ROOT_DOMAIN/g" k8s/02-traefik-ingress.yaml
           sdomain=`echo $ROOT_DOMAIN | sed 's/\\./-/g'`
@@ -369,6 +372,7 @@ pipeline {
 
           git reset --hard
           git checkout $tag
+          git submodule update --init --recursive
 
           sed -i "s/npool\\.top/$ROOT_DOMAIN/g" k8s/02-traefik-ingress.yaml
           sdomain=`echo $ROOT_DOMAIN | sed 's/\\./-/g'`
