@@ -34,7 +34,7 @@ const label = toRef(props, 'label')
 const target = ref(appGoodID.value)
 
 const appGood = appgood.useAppGoodStore()
-const appGoods = computed(() => appGood.goods(undefined))
+const appGoods = computed(() => appGood.goods(undefined).filter((el) => el.Online))
 
 const goods = computed(() => Array.from(appGoods.value, (el) => {
   return {
