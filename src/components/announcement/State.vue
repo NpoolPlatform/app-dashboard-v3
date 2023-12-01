@@ -118,7 +118,7 @@ const getAppReadStates = (offset: number, limit: number) => {
 const columns = computed(() => [
   {
     name: 'ID',
-    label: t('MSG_ENT_ID'),
+    label: t('MSG_ID'),
     sortable: true,
     field: (row: announcementsendstate.SendState) => row.ID
   },
@@ -185,6 +185,18 @@ const columns = computed(() => [
 ])
 
 const readStatesColumns = computed(() => [
+  {
+    name: 'ID',
+    label: t('MSG_ID'),
+    sortable: true,
+    field: (row: announcementreadstate.ReadState) => row.ID
+  },
+  {
+    name: 'EntID',
+    label: t('MSG_ENT_ID'),
+    sortable: true,
+    field: (row: announcementreadstate.ReadState) => row.EntID
+  },
   {
     name: 'AnnouncementID',
     label: t('MSG_ANNOUNCEMENT_ID'),
