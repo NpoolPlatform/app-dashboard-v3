@@ -38,6 +38,12 @@ const columns = computed(() => [
     sortable: true
   },
   {
+    name: 'EntID',
+    label: t('MSG_ENT_ID'),
+    field: (row: useraccountbase.Account) => row.EntID,
+    sortable: true
+  },
+  {
     name: 'AppID',
     label: t('MSG_APP_ID'),
     field: (row: useraccountbase.Account) => row.AppID,
