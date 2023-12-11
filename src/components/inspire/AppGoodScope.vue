@@ -192,12 +192,6 @@ const columns = computed(() => [
     field: (row: appgoodscope.AppGoodScope) => row.CouponName
   },
   {
-    name: 'CouponScope',
-    label: t('MSG_SCOPE'),
-    sortable: true,
-    field: (row: appgoodscope.AppGoodScope) => row.CouponScope
-  },
-  {
     name: 'CouponDenomination',
     label: t('MSG_COUPON_DENOMINATION'),
     sortable: true,
