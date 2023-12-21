@@ -222,6 +222,12 @@ const appDefaultGoodsColumns = computed(() => [
     field: (row: appdefaultgood.Default) => row.GoodID
   },
   {
+    name: 'AppGoodID',
+    label: t('MSG_APP_GOOD_ID'),
+    sortable: true,
+    field: (row: appdefaultgood.Default) => row.AppGoodID
+  },
+  {
     name: 'CoinTypeID',
     label: t('MSG_COIN_TYPE_ID'),
     sortable: true,
