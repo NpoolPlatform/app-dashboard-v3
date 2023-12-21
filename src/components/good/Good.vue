@@ -203,6 +203,7 @@ const onSubmit = (done: () => void) => {
 const updateTarget = computed(() => {
   return {
     ID: target.value.ID,
+    EntID: target.value.EntID,
     Online: target.value.Online,
     Visible: target.value.Visible,
     GoodName: target.value.GoodName,
@@ -272,6 +273,12 @@ const appGoodsColumns = computed(() => [
     label: t('MSG_ID'),
     sortable: true,
     field: (row: appgood.Good) => row.ID
+  },
+  {
+    name: 'EntID',
+    label: t('MSG_ENT_ID'),
+    sortable: true,
+    field: (row: appgood.Good) => row.EntID
   },
   {
     name: 'GOODID',
@@ -413,6 +420,12 @@ const coinColumns = computed(() => [
     label: t('MSG_ID'),
     sortable: true,
     field: (row: appcoin.AppCoin) => row.ID
+  },
+  {
+    name: 'EntID',
+    label: t('MSG_ENT_ID'),
+    sortable: true,
+    field: (row: appcoin.AppCoin) => row.EntID
   },
   {
     name: 'AppID',

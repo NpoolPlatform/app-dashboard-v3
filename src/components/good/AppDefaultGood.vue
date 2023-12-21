@@ -157,6 +157,7 @@ const selectedGoods = ref([] as Array<appdefaultgood.Default>)
 const onDelete = (row: appdefaultgood.Default) => {
   appDefaultGood.deleteAppDefaultGood({
     ID: row.ID,
+    EntID: row.EntID,
     Message: {
       Error: {
         Title: 'MSG_DELETE_APP_DEFAULT_GOOD',
@@ -207,6 +208,12 @@ const appDefaultGoodsColumns = computed(() => [
     label: t('MSG_ID'),
     sortable: true,
     field: (row: appdefaultgood.Default) => row.ID
+  },
+  {
+    name: 'EntID',
+    label: t('MSG_ENT_ID'),
+    sortable: true,
+    field: (row: appdefaultgood.Default) => row.EntID
   },
   {
     name: 'GoodID',
