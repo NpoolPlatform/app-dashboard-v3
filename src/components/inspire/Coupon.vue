@@ -114,6 +114,18 @@ const columns = computed(() => [
     field: (row: coupon.Coupon) => utils.formatTime(row.StartAt)
   },
   {
+    name: 'EndAt',
+    label: t('MSG_END_AT'),
+    sortable: true,
+    field: (row: coupon.Coupon) => utils.formatTime(row.EndAt)
+  },
+  {
+    name: 'CashableProbabilityPerMillion',
+    label: t('MSG_CASHABLE_PROBABILITY'),
+    sortable: true,
+    field: (row: coupon.Coupon) => row.CashableProbabilityPerMillion
+  },
+  {
     name: 'CreatedAt',
     label: t('MSG_CREATED_AT'),
     sortable: true,
