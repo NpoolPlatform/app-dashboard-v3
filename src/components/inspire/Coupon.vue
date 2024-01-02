@@ -120,10 +120,10 @@ const columns = computed(() => [
     field: (row: coupon.Coupon) => utils.formatTime(row.EndAt)
   },
   {
-    name: 'CashableProbabilityPerMillion',
+    name: 'CashableProbability',
     label: t('MSG_CASHABLE_PROBABILITY'),
     sortable: true,
-    field: (row: coupon.Coupon) => row.CashableProbabilityPerMillion
+    field: (row: coupon.Coupon) => row.CashableProbability
   },
   {
     name: 'CreatedAt',
