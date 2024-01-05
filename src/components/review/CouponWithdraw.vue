@@ -194,7 +194,7 @@ const columns = computed(() => [
     name: 'CoinName',
     label: t('MSG_COUPON_NAME'),
     sortable: true,
-    field: (row: couponwithdrawreview.CouponWithdrawReview) => row.CoinName
+    field: (row: couponwithdrawreview.CouponWithdrawReview) => row.CouponName
   },
   {
     name: 'CoinName',
