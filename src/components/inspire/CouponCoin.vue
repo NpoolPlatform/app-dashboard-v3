@@ -60,7 +60,7 @@ const columns = computed(() => [
   },
   {
     name: 'CoinTypeID',
-    label: t('MSG_GOOD_TITLE'),
+    label: t('MSG_COIN_TYPE_ID'),
     sortable: true,
     field: (row: couponcoin.CouponCoin) => row.CoinTypeID
   },
