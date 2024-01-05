@@ -45,7 +45,7 @@
 
 <script setup lang='ts'>
 import { AppID } from 'src/api/app'
-import { computed, onMounted, ref, watch, defineAsyncComponent } from 'vue'
+import { computed, onMounted, ref, defineAsyncComponent } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { couponwithdrawreview, user, reviewbase, notify, utils } from 'src/npoolstore'
 const LoadingButton = defineAsyncComponent(() => import('src/components/button/LoadingButton.vue'))
@@ -141,10 +141,6 @@ onMounted(() => {
   prepare()
 })
 
-watch(AppID, () => {
-  prepare()
-})
-
 const prepare = () => {
   if (!review.reviews().length) {
     getCouponWithdrawReviews(0, 100)
@@ -223,12 +219,6 @@ const columns = computed(() => [
     label: t('MSG_AMOUNT'),
     sortable: true,
     field: (row: couponwithdrawreview.CouponWithdrawReview) => row.Amount
-  },
-  {
-    name: 'State',
-    label: t('MSG_STATE'),
-    sortable: true,
-    field: (row: couponwithdrawreview.CouponWithdrawReview) => row.State
   },
   {
     name: 'State',
