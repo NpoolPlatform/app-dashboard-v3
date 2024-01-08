@@ -162,6 +162,18 @@ const columns = computed(() => [
     field: (row: allocatedcoupon.Coupon) => row.Circulation
   },
   {
+    name: 'Threshold',
+    label: t('MSG_THRESHOLD'),
+    sortable: true,
+    field: (row: allocatedcoupon.Coupon) => row.Threshold
+  },
+  {
+    name: 'Cashable',
+    label: t('MSG_CASHABLE'),
+    sortable: true,
+    field: (row: allocatedcoupon.Coupon) => row.Cashable
+  },
+  {
     name: 'DurationDays',
     label: t('MSG_DURATION_DAYS'),
     sortable: true,
@@ -178,6 +190,24 @@ const columns = computed(() => [
     label: t('MSG_RANDOM'),
     sortable: true,
     field: (row: allocatedcoupon.Coupon) => row.Random
+  },
+  {
+    name: 'Used',
+    label: t('MSG_USED'),
+    sortable: true,
+    field: (row: allocatedcoupon.Coupon) => row.Used
+  },
+  {
+    name: 'UsedAt',
+    label: t('MSG_USED_AT'),
+    sortable: true,
+    field: (row: allocatedcoupon.Coupon) => row.UsedAt
+  },
+  {
+    name: 'UsedByOrderID',
+    label: t('MSG_USED_BY_ORDER_ID'),
+    sortable: true,
+    field: (row: allocatedcoupon.Coupon) => row.UsedByOrderID
   },
   {
     name: 'UserID',
