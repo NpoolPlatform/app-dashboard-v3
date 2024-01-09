@@ -21,7 +21,7 @@ import { coupon, sdk, utils } from 'src/npoolstore'
 const AllocatedCoupon = defineAsyncComponent(() => import('src/components/inspire/AllocatedCoupon.vue'))
 const CouponScope = defineAsyncComponent(() => import('src/components/inspire/CouponScope.vue'))
 const CouponCoin = defineAsyncComponent(() => import('src/components/inspire/CouponCoin.vue'))
-const CouponControl = defineAsyncComponent(() => import('src/components/inspire/CouponControl.vue'))
+const CouponControl = defineAsyncComponent(() => import('src/components/inspire/CashControl.vue'))
 const AppGoodScope = defineAsyncComponent(() => import('src/components/inspire/AppGoodScope.vue'))
 
 import { useI18n } from 'vue-i18n'

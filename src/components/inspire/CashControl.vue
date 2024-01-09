@@ -63,14 +63,8 @@ const columns = computed(() => [
     field: (row: cashcontrol.CashControl) => row.AppID
   },
   {
-    name: 'AppName',
-    label: t('MSG_APP_NAME'),
-    sortable: true,
-    field: (row: cashcontrol.CashControl) => row.AppName
-  },
-  {
     name: 'ControlType',
-    label: t('MSG_COIN_TYPE_ID'),
+    label: t('MSG_CONTROL_TYPE'),
     sortable: true,
     field: (row: cashcontrol.CashControl) => row.ControlType
   },
