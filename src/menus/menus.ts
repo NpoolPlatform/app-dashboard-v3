@@ -444,6 +444,42 @@ const MainDrawerMenus = [
       sectionBegin: false,
       children: []
     } as MenuItem]
+  } as MenuItem, {
+    menuId: uid(),
+    label: 'CMS管理',
+    caption: 'CMS管理',
+    icon: 'format_list_numbered',
+    target: '/cms',
+    level: 0,
+    sectionBegin: false,
+    children: [{
+      menuId: uid(),
+      label: '分类管理',
+      caption: '查看分类管理',
+      icon: 'format_list_numbered',
+      target: '/cms/category',
+      level: 1,
+      sectionBegin: false,
+      children: []
+    } as MenuItem, {
+      menuId: uid(),
+      label: '文章管理',
+      caption: '查看文章管理',
+      icon: 'format_list_numbered',
+      target: '/cms/article',
+      level: 1,
+      sectionBegin: false,
+      children: []
+    } as MenuItem, {
+      menuId: uid(),
+      label: '媒体管理',
+      caption: '查看媒体管理',
+      icon: 'format_list_numbered',
+      target: '/cms/media',
+      level: 1,
+      sectionBegin: false,
+      children: []
+    } as MenuItem]
   } as MenuItem
 ] as Array<MenuItem>
 
