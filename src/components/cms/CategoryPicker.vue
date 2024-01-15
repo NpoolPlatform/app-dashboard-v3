@@ -47,7 +47,7 @@ const _categories = computed(() => _category.categories())
 const categories = computed(() => Array.from(_categories.value).map((el) => {
   return {
     value: el.EntID,
-    label: `${el.Name} | ${el.FullSlug}`
+    label: `${el.FullSlug} | ${el.Name}`
   }
 }))
 const displayLangs = ref(categories.value)
