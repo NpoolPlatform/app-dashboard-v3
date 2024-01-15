@@ -93,7 +93,6 @@ onMounted(() => {
 
 const onSubmit = (done: () => void) => {
   updating.value ? updateArticle(done) : createArticle(done)
-  void router.push({ path: '/cms/article' })
 }
 
 const onCancel = () => {
@@ -126,9 +125,11 @@ const createArticle = (done: () => void) => {
   }, (error: boolean) => {
     done()
     if (error) {
-      return
+      console.log(error)
+    } else {
+      onMenuHide()
+      void router.push({ path: '/cms/article' })
     }
-    onMenuHide()
   })
 }
 
@@ -161,9 +162,11 @@ const updateArticle = (done: () => void) => {
   }, (error: boolean) => {
     done()
     if (error) {
-      return
+      console.log(error)
+    } else {
+      onMenuHide()
+      void router.push({ path: '/cms/article' })
     }
-    onMenuHide()
   })
 }
 
@@ -177,12 +180,6 @@ const getArticleContent = () => {
         Message: 'MSG_GET_ARTICLE_CONTENT_FAIL',
         Popup: true,
         Type: notify.NotifyType.Error
-      },
-      Info: {
-        Title: 'MSG_GET_ARTICLE_CONTENT',
-        Message: 'MSG_GET_ARTICLE_CONTENT_SUCCESS',
-        Popup: true,
-        Type: notify.NotifyType.Success
       }
     }
   }, (error: boolean, info: string) => {

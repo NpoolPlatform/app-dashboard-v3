@@ -38,6 +38,7 @@
   >
     <q-card class='popup-menu'>
       <q-card-section>
+        <q-input v-model='target.Index' :label='$t("MSG_CATEGORY_INDEX")' />
         <q-input v-model='target.Name' :label='$t("MSG_CATEGORY_NAME")' />
         <CategoryPicker v-model:id='target.ParentID' :updating='updating' label='MSG_CATEGORY_PARENTID' />
         <q-input v-model='target.Slug' :label='$t("MSG_CATEGORY_SLUG")' />
@@ -101,6 +102,12 @@ const columns = computed(() => [
     label: t('MSG_CATEGORY_PARENTID'),
     sortable: true,
     field: (row: category.Category) => row.ParentID
+  },
+  {
+    name: 'Index',
+    label: t('MSG_CATEGORY_INDEX'),
+    sortable: true,
+    field: (row: category.Category) => row.Index
   },
   {
     name: 'Name',
@@ -188,7 +195,8 @@ const updateTarget = computed(() => {
     ParentID: target.value?.ParentID,
     Name: target.value?.Name,
     Slug: target.value?.Slug,
-    Enabled: target.value?.Enabled
+    Enabled: target.value?.Enabled,
+    Index: target.value?.Index
   }
 })
 

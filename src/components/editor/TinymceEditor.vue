@@ -143,6 +143,7 @@ export default defineComponent({
   setup (props, { emit }) {
     const editorInit = {
       height: 500,
+      min_height: 500,
       menubar: 'edit view insert format tools table',
       plugins: props.plugins,
       toolbar: props.toolbar,
