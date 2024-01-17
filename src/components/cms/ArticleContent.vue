@@ -38,27 +38,26 @@
   <dev class='row'>
     <LoadingButton loading :label='$t("MSG_SUBMIT")' :disable='isHistory' @click='onSubmit' />
     <q-btn class='btn round' :label='$t("MSG_CANCEL")' @click='onCancel' />
+    <q-btn class='btn round' @click='openPreview' :label='$t("MSG_PREVIEW")' />
   </dev>
   <div class='row'>
     <div class='col'>
-      <TinymceEditor v-model='target.Content' />
+      <TinymceEditor v-model='articleContent' />
     </div>
     <div class='col'>
-      <CodeMirror v-model='target.Content' />
+      <q-btn :label='$t("MSG_ARTICLE_CONTENT")' />
+      <CodeMirror v-model='codeMirrorContent' />
+      <br>
+      <q-btn :label='$t("MSG_ARTICLE_CSS_CONTENT")' />
+      <CodeMirror v-model='cssContent' />
     </div>
   </div>
 </template>
 
 <script setup lang='ts'>
 import { article, notify, cmsbase } from 'src/npoolstore'
-import { getArticles } from 'src/api/article'
 import { computed, onMounted, defineAsyncComponent, ref, watch } from 'vue'
 import { useRouter } from 'vue-router'
-const router = useRouter()
-
-const _article = article.useArticleStore()
-const articles = computed(() => _article.articles())
-const _articleContent = article.useArticleStore()
 
 const TinymceEditor = defineAsyncComponent(() => import('src/components/editor/TinymceEditor.vue'))
 const CodeMirror = defineAsyncComponent(() => import('src/components/editor/CodeMirror.vue'))
@@ -66,30 +65,65 @@ const LoadingButton = defineAsyncComponent(() => import('src/components/button/L
 const CategoryPicker = defineAsyncComponent(() => import('src/components/cms/CategoryPicker.vue'))
 const AppLanguagePicker = defineAsyncComponent(() => import('src/components/internationalization/AppLanguagePicker.vue'))
 
+const router = useRouter()
+
+const _article = article.useArticleStore()
+const _articleContent = article.useArticleStore()
+
 const articleContent = ref('')
 const codeMirrorContent = ref('')
+const cssContent = ref('')
 
 const showing = ref(false)
 const updating = ref(false)
 const isHistory = ref(false)
 const articleID = ref('')
-const currentArticle = computed(() => {
-  return articles.value.filter((el) => el.EntID?.toLowerCase()?.includes?.(articleID.value?.toLowerCase()))
-})
 
 const target = ref({} as article.Article)
 
+const openPreview = () => {
+  const htmlContent = target.value.Content
+  const blob = new Blob([htmlContent], { type: 'text/html; charset=utf-8' })
+  const url = URL.createObjectURL(blob)
+  window.open(url, '_blank')
+  URL.revokeObjectURL(url)
+}
+
 onMounted(() => {
-  if (articles.value?.length === 0) {
-    getArticles(0, 500)
-  }
   if (router.currentRoute.value.query.id != null) {
     updating.value = true
     articleID.value = router.currentRoute.value.query.id
-    target.value = { ...currentArticle.value[0] }
-    getArticleContent()
+    getArticle(articleID.value)
   }
 })
+
+const getArticle = (id: string) => {
+  _article.getArticle({
+    EntID: id,
+    Message: {
+      Error: {
+        Title: 'MSG_GET_ARTICLE',
+        Message: 'MSG_GET_ARTICLE_FAIL',
+        Popup: true,
+        Type: notify.NotifyType.Error
+      },
+      Info: {
+        Title: 'MSG_GET_ARTICLE',
+        Message: 'MSG_GET_ARTICLE_SUCCESS',
+        Popup: true,
+        Type: notify.NotifyType.Success
+      }
+    }
+  }, (error: boolean, row: article.Article) => {
+    if (error) {
+      console.log(error)
+    } else {
+      target.value = row
+      console.log('cid: ' + target.value.CategoryID)
+      getArticleContent()
+    }
+  })
+}
 
 const onSubmit = (done: () => void) => {
   updating.value ? updateArticle(done) : createArticle(done)
@@ -170,6 +204,23 @@ const updateArticle = (done: () => void) => {
   })
 }
 
+const initContent = () => {
+  const htmlCode = target.value.Content
+
+  const bodyMatch = /<body>(.*?)<\/body>/s.exec(htmlCode)
+  const styleMatch = /<style>(.*?)<\/style>/s.exec(htmlCode)
+
+  const body = bodyMatch ? bodyMatch[1] : ''
+  const style = styleMatch ? styleMatch[1] : ''
+  codeMirrorContent.value = body
+  articleContent.value = body
+  cssContent.value = style
+  if (body === '') {
+    codeMirrorContent.value = htmlCode
+    articleContent.value = htmlCode
+  }
+}
+
 const getArticleContent = () => {
   _articleContent.getArticleContent({
     ID: target.value?.ID,
@@ -186,10 +237,8 @@ const getArticleContent = () => {
     if (error) {
       return ''
     } else {
-      console.log(info)
-      codeMirrorContent.value = info
       target.value.Content = info
-      articleContent.value = info
+      initContent()
       if (!target.value.Latest) {
         isHistory.value = true
       }
@@ -197,16 +246,22 @@ const getArticleContent = () => {
   })
 }
 
+const setArticleContent = () => {
+  target.value.Content = '<head><style>' + cssContent.value + '</style></head>' + '<body>' + codeMirrorContent.value + '</body>'
+}
+
 watch(codeMirrorContent, (newValue) => {
-  // 同步更新 codeMirrorContent
   articleContent.value = newValue
-  target.value.Content = newValue
+  setArticleContent()
 })
 
 watch(articleContent, (newValue) => {
-  // 同步更新 codeMirrorContent
   codeMirrorContent.value = newValue
-  target.value.Content = newValue
+  setArticleContent()
+})
+
+watch(cssContent, () => {
+  setArticleContent()
 })
 
 </script>

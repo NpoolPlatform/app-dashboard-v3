@@ -13,6 +13,13 @@
   >
     <template #top-right>
       <div class='row indent flat'>
+        <q-input
+          dense
+          flat
+          class='small'
+          v-model='title'
+          :label='$t("MSG_ARTICLE_TITLE")'
+        />
         <q-toggle dense v-model='showHistory' :label='$t("MSG_SHOW_HISTORY")' size='xs' />
         <q-btn
           dense
@@ -69,7 +76,7 @@
     dense
     flat
     :title='$t("MSG_ROLES")'
-    :rows='roles'
+    :rows='displayRoles'
     row-key='ID'
     :loading='roleLoading'
     :rows-per-page-options='[100]'
@@ -148,6 +155,11 @@ const CategoryPicker = defineAsyncComponent(() => import('src/components/cms/Cat
 
 const _role = role.useRoleStore()
 const roles = computed(() => _role.roles(undefined))
+const rolename = ref('')
+const displayRoles = computed(() => {
+  return roles.value.filter((el) => el.Role?.toLowerCase()?.includes?.(rolename.value?.toLowerCase()) || el.EntID?.toLowerCase()?.includes?.(rolename.value?.toLowerCase()))
+})
+
 const roleLoading = ref(false)
 const selectedRole = ref([] as Array<role.Role>)
 

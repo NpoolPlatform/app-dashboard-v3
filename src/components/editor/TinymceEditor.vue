@@ -150,6 +150,8 @@ export default defineComponent({
       skin_url: '/tinymce/skins/ui/oxide',
       content_css: '/tinymce/skins/content/default/content.css',
       promotion: false,
+      branding: false,
+      protect: [/<a.*?@click=.*?>/g],
       images_upload_handler: exampleImageUploadHandler
     }
 
