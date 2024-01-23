@@ -29,9 +29,11 @@
       </q-card-section>
       <q-card-section>
         <q-input v-model='target.GoodName' :label='$t("MSG_GOOD_NAME")' />
-        <q-input v-model='target.Price' :label='$t("MSG_PRICE")' type='number' :min='0' />
-        <q-input v-model.number='target.PurchaseLimit' :label='$t("MSG_PURCHASE_LIMIT")' type='number' :min='0' />
-        <q-input v-model.number='target.UserPurchaseLimit' :label='$t("MSG_USER_PURCHASE_LIMIT")' type='number' :min='0' />
+        <q-input v-model='target.UnitPrice' :label='$t("MSG_UNIT_PRICE")' type='number' :min='0' />
+        <q-input v-model='target.PackagePrice' :label='$t("MSG_PACKAGE_PRICE")' type='number' :min='0' />
+        <q-input v-model.number='target.MinOrderAmount' :label='$t("MSG_MIN_PURCHASE_LIMIT")' type='number' :min='0' />
+        <q-input v-model.number='target.MaxOrderAmount' :label='$t("MSG_PURCHASE_LIMIT")' type='number' :min='0' />
+        <q-input v-model.number='target.MaxUserAmount' :label='$t("MSG_USER_PURCHASE_LIMIT")' type='number' :min='0' />
         <q-input
           class='commission-percent'
           v-model='target.TechnicalFeeRatio'
@@ -207,10 +209,11 @@ const updateTarget = computed(() => {
     Online: target.value.Online,
     Visible: target.value.Visible,
     GoodName: target.value.GoodName,
-    Price: target.value.Price,
+    UnitPrice: target.value.UnitPrice,
     DisplayIndex: target.value.DisplayIndex,
-    PurchaseLimit: target.value.PurchaseLimit,
-    UserPurchaseLimit: `${target.value.UserPurchaseLimit}`,
+    MaxOrderAmount: target.value.MaxOrderAmount,
+    MinOrderAmount: target.value.MinOrderAmount,
+    MaxUserAmount: `${target.value.MaxUserAmount}`,
     SaleStartAt: target.value.SaleStartAt,
     SaleEndAt: target.value.SaleEndAt,
     ServiceStartAt: target.value?.ServiceStartAt,
@@ -311,28 +314,46 @@ const appGoodsColumns = computed(() => [
     field: (row: appgood.Good) => row.Visible
   },
   {
+    name: 'MinPurchaseLimit',
+    label: t('MSG_MIN_PURCHASE_LIMIT'),
+    sortable: true,
+    field: (row: appgood.Good) => row.MinOrderAmount
+  },
+  {
     name: 'PurchaseLimit',
     label: t('MSG_PURCHASE_LIMIT'),
     sortable: true,
-    field: (row: appgood.Good) => row.PurchaseLimit
+    field: (row: appgood.Good) => row.MaxOrderAmount
   },
   {
     name: 'UserPurchaseLimit',
     label: t('MSG_USER_PURCHASE_LIMIT'),
     sortable: true,
-    field: (row: appgood.Good) => row.UserPurchaseLimit
+    field: (row: appgood.Good) => row.MaxUserAmount
   },
   {
-    name: 'GOODPRICE',
-    label: t('MSG_GOOD_PRICE'),
+    name: 'UnitPrice',
+    label: t('MSG_GOOD_UNIT_PRICE'),
     sortable: true,
-    field: (row: appgood.Good) => row.Price
+    field: (row: appgood.Good) => row.UnitPrice
+  },
+  {
+    name: 'PackagePrice',
+    label: t('MSG_GOOD_PACKAGE_PRICE'),
+    sortable: true,
+    field: (row: appgood.Good) => row.PackagePrice
+  },
+  {
+    name: 'GOODUNITAMOUNT',
+    label: t('MSG_GOOD_UNIT_AMOUNT'),
+    sortable: true,
+    field: (row: appgood.Good) => row.QuantityUnitAmount
   },
   {
     name: 'GOODUNIT',
     label: t('MSG_GOOD_UNIT'),
     sortable: true,
-    field: (row: appgood.Good) => t(row.Unit)
+    field: (row: appgood.Good) => t(row.QuantityUnit)
   },
   {
     name: 'GOODTOTAL',
@@ -404,7 +425,19 @@ const appGoodsColumns = computed(() => [
     name: 'DailyRewardAmount',
     label: t('MSG_DAILY_REWARD_AMOUNT'),
     sortable: true,
-    field: (row: appgood.Good) => row.DailyRewardAmount
+    field: (row: appgood.Good) => row.LastRewardAmount
+  },
+  {
+    name: 'DailyUnitRewardAmount',
+    label: t('MSG_DAILY_UNIT_REWARD_AMOUNT'),
+    sortable: true,
+    field: (row: appgood.Good) => row.LastUnitRewardAmount
+  },
+  {
+    name: 'TotalRewardAmount',
+    label: t('MSG_TOTAL_REWARD_AMOUNT'),
+    sortable: true,
+    field: (row: appgood.Good) => row.TotalRewardAmount
   },
   {
     name: 'ServiceStartAt',

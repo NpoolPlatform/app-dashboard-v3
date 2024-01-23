@@ -28,7 +28,7 @@
         <q-input
           v-model='target.Units' :label='$t("MSG_PURCHASE_UNITS")' type='number' min='1'
           :max='maxUnits'
-          :suffix='good?.Unit'
+          :suffix='good?.QuantityUnit'
           :rules='[ val => val <= maxUnits || `Max Purchase Units: ${maxUnits}`]'
         />
       </q-card-section>
