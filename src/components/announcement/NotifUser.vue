@@ -217,12 +217,6 @@ const columns = computed(() => [
     field: (row: notifuser.User) => row.EventType
   },
   {
-    name: 'NotifType',
-    label: t('MSG_ANNOUNCEMENT_TYPE'),
-    sortable: true,
-    field: (row: notifuser.User) => row.NotifType
-  },
-  {
     name: 'UserID',
     label: t('USER_ID'),
     sortable: true,
