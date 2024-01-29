@@ -24,7 +24,7 @@
 <script setup lang='ts'>
 import { getCategories } from 'src/api/category'
 import { category } from 'src/npoolstore'
-import { computed, defineEmits, defineProps, toRef, ref, onMounted } from 'vue'
+import { computed, defineEmits, defineProps, toRef, ref, onMounted, watch } from 'vue'
 
 interface Props {
   id: string
@@ -37,7 +37,7 @@ const id = toRef(props, 'id')
 const label = toRef(props, 'label')
 
 const myLabel = computed(() => {
-  return !label.value ? 'MSG_LANGUAGES' : label.value
+  return !label.value ? 'MSG_CATEGORIES' : label.value
 })
 
 const target = ref(id.value)
@@ -64,6 +64,11 @@ const emit = defineEmits<{(e: 'update:id', id: string): void}>()
 const onUpdate = () => {
   emit('update:id', target.value)
 }
+
+watch(() => props.id, (newVal) => {
+  target.value = newVal
+  emit('update:id', target.value)
+})
 
 onMounted(() => {
   if (_categories.value.length === 0) {
