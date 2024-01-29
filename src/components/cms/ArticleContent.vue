@@ -6,8 +6,11 @@
     <div class='col' v-show='updating'>
       <q-input outlined :disable='updating' v-model='target.ISO' :label='$t("MSG_SELECT_LANGUAGE")' />
     </div>
-    <div class='col'>
-      <CategoryPicker :disable='updating' v-model:id='target.CategoryID' :updating='updating' :label='$t("MSG_CATEGORY")' />
+    <div class='col' v-show='!updating'>
+      <CategoryPicker v-model:id='target.CategoryID' :updating='updating' :label='$t("MSG_CATEGORY")' />
+    </div>
+    <div class='col' v-show='updating'>
+      <q-input outlined :disable='updating' v-model='target.CategoryName' :label='$t("MSG_CATEGORY")' />
     </div>
     <div class='col' v-show='updating'>
       <q-select
@@ -119,7 +122,6 @@ const getArticle = (id: string) => {
       console.log(error)
     } else {
       target.value = row
-      console.log('cid: ' + target.value.CategoryID)
       getArticleContent()
     }
   })
