@@ -73,7 +73,7 @@
         <span>{{ $t('MSG_ORDER_INFO') }}</span>
       </q-card-section>
       <q-card-section>
-        <q-item-label>{{ $t('MSG_ORDER_ID') }}: {{ currentOrder?.ID }}</q-item-label>
+        <q-item-label>{{ $t('MSG_ORDER_ID') }}: {{ currentOrder?.EntID }}</q-item-label>
         <q-item-label>{{ $t('MSG_ORDER_ENT_ID') }}: {{ currentOrder?.EntID }}</q-item-label>
         <q-item-label>{{ $t('MSG_USER_ID') }}: {{ currentOrder?.UserID }}</q-item-label>
         <q-item-label>{{ $t('MSG_EMAIL_ADDRESS') }}: {{ currentOrder?.EmailAddress }}</q-item-label>
@@ -86,7 +86,7 @@
       </q-card-section>
       <q-card-section>
         <q-item-label>{{ $t('MSG_GOOD_NAME') }}: {{ currentOrder?.GoodName }}</q-item-label>
-        <q-item-label>{{ $t('MSG_PERIOD_DAYS') }}: {{ currentOrder?.GoodServicePeriodDays }}</q-item-label>
+        <q-item-label>{{ $t('MSG_PERIOD_DAYS') }}: {{ currentOrder?.Duration }}</q-item-label>
         <q-item-label>{{ $t('MSG_ORDER_TYPE') }}: {{ currentOrder?.OrderType }}</q-item-label>
       </q-card-section>
       <q-item class='row'>
@@ -144,9 +144,9 @@ const expiredUnits = computed(() => displayOrders.value.filter((el) => el.OrderS
 const waitStartUnits = computed(() => displayOrders.value.filter((el) => el.OrderState === order.OrderState.WAIT_START).reduce((sum, b) => sum + Number(b.Units), 0))
 
 const paymentTimeouts = computed(() => displayOrders.value.filter((el) => el.OrderState === order.OrderState.PAYMENT_TIMEOUT).length)
-const paymentAmount = computed(() => displayOrders.value.filter((el) => el.OrderState === order.OrderState.PAID).reduce((sum, b) => {
+const paymentAmount = computed(() => displayOrders.value.filter((el) => el.OrderState === order.OrderState.PAID || el.OrderState === order.OrderState.IN_SERVICE || el.OrderState === order.OrderState.EXPIRED).reduce((sum, b) => {
   const currency = Number(b.PaymentCoinUSDCurrency) > 0 ? Number(b.PaymentCoinUSDCurrency) : 1
-  return sum + Number(b.PaymentAmount) * currency + Number(b.PayWithBalanceAmount) * currency
+  return sum + Number(b.PaymentAmount) * currency
 }, 0))
 const orderUsers = computed(() => {
   const users = new Map<string, number>()
