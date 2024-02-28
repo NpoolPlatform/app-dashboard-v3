@@ -16,6 +16,7 @@
           {{ value }}
         </option>
       </select>
+      <q-toggle dense v-model='showSimulate' :label='$t("MSG_SHOW_SIMULATE")' size='xs' />
       <q-btn
         dense
         flat
@@ -119,6 +120,7 @@ const end = ref('')
 
 const _order = order.useOrderStore()
 const selectedOrderType = ref('ALL')
+const showSimulate = ref(false)
 const displayOrders = computed(() => _order.orders().filter((el) => {
   const name = username.value?.toLowerCase()
   let display = el.EmailAddress?.toLowerCase().includes(name) || el.PhoneNO?.toLowerCase()?.includes(name) || el.GoodID?.toLowerCase()?.includes(name) || el.EntID?.toLowerCase()?.includes(name)
@@ -131,6 +133,7 @@ const displayOrders = computed(() => _order.orders().filter((el) => {
   if (selectedOrderType.value !== 'ALL') {
     display = display && (el.OrderType === selectedOrderType.value)
   }
+  display = display && (el.Simulate === showSimulate.value)
   return display
 }))
 
