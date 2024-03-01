@@ -45,6 +45,7 @@
             basetypes.EventType.Purchase,
             basetypes.EventType.Signup,
             basetypes.EventType.AffiliateSignup,
+            basetypes.EventType.SimulateOrderProfit,
           ]'
           v-model='target.EventType'
           :label='$t("MSG_EVENT_YPE")'
