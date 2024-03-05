@@ -164,7 +164,7 @@ const roleLoading = ref(false)
 const selectedRole = ref([] as Array<role.Role>)
 
 const _article = article.useArticleStore()
-const articles = computed(() => _article.articles())
+const articles = computed(() => _article.articles(undefined))
 
 const _acl = acl.useACLStore()
 
@@ -178,7 +178,7 @@ const initApiURL = () => {
   apiURL.value = process.env.DEV ? devURL : Cookies.get('X-Base-URL')
 }
 
-const selectedACLs = ref([] as Array<acl.ArticleACL>)
+const selectedACLs = ref([] as Array<acl.ACL>)
 const articleACLLoading = ref(false)
 const getACLs = (offset: number, limit: number) => {
   _acl.getArticleACLs({
@@ -397,7 +397,9 @@ const updateTarget = computed(() => {
     Subtitle: target.value?.Subtitle,
     Digest: target.value?.Digest,
     Status: target.value?.Status,
-    ACLEnabled: target.value?.ACLEnabled
+    ACLEnabled: target.value?.ACLEnabled,
+    UpdateContent: true,
+    Content: target.value?.Content
   }
 })
 
