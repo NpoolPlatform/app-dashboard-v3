@@ -28,7 +28,7 @@ const updating = toRef(props, 'updating')
 const target = ref(id.value)
 
 const _coupon = coupon.useCouponStore()
-const myCoupons = computed(() => _coupon.coupons().filter((el) => el.CouponType !== coupon.CouponType.SpecialOffer && _coupon.valid(undefined, el.ID)))
+const myCoupons = computed(() => _coupon.coupons().filter((el) => _coupon.valid(undefined, el.ID)))
 const coupons = computed(() => myCoupons.value.map((el) => {
   return {
     value: el.EntID,

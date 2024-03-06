@@ -10,7 +10,6 @@
   />
   <CouponScope />
   <CouponControl />
-  <CouponCoin />
   <AppGoodScope />
   <AllocatedCoupon />
 </template>
@@ -20,7 +19,6 @@ import { computed, defineAsyncComponent, onMounted } from 'vue'
 import { coupon, sdk, utils } from 'src/npoolstore'
 const AllocatedCoupon = defineAsyncComponent(() => import('src/components/inspire/AllocatedCoupon.vue'))
 const CouponScope = defineAsyncComponent(() => import('src/components/inspire/CouponScope.vue'))
-const CouponCoin = defineAsyncComponent(() => import('src/components/inspire/CouponCoin.vue'))
 const CouponControl = defineAsyncComponent(() => import('src/components/inspire/CashControl.vue'))
 const AppGoodScope = defineAsyncComponent(() => import('src/components/inspire/AppGoodScope.vue'))
 
@@ -44,6 +42,12 @@ const columns = computed(() => [
     label: t('MSG_ID'),
     sortable: true,
     field: (row: coupon.Coupon) => row.ID
+  },
+  {
+    name: 'EntID',
+    label: t('MSG_ENT_ID'),
+    sortable: true,
+    field: (row: coupon.Coupon) => row.EntID
   },
   {
     name: 'AppID',
