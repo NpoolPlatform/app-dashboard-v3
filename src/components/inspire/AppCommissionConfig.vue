@@ -39,6 +39,13 @@
   >
     <template #top-right>
       <div class='row indent flat'>
+        <q-input
+          dense
+          flat
+          class='small'
+          v-model='appGoodID'
+          :label='$t("MSG_APP_GOOD_ID")'
+        />
         <q-toggle dense v-model='showAppGoodHistory' :label='$t("MSG_SHOW_HISTORY")' size='xs' />
       </div>
       <q-btn
@@ -137,13 +144,14 @@ const displayCommissions = computed(() => commconfigs.value.filter((el) => {
   return display
 }))
 
+const appGoodID = ref('')
 const showAppGoodHistory = ref(false)
 const displayGoodCommissions = computed(() => commgoodconfigs.value.filter((el) => {
   let display = el.EndAt === 0
   if (showAppGoodHistory.value) {
-    display = el.EndAt.toString().includes('')
+    display = el.EndAt.toString().includes('') && el.AppGoodID.includes(appGoodID.value)
   }
-  return display
+  return display && el.AppGoodID.includes(appGoodID.value)
 }))
 
 const target = ref({} as appcommissionconfig.AppCommissionConfig)
