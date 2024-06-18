@@ -232,7 +232,7 @@ const columns = computed(() => [
   },
   {
     name: 'CategoryID',
-    label: t('MSG_CategoryID'),
+    label: t('MSG_CATEGORY_ID'),
     sortable: true,
     field: (row: article.Article) => row.CategoryID
   },
