@@ -1,5 +1,4 @@
 <template>
-  <div>{{ pagination }}</div>
   <q-table
     dense
     flat
@@ -9,6 +8,7 @@
     :rows-per-page-options='[0]'
     :columns='(columns as any)'
     v-model:pagination='pagination'
+    @request='fetchNotifs'
   >
     <template #top-right>
       <div class='row indent flat'>
@@ -17,17 +17,6 @@
           class='small'
           v-model='username'
           :label='$t("MSG_USERNAME")'
-        />
-      </div>
-    </template>
-    <template #pagination>
-      <div class='row q-mt-md'>
-        <q-space />
-        <q-pagination
-          v-model='pagination.page'
-          color='grey-8'
-          :max='totalPages'
-          :max-pages='10'
         />
       </div>
     </template>
@@ -47,23 +36,30 @@ const { t } = useI18n({ useScope: 'global' })
 
 const notifs = sdk.notifications
 const totalRows = sdk.totalNotifications
+
 const rowsPerPage = ref(20)
-const totalPages = computed(() => Math.ceil(totalRows.value / rowsPerPage.value))
 const pagination = ref({
   page: 1,
   rowsPerPage: rowsPerPage.value
 } as Record<string, unknown>)
-const selectedPage = computed(() => pagination.value.page as number)
 
 const username = ref('')
 const displayNotifs = computed(() => notifs.value?.filter((el) =>
   el.EmailAddress.toLocaleLowerCase()?.includes(username.value?.toLowerCase()) ||
   el.PhoneNO.toLocaleLowerCase()?.includes(username.value?.toLowerCase())
-))
+).slice(pagination.value.page as number * rowsPerPage.value, (pagination.value.page as number + 1) * rowsPerPage.value))
 
-watch(selectedPage, () => {
-  sdk.getNotifs(selectedPage.value - 1, 10)
-  pagination.value.page = selectedPage.value
+const fetchNotifs = (props: Record<string, unknown>) => {
+  const _pagination = props.pagination as Record<string, unknown>
+  sdk.getNotifs(_pagination.page as number - 1, 10, (error: boolean) => {
+    if (error) return
+    pagination.value.page = _pagination.page
+    pagination.value.rowsPerPage = _pagination.rowsPerPage
+  })
+}
+
+watch(totalRows, () => {
+  pagination.value.rowsNumber = totalRows.value
 })
 
 onMounted(() => {
