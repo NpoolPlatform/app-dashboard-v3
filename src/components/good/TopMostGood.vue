@@ -36,7 +36,6 @@
       </q-card-section>
       <q-card-section>
         <q-input v-model='target.UnitPrice' :label='$t("MSG_UNIT_PRICE")' />
-        <q-input v-model='target.PackagePrice' :label='$t("MSG_PACKAGE_PRICE")' />
       </q-card-section>
       <q-card-section>
         <q-select
@@ -151,30 +150,6 @@ const columns = computed(() => [
     field: (row: topmostgood.TopMostGood) => row.AppGoodName
   },
   {
-    name: 'CoinTypeID',
-    label: 'MSG_COINTYPEID',
-    sortable: true,
-    field: (row: topmostgood.TopMostGood) => row.CoinTypeID
-  },
-  {
-    name: 'CoinName',
-    label: 'MSG_COIN_NAME',
-    sortable: true,
-    field: (row: topmostgood.TopMostGood) => row.CoinName
-  },
-  {
-    name: 'CoinUnit',
-    label: 'MSG_COIN_UNIT',
-    sortable: true,
-    field: (row: topmostgood.TopMostGood) => row.CoinUnit
-  },
-  {
-    name: 'TopMostID',
-    label: 'MSG_TOP_MOST_ID',
-    sortable: true,
-    field: (row: topmostgood.TopMostGood) => row.TopMostID
-  },
-  {
     name: 'TopMostTitle',
     label: 'MSG_TOP_MOST_TITLE',
     sortable: true,
@@ -191,12 +166,6 @@ const columns = computed(() => [
     label: 'MSG_UNIT_PRICE',
     sortable: true,
     field: (row: topmostgood.TopMostGood) => row.UnitPrice
-  },
-  {
-    name: 'PackagePrice',
-    label: 'MSG_PAKCAGE_PRICE',
-    sortable: true,
-    field: (row: topmostgood.TopMostGood) => row.PackagePrice
   },
   {
     name: 'Posters',

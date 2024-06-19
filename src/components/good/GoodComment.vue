@@ -27,15 +27,14 @@
 
 <script setup lang='ts'>
 import { computed, onMounted, ref } from 'vue'
-import { goodcomment, sdk, utils } from 'src/npoolstore'
-import { Comment } from 'src/npoolstore/good/good/comment'
+import { appgoodcomment, sdk, utils } from 'src/npoolstore'
 
 const comments = computed(() => sdk.comments.value)
-const selectedComments = ref([] as Array<Comment>)
+const selectedComments = ref([] as Array<appgoodcomment.Comment>)
 
 const onDelete = () => {
   if (selectedComments.value?.length > 0) {
-    sdk.deleteAppGoodComment(selectedComments.value?.[0], () => {
+    sdk.deleteComment(selectedComments.value?.[0], () => {
       // TODO
     })
   }
@@ -51,79 +50,79 @@ const columns = computed(() => [
     name: 'ID',
     label: 'MSG_ID',
     sortable: true,
-    field: (row: goodcomment.Comment) => row.ID
+    field: (row: appgoodcomment.Comment) => row.ID
   },
   {
     name: 'EntID',
     label: 'MSG_ENT_ID',
     sortable: true,
-    field: (row: goodcomment.Comment) => row.EntID
+    field: (row: appgoodcomment.Comment) => row.EntID
   },
   {
     name: 'AppID',
     label: 'MSG_APP_ID',
     sortable: true,
-    field: (row: goodcomment.Comment) => row.AppID
+    field: (row: appgoodcomment.Comment) => row.AppID
   },
   {
     name: 'UserID',
     label: 'MSG_USER_ID',
     sortable: true,
-    field: (row: goodcomment.Comment) => row.UserID
+    field: (row: appgoodcomment.Comment) => row.UserID
   },
   {
     name: 'Username',
     label: 'MSG_USER_NAME',
     sortable: true,
-    field: (row: goodcomment.Comment) => row.Username
+    field: (row: appgoodcomment.Comment) => row.Username
   },
   {
     name: 'EmailAddress',
     label: 'MSG_EMAIL_ADDRESS',
     sortable: true,
-    field: (row: goodcomment.Comment) => row.EmailAddress
+    field: (row: appgoodcomment.Comment) => row.EmailAddress
   },
   {
     name: 'GoodID',
     label: 'MSG_GOOD_ID',
     sortable: true,
-    field: (row: goodcomment.Comment) => row.GoodID
+    field: (row: appgoodcomment.Comment) => row.GoodID
   },
   {
     name: 'GoodID',
     label: 'MSG_APP_GOOD_ID',
     sortable: true,
-    field: (row: goodcomment.Comment) => row.AppGoodID
+    field: (row: appgoodcomment.Comment) => row.AppGoodID
   },
   {
     name: 'GoodName',
     label: 'MSG_GOOD_NAME',
     sortable: true,
-    field: (row: goodcomment.Comment) => row.GoodName
+    field: (row: appgoodcomment.Comment) => row.GoodName
   },
   {
     name: 'OrderID',
     label: 'MSG_ORDER_ID',
     sortable: true,
-    field: (row: goodcomment.Comment) => row.OrderID
+    field: (row: appgoodcomment.Comment) => row.OrderID
   },
   {
     name: 'Content',
     label: 'MSG_CONTENT',
     sortable: true,
-    field: (row: goodcomment.Comment) => row.Content
+    field: (row: appgoodcomment.Comment) => row.Content
   },
   {
     name: 'ReplyToID',
     label: 'MSG_REPLY_TO_ID',
     sortable: true,
-    field: (row: goodcomment.Comment) => row.ReplyToID
+    field: (row: appgoodcomment.Comment) => row.ReplyToID
   },
   {
     name: 'CreatedAt',
     label: 'MSG_CREATED_AT',
     sortable: true,
-    field: (row: goodcomment.Comment) => utils.formatTime(row.CreatedAt, undefined)
+    field: (row: appgoodcomment.Comment) => utils.formatTime(row.CreatedAt, undefined)
   }
 ])
 </script>
