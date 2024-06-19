@@ -1,4 +1,5 @@
 <template>
+  <div>{{selectedPage}}</div>
   <q-table
     dense
     flat
@@ -7,6 +8,8 @@
     row-key='ID'
     :rows-per-page-options='[100]'
     :columns='(columns as any)'
+    v-model:pagination='selectedPage'
+    @request='fetchNotifs'
   >
     <template #top-right>
       <div class='row indent flat'>
@@ -25,15 +28,15 @@
 </template>
 
 <script setup lang='ts'>
-import { utils, notif, notify } from 'src/npoolstore'
-import { computed, onMounted, ref } from 'vue'
+import { utils, notif, sdk } from 'src/npoolstore'
+import { computed, onMounted, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 
 // eslint-disable-next-line @typescript-eslint/unbound-method
 const { t } = useI18n({ useScope: 'global' })
 
-const _notif = notif.useNotifStore()
-const notifs = computed(() => _notif.notifs(undefined, undefined))
+const notifs = sdk.notifications
+const totalRows = sdk.totalNotifications
 
 const username = ref('')
 const displayNotifs = computed(() => notifs.value?.filter((el) =>
@@ -41,31 +44,28 @@ const displayNotifs = computed(() => notifs.value?.filter((el) =>
   el.PhoneNO.toLocaleLowerCase()?.includes(username.value?.toLowerCase())
 ))
 
-onMounted(() => {
-  if (notifs.value?.length === 0) {
-    getAppNotifs(0, 100)
-  }
+const selectedPage = ref({
+  page: 1
+} as Record<string, number>)
+const selectedPageNumber = computed(() => selectedPage.value.page)
+
+watch(selectedPageNumber, () => {
+  sdk.getNotifs(selectedPageNumber.value - 1, 10)
+})
+watch(totalRows, () => {
+  console.log(totalRows.value, 1111)
+  selectedPage.value.rowsNumber = totalRows.value
 })
 
-const getAppNotifs = (offset: number, limit: number) => {
-  _notif.getAppNotifs({
-    Offset: offset,
-    Limit: limit,
-    Message: {
-      Error: {
-        Title: t('MSG_GET_NOTIFS'),
-        Message: t('MSG_GET_NOTIFS_FAIL'),
-        Popup: true,
-        Type: notify.NotifyType.Error
-      }
-    }
-  }, (error: boolean, rows: Array<notif.Notif>) => {
-    if (error || !rows.length) {
-      return
-    }
-    getAppNotifs(offset + limit, limit)
-  })
+const fetchNotifs = () => {
+  sdk.getNotifs(selectedPageNumber.value - 1, 10)
 }
+
+onMounted(() => {
+  if (!notifs.value.length) {
+    sdk.getNotifs(undefined, 10)
+  }
+})
 
 const columns = computed(() => [
   {
