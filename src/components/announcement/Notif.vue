@@ -53,7 +53,6 @@ watch(selectedPageNumber, () => {
   sdk.getNotifs(selectedPageNumber.value - 1, 10)
 })
 watch(totalRows, () => {
-  console.log(totalRows.value, 1111)
   selectedPage.value.rowsNumber = totalRows.value
 })
 
@@ -65,6 +64,7 @@ onMounted(() => {
   if (!notifs.value.length) {
     sdk.getNotifs(undefined, 10)
   }
+  selectedPage.value.rowsNumber = totalRows.value
 })
 
 const columns = computed(() => [
