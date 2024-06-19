@@ -20,26 +20,27 @@
   </q-select>
 </template>
 <script setup lang='ts'>
-import { appgood } from 'src/npoolstore'
+import { sdk, goodbase } from 'src/npoolstore'
 import { computed, defineEmits, defineProps, toRef, ref } from 'vue'
 
 interface Props {
-  id: string
+  appGoodId: string
   label?: string
+  goodTypes?: Array<goodbase.GoodType>
 }
 
 const props = defineProps<Props>()
-const appGoodID = toRef(props, 'id')
+const appGoodID = toRef(props, 'appGoodId')
 const label = toRef(props, 'label')
+const goodTypes = toRef(props, 'goodTypes')
 const target = ref(appGoodID.value)
 
-const appGood = appgood.useAppGoodStore()
-const appGoods = computed(() => appGood.goods(undefined).filter((el) => el.Online))
+const appGoods = sdk.appGoods
 
-const goods = computed(() => Array.from(appGoods.value, (el) => {
+const goods = computed(() => Array.from(appGoods.value.filter((el) => !goodTypes.value || goodTypes.value.includes(el.GoodType)), (el) => {
   return {
     value: el.EntID,
-    label: `${el.GoodName} | ${el.EntID}`
+    label: `${el.GoodName} | ${el.EntID} | ${el.GoodType}`
   }
 }))
 const displayGoods = ref(goods.value)
@@ -52,9 +53,9 @@ const onFilter = (val: string, doneFn: (callbackFn: () => void) => void) => {
   })
 }
 
-const emit = defineEmits<{(e: 'update:id', id: string): void}>()
+const emit = defineEmits<{(e: 'update:appGoodId', appGoodID: string): void}>()
 const onUpdate = () => {
-  emit('update:id', target.value)
+  emit('update:appGoodId', target.value)
 }
 
 </script>

@@ -26,16 +26,18 @@ import { getCoins } from 'src/api/coin'
 import { computed, defineEmits, defineProps, toRef, ref, onMounted } from 'vue'
 
 interface Props {
-  id: string
+  coinTypeId: string
   updating?: boolean
   hiddenDisabledCoins?: boolean
+  coinTypeIds?: string[]
 }
 
 const props = defineProps<Props>()
-const id = toRef(props, 'id')
+const coinTypeID = toRef(props, 'coinTypeId')
 const updating = toRef(props, 'updating')
 const hiddenDisabledCoins = toRef(props, 'hiddenDisabledCoins')
-const target = ref(id.value)
+const coinTypeIDs = toRef(props, 'coinTypeIds')
+const target = ref(coinTypeID.value)
 
 const coin = appcoin.useAppCoinStore()
 const coins = computed(() => {
@@ -43,7 +45,7 @@ const coins = computed(() => {
   if (hiddenDisabledCoins.value) {
     items = coin.coins().filter((el) => !el.Disabled && !el.CoinDisabled)
   }
-  return Array.from(items).map((el) => {
+  return Array.from(items.filter((el) => !coinTypeIDs.value || coinTypeIDs.value.includes(el.EntID))).map((el) => {
     return {
       value: el.CoinTypeID,
       label: `${el.Name} | ${el.CoinTypeID} | ${el.Unit}`
@@ -60,9 +62,9 @@ const onFilter = (val: string, doneFn: (callbackFn: () => void) => void) => {
   })
 }
 
-const emit = defineEmits<{(e: 'update:id', id: string): void}>()
+const emit = defineEmits<{(e: 'update:coinTypeId', coinTypeID: string): void}>()
 const onUpdate = () => {
-  emit('update:id', target.value)
+  emit('update:coinTypeId', target.value)
 }
 
 onMounted(() => {

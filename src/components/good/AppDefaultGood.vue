@@ -41,8 +41,20 @@
         <span>{{ $t('MSG_APP_DEFAULT_GOOD') }}</span>
       </q-card-section>
       <q-card-section>
-        <AppGoodSelector v-model:id='target.AppGoodID' />
-        <CoinPicker v-model:id='target.CoinTypeID' v-model:updating='updating' />
+        <AppGoodSelector
+          v-model:app-good-id='target.AppGoodID'
+          :label='$t("MSG_APP_GOODS")'
+          :good-types='[
+            goodbase.GoodType.PowerRental,
+            goodbase.GoodType.LegacyPowerRental,
+            goodbase.GoodType.FbmCrowdFunding
+          ]'
+        />
+        <CoinPicker
+          v-model:coin-type-id='target.CoinTypeID'
+          :updating='updating'
+          :coin-type-ids='coinTypeIDs'
+        />
       </q-card-section>
       <q-item class='row'>
         <q-btn :loading='submitting' :label='$t("MSG_SUBMIT")' @click='onSubmit' />
@@ -58,7 +70,7 @@
 </template>
 
 <script setup lang='ts'>
-import { appdefaultgood, utils, sdk } from 'src/npoolstore'
+import { appdefaultgood, utils, sdk, goodbase } from 'src/npoolstore'
 import { computed, defineAsyncComponent, onMounted, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 
@@ -71,6 +83,14 @@ const AppGoodSelector = defineAsyncComponent(() => import('src/components/good/A
 const appDefaultGoods = sdk.appDefaultGoods
 
 const target = ref({} as appdefaultgood.Default)
+const coinTypeIDs = computed(() => {
+  const appPowerRental = sdk.appPowerRental(target.value.AppGoodID)
+  if (appPowerRental) {
+    return appPowerRental.GoodCoins.map((el) => el.CoinTypeID)
+  }
+  // TODO: support fbm crowd funding
+  return []
+})
 
 const showing = ref(false)
 const updating = ref(false)
@@ -116,9 +136,7 @@ const updateAppDefaultGood = () => {
 
 const selectedGoods = ref([] as Array<appdefaultgood.Default>)
 const onDelete = (row: appdefaultgood.Default) => {
-  sdk.deleteAppDefaultGood(row, () => {
-    // TODO
-  })
+  sdk.deleteAppDefaultGood(row)
 }
 
 onMounted(() => {
