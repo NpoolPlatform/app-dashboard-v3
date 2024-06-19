@@ -1,15 +1,14 @@
 <template>
-  <div>{{selectedPage}}</div>
+  <div>{{ pagination }}</div>
   <q-table
     dense
     flat
     :title='$t("MSG_NOTIFS")'
     :rows='displayNotifs'
     row-key='ID'
-    :rows-per-page-options='[100]'
+    :rows-per-page-options='[0]'
     :columns='(columns as any)'
-    v-model:pagination='selectedPage'
-    @request='fetchNotifs'
+    v-model:pagination='pagination'
   >
     <template #top-right>
       <div class='row indent flat'>
@@ -18,6 +17,17 @@
           class='small'
           v-model='username'
           :label='$t("MSG_USERNAME")'
+        />
+      </div>
+    </template>
+    <template #pagination>
+      <div class='row q-mt-md'>
+        <q-space />
+        <q-pagination
+          v-model='pagination.page'
+          color='grey-8'
+          :max='totalPages'
+          :max-pages='10'
         />
       </div>
     </template>
@@ -37,6 +47,13 @@ const { t } = useI18n({ useScope: 'global' })
 
 const notifs = sdk.notifications
 const totalRows = sdk.totalNotifications
+const rowsPerPage = ref(20)
+const totalPages = computed(() => Math.ceil(totalRows.value / rowsPerPage.value))
+const pagination = ref({
+  page: 1,
+  rowsPerPage: rowsPerPage.value
+} as Record<string, unknown>)
+const selectedPage = computed(() => pagination.value.page as number)
 
 const username = ref('')
 const displayNotifs = computed(() => notifs.value?.filter((el) =>
@@ -44,27 +61,16 @@ const displayNotifs = computed(() => notifs.value?.filter((el) =>
   el.PhoneNO.toLocaleLowerCase()?.includes(username.value?.toLowerCase())
 ))
 
-const selectedPage = ref({
-  page: 1
-} as Record<string, number>)
-const selectedPageNumber = computed(() => selectedPage.value.page)
-
-watch(selectedPageNumber, () => {
-  sdk.getNotifs(selectedPageNumber.value - 1, 10)
+watch(selectedPage, () => {
+  sdk.getNotifs(selectedPage.value - 1, 10)
+  pagination.value.page = selectedPage.value
 })
-watch(totalRows, () => {
-  selectedPage.value.rowsNumber = totalRows.value
-})
-
-const fetchNotifs = () => {
-  sdk.getNotifs(selectedPageNumber.value - 1, 10)
-}
 
 onMounted(() => {
+  sdk.setNotificationPageLimit(rowsPerPage.value)
   if (!notifs.value.length) {
     sdk.getNotifs(undefined, 10)
   }
-  selectedPage.value.rowsNumber = totalRows.value
 })
 
 const columns = computed(() => [
