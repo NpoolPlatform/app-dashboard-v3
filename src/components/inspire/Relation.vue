@@ -74,13 +74,10 @@
               </tr>
               <tr v-for='(_good,index) in getSortAchievements(props.row.Achievements)' :key='index'>
                 <td class='name'>
-                  <span v-if='$t(getDisplayNames(_good.AppGoodID) as string)?.length <= 15'>
-                    {{ $t(getDisplayNames(_good.AppGoodID) as string) }}
-                  </span>
-                  <div v-else class='good-name'>
-                    {{ $t(getDisplayNames(_good.AppGoodID) as string)?.substring(0, 15) + '...' }}
+                  <div class='good-name'>
+                    {{ $t(sdk.appGoodDisplayName(_good.AppGoodID, 4))?.substring(0, 15) + '...' }}
                     <q-tooltip class='bg-white text-black shadow-2'>
-                      {{ $t(getDisplayNames(_good.AppGoodID) as string) }}
+                      {{ $t(sdk.appGoodDisplayName(_good.AppGoodID, 4)) }}
                     </q-tooltip>
                   </div>
                 </td>
@@ -148,13 +145,10 @@
               </tr>
               <tr v-for='(_good,index) in getSortAchievements(props.row.Achievements)' :key='index'>
                 <td class='name'>
-                  <span v-if='$t(getDisplayNames(_good.AppGoodID) as string)?.length <= 15'>
-                    {{ $t(getDisplayNames(_good.AppGoodID) as string) }}
-                  </span>
-                  <div v-else class='good-name'>
-                    {{ $t(getDisplayNames(_good.AppGoodID) as string)?.substring(0, 15) + '...' }}
+                  <div class='good-name'>
+                    {{ $t(sdk.appGoodDisplayName(_good.AppGoodID, 4))?.substring(0, 15) + '...' }}
                     <q-tooltip class='bg-white text-black shadow-2'>
-                      {{ $t(getDisplayNames(_good.AppGoodID) as string) }}
+                      {{ $t(sdk.appGoodDisplayName(_good.AppGoodID, 4)) }}
                     </q-tooltip>
                   </div>
                 </td>
@@ -185,7 +179,7 @@
 import { getUsers } from 'src/api/user'
 import { computed, defineAsyncComponent, onMounted, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { achievement, registration, user, appgood, notify, constant, utils } from 'src/npoolstore'
+import { achievement, registration, user, notify, constant, utils, sdk } from 'src/npoolstore'
 import { InvalidID } from 'src/npoolstore/const'
 import { GoodAchievement } from 'src/npoolstore/inspire/achievement'
 
@@ -255,9 +249,6 @@ const getSortAchievements = computed(() => (achievements: Array<GoodAchievement>
   return rows
 })
 const loading = ref(false)
-
-const good = appgood.useAppGoodStore()
-const getDisplayNames = computed(() => (appGoodID: string) => good.good(undefined, appGoodID)?.DisplayNames?.[4] ? good.good(undefined, appGoodID)?.DisplayNames?.[4] : good.good(undefined, appGoodID)?.GoodName)
 
 watch(curUserID, () => {
   _userInviters.value = []
