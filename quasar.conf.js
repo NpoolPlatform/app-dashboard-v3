@@ -88,7 +88,8 @@ module.exports = configure(function (ctx) {
       proxy: {
         '/api': {
           // target: 'https://api.procyon.vip',
-          target: 'https://api.npool.top:20402',
+          // target: 'https://api.npool.top:20402',
+          target: 'https://api.procyon.xpool.top',
           pathRewrite: {
             '^/api': '/api'
           },
