@@ -21,7 +21,7 @@
 </template>
 <script setup lang='ts'>
 import { sdk, goodbase } from 'src/npoolstore'
-import { computed, defineEmits, defineProps, toRef, ref } from 'vue'
+import { computed, defineEmits, defineProps, toRef, ref, onMounted } from 'vue'
 
 interface Props {
   appGoodId: string
@@ -35,11 +35,11 @@ const label = toRef(props, 'label')
 const goodTypes = toRef(props, 'goodTypes')
 const target = ref(appGoodID.value)
 
-const appGoods = sdk.appGoods
+const appPowerRentals = sdk.appPowerRentals
 
-const goods = computed(() => Array.from(appGoods.value.filter((el) => !goodTypes.value || goodTypes.value.includes(el.GoodType)), (el) => {
+const goods = computed(() => Array.from(appPowerRentals.value.filter((el) => !goodTypes.value || goodTypes.value.includes(el.GoodType)), (el) => {
   return {
-    value: el.EntID,
+    value: el.AppGoodID,
     label: `${el.GoodName} | ${el.EntID} | ${el.GoodType}`
   }
 }))
@@ -58,4 +58,9 @@ const onUpdate = () => {
   emit('update:appGoodId', target.value)
 }
 
+onMounted(() => {
+  if (!appPowerRentals.value?.length) {
+    sdk.getAppPowerRentals(0, 0)
+  }
+})
 </script>
