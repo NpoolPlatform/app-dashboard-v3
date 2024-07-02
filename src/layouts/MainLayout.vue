@@ -16,10 +16,9 @@
 
 <script setup lang='ts'>
 import { defineAsyncComponent, onMounted, watch, computed } from 'vue'
-import { notify, requesterror, user, appgood } from 'src/npoolstore'
+import { notify, requesterror, user, sdk } from 'src/npoolstore'
 import { useRouter } from 'vue-router'
 import 'src/api/app'
-import { getAppGoods } from 'src/api/good'
 
 const MainHeader = defineAsyncComponent(() => import('src/components/header/MainHeader.vue'))
 const Footer = defineAsyncComponent(() => import('src/components/footer/Footer.vue'))
@@ -45,8 +44,7 @@ watch(trigger, () => {
   }
 })
 
-const appGood = appgood.useAppGoodStore()
-const appGoods = computed(() => appGood.goods())
+const appPowerRentals = computed(() => sdk.appPowerRentals.value)
 
 onMounted(() => {
   notification.$subscribe((_, state) => {
@@ -57,8 +55,8 @@ onMounted(() => {
       }
     })
   })
-  if (appGoods.value.length === 0) {
-    getAppGoods(0, 100)
+  if (!appPowerRentals.value.length) {
+    sdk.getAppPowerRentals(0, 0)
   }
 })
 </script>

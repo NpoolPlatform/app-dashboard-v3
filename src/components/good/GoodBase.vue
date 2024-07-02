@@ -3,8 +3,8 @@
     dense
     flat
     :title='displayTitle'
-    :rows='appGoods'
-    :columns='appGoodsColumns'
+    :rows='appPowerRentals'
+    :columns='appPowerRentalsColumns'
     row-key='ID'
     :rows-per-page-options='[100]'
   />
@@ -28,7 +28,7 @@ const goodTypes = toRef(props, 'goodTypes')
 const title = toRef(props, 'title')
 const displayTitle = computed(() => title.value ? title.value : t('MSG_APP_GOODS'))
 
-const appGoods = computed(() => sdk.appGoods.value.filter((el) => {
+const appPowerRentals = computed(() => sdk.appPowerRentals.value.filter((el) => {
   let display = true
   if (goodTypes.value !== undefined && goodTypes.value?.length > 0) {
     const index = goodTypes.value.findIndex((gl) => gl === el.GoodType)
@@ -37,7 +37,7 @@ const appGoods = computed(() => sdk.appGoods.value.filter((el) => {
   return display
 }))
 
-const appGoodsColumns = computed(() => [
+const appPowerRentalsColumns = computed(() => [
   {
     name: 'ID',
     label: t('MSG_ID'),
@@ -85,6 +85,12 @@ const appGoodsColumns = computed(() => [
     label: t('MSG_SERVICE_START_AT'),
     sortable: true,
     field: (row: appgood.Good) => utils.formatTime(row?.ServiceStartAt)
+  },
+  {
+    name: 'CreatedAt',
+    label: t('MSG_CREATED_AT'),
+    sortable: true,
+    field: (row: appgood.Good) => utils.formatTime(row?.CreatedAt)
   }
 ])
 </script>

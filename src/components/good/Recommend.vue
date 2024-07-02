@@ -1,14 +1,14 @@
-<!-- <template>
+<template>
   <q-table
     dense
     flat
     :title='$t("MSG_APP_GOODS")'
-    :rows='appGoods'
-    :columns='appGoodsColumns'
+    :rows='appPowerRentals'
+    :columns='appPowerRentalsColumns'
     row-key='ID'
     :rows-per-page-options='[100]'
     selection='single'
-    v-model:selected='selectedGood'
+    v-model:selected='selectedAppPowerRental'
   />
 
   <q-table
@@ -18,7 +18,7 @@
     :rows='recommends'
     row-key='ID'
     :rows-per-page-options='[100]'
-    @row-click='(evt, row, index) => onRowClick(row as Recommend)'
+    @row-click='(evt, row, index) => onRowClick(row as appgoodrecommend.Recommend)'
   >
     <template #top-right>
       <div class='row indent flat'>
@@ -27,7 +27,7 @@
           flat
           class='btn flat'
           :label='$t("MSG_CREATE")'
-          :disable='selectedGood.length === 0'
+          :disable='selectedAppPowerRental.length === 0'
           @click='onCreate'
         />
       </div>
@@ -43,13 +43,13 @@
         <span>{{ $t('MSG_CREATE_RECOMMEND') }}</span>
       </q-card-section>
       <q-card-section>
-        <span> {{ updating? target.GoodName : selectedGood[0]?.GoodName }}</span>
+        <span> {{ updating? target.GoodName : selectedAppPowerRental[0]?.GoodName }}</span>
       </q-card-section>
       <q-card-section>
         <q-input v-model='target.Message' :label='$t("MSG_MESSAGE")' />
       </q-card-section>
       <q-card-section>
-        <q-input v-model.number='target.RecommendIndex' :label='$t("MSG_RECOMMEND_INDEX")' />
+        <q-input v-model='target.RecommendIndex' :label='$t("MSG_RECOMMEND_INDEX")' />
       </q-card-section>
       <q-item class='row'>
         <LoadingButton loading :label='$t("MSG_SUBMIT")' @click='onSubmit' />
@@ -65,25 +65,20 @@
 </template>
 
 <script setup lang='ts'>
-import { formatTime, NotifyType, useLocalUserStore, useAdminRecommendStore, useAdminAppGoodStore, AppGood, Recommend } from 'npool-cli-v4'
 import { computed, defineAsyncComponent, onMounted, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
+import { sdk, utils, apppowerrental, appgoodrecommend } from 'src/npoolstore'
 // eslint-disable-next-line @typescript-eslint/unbound-method
 const { t } = useI18n({ useScope: 'global' })
 
 const LoadingButton = defineAsyncComponent(() => import('src/components/button/LoadingButton.vue'))
 
-const appGood = useAdminAppGoodStore()
-const appGoods = computed(() => appGood.AppGoods.AppGoods)
-const selectedGood = ref([] as Array<AppGood>)
+const appPowerRentals = computed(() => sdk.appPowerRentals.value)
+const selectedAppPowerRental = ref([] as Array<apppowerrental.AppPowerRental>)
 
-const recommend = useAdminRecommendStore()
-const recommends = computed(() => recommend.Recommends.Recommends)
+const recommends = sdk.goodRecommends
 
-const logined = useLocalUserStore()
-const target = ref({
-  RecommenderID: logined.User?.ID
-} as Recommend)
+const target = ref({} as appgoodrecommend.Recommend)
 
 const showing = ref(false)
 const updating = ref(false)
@@ -91,10 +86,10 @@ const updating = ref(false)
 const onCreate = () => {
   updating.value = false
   showing.value = true
-  target.value.GoodID = selectedGood.value[0]?.GoodID
+  target.value.AppGoodID = selectedAppPowerRental.value[0]?.AppGoodID
 }
 
-const onRowClick = (row: Recommend) => {
+const onRowClick = (row: appgoodrecommend.Recommend) => {
   updating.value = true
   showing.value = true
   target.value = { ...row }
@@ -105,9 +100,7 @@ const onCancel = () => {
 }
 
 const onMenuHide = () => {
-  target.value = {
-    RecommenderID: logined.User?.ID
-  } as Recommend
+  target.value = {} as appgoodrecommend.Recommend
   showing.value = false
 }
 
@@ -116,23 +109,9 @@ const onSubmit = (done: () => void) => {
 }
 
 const createRecommend = (done: () => void) => {
-  recommend.createRecommend({
-    ...target.value,
-    NotifyMessage: {
-      Error: {
-        Title: t('MSG_CREATE_RECOMMEND'),
-        Message: t('MSG_CREATE_RECOMMEND_FAIL'),
-        Popup: true,
-        Type: NotifyType.Error
-      },
-      Info: {
-        Title: t('MSG_CREATE_RECOMMEND'),
-        Message: t('MSG_CREATE_RECOMMEND_SUCCESS'),
-        Popup: true,
-        Type: NotifyType.Success
-      }
-    }
-  }, (g: Recommend, error: boolean) => {
+  sdk.createGoodRecommend({
+    ...target.value
+  }, (error: boolean) => {
     done()
     if (error) {
       return
@@ -142,23 +121,9 @@ const createRecommend = (done: () => void) => {
 }
 
 const updateRecommend = (done: () => void) => {
-  recommend.updateRecommend({
-    ...target.value,
-    NotifyMessage: {
-      Error: {
-        Title: t('MSG_UPDATE_RECOMMEND'),
-        Message: t('MSG_UPDATE_RECOMMEND_FAIL'),
-        Popup: true,
-        Type: NotifyType.Error
-      },
-      Info: {
-        Title: t('MSG_UPDATE_RECOMMEND'),
-        Message: t('MSG_UPDATE_RECOMMEND_SUCCESS'),
-        Popup: true,
-        Type: NotifyType.Success
-      }
-    }
-  }, (g: Recommend, error: boolean) => {
+  sdk.updateGoodRecommend({
+    ...target.value
+  }, (error: boolean) => {
     done()
     if (error) {
       return
@@ -168,101 +133,59 @@ const updateRecommend = (done: () => void) => {
 }
 
 onMounted(() => {
-  if (recommends.value.length === 0) {
-    // getRecommends(0, 500)
+  if (!recommends.value.length) {
+    sdk.getGoodRecommends(0, 0)
   }
 })
 
-const appGoodsColumns = computed(() => [
+const appPowerRentalsColumns = computed(() => [
   {
     name: 'ID',
     label: t('MSG_ID'),
     sortable: true,
-    field: (row: AppGood) => row.ID
+    field: (row: apppowerrental.AppPowerRental) => row.ID
+  },
+  {
+    name: 'EntID',
+    label: t('MSG_ENT_ID'),
+    sortable: true,
+    field: (row: apppowerrental.AppPowerRental) => row.EntID
   },
   {
     name: 'GOODID',
     label: t('MSG_GOODID'),
     sortable: true,
-    field: (row: AppGood) => row.GoodID
+    field: (row: apppowerrental.AppPowerRental) => row.GoodID
   },
   {
     name: 'GOODNAME',
     label: t('MSG_GOODNAME'),
     sortable: true,
-    field: (row: AppGood) => row.GoodName
+    field: (row: apppowerrental.AppPowerRental) => row.GoodName
   },
   {
     name: 'GOODTYPE',
     label: t('MSG_GOOD_TYPE'),
     sortable: true,
-    field: (row: AppGood) => row.GoodType
-  },
-  {
-    name: 'ONLINE',
-    label: t('MSG_ONLINE'),
-    sortable: true,
-    field: (row: AppGood) => row.Online
+    field: (row: apppowerrental.AppPowerRental) => row.GoodType
   },
   {
     name: 'VISIBLE',
     label: t('MSG_VISIBLE'),
     sortable: true,
-    field: (row: AppGood) => row.Visible
-  },
-  {
-    name: 'GOODPRICE',
-    label: t('MSG_GOOD_PRICE'),
-    sortable: true,
-    field: (row: AppGood) => row.Price
-  },
-  {
-    name: 'GOODUNIT',
-    label: t('MSG_GOOD_UNIT'),
-    sortable: true,
-    field: (row: AppGood) => row.Unit
-  },
-  {
-    name: 'GOODTOTAL',
-    label: t('MSG_GOOD_TOTAL'),
-    sortable: true,
-    field: (row: AppGood) => row.Total
-  },
-  {
-    name: 'GOODSOLD',
-    label: t('MSG_GOOD_SOLD'),
-    sortable: true,
-    field: (row: AppGood) => row.Sold
-  },
-  {
-    name: 'GOODLOCKED',
-    label: t('MSG_GOOD_LOCKED'),
-    sortable: true,
-    field: (row: AppGood) => row.Locked
-  },
-  {
-    name: 'GOODINSERVICE',
-    label: t('MSG_GOOD_INSERVICE'),
-    sortable: true,
-    field: (row: AppGood) => row.InService
-  },
-  {
-    name: 'COINNAME',
-    label: t('MSG_COINNAME'),
-    sortable: true,
-    field: (row: AppGood) => row.CoinName
+    field: (row: apppowerrental.AppPowerRental) => row.Visible
   },
   {
     name: 'BENEFITTYPE',
     label: t('MSG_BENEFITTYPE'),
     sortable: true,
-    field: (row: AppGood) => row.BenefitType
+    field: (row: apppowerrental.AppPowerRental) => row.BenefitType
   },
   {
-    name: 'STARTAT',
-    label: t('MSG_STARTAT'),
+    name: 'ServiceStartAt',
+    label: t('MSG_SERVICE_START_AT'),
     sortable: true,
-    field: (row: AppGood) => formatTime(row.StartAt)
+    field: (row: apppowerrental.AppPowerRental) => utils.formatTime(row?.ServiceStartAt)
   }
 ])
-</script> -->
+</script>

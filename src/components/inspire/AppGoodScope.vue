@@ -48,7 +48,7 @@
         <span>{{ $t('MSG_SCOPE') }}</span>
       </q-card-section>
       <q-card-section>
-        <AppGoodSelector v-model:id='target.AppGoodID' :label='"MSG_APP_GOOD"' :appgoods='displayGoods' />
+        <AppGoodSelector v-model:app-good-id='target.AppGoodID' :label='"MSG_APP_GOOD"' :appgoods='displayGoods' />
         <CouponSelector v-model:id='target.CouponID' />
         <q-select
           :options='[
@@ -69,9 +69,8 @@
 
 <script setup lang='ts'>
 import { computed, defineAsyncComponent, onMounted, ref } from 'vue'
-import { appgoodscope, coupon, sdk, utils, appgood, couponscope } from 'src/npoolstore'
+import { appgoodscope, coupon, sdk, utils, couponscope } from 'src/npoolstore'
 import { useI18n } from 'vue-i18n'
-import { getAppGoods } from 'src/api/good'
 
 // eslint-disable-next-line @typescript-eslint/unbound-method
 const { t } = useI18n({ useScope: 'global' })
@@ -121,11 +120,10 @@ const onDelete = () => {
   })
 }
 
-const appGood = appgood.useAppGoodStore()
-const appGoods = computed(() => appGood.goods(undefined))
+const appPowerRentals = computed(() => sdk.appPowerRentals.value)
 
 const goodID = ref('')
-const displayGoods = computed(() => appGoods.value?.filter((el) => el.GoodID === goodID.value))
+const displayGoods = computed(() => appPowerRentals.value?.filter((el) => el.GoodID === goodID.value))
 
 const _couponscope = couponscope.useScopeStore()
 const couponscopes = computed(() => _couponscope.scopes())
@@ -137,8 +135,8 @@ onMounted(() => {
   if (!couponscopes.value?.length) {
     sdk.getScopes(0, 0)
   }
-  if (appGoods.value.length === 0) {
-    getAppGoods(0, 100)
+  if (!appPowerRentals.value.length) {
+    sdk.getAppPowerRentals(0, 0)
   }
 })
 
