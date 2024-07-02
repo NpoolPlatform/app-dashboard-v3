@@ -7,12 +7,71 @@
     :columns='appPowerRentalsColumns'
     row-key='ID'
     :rows-per-page-options='[100]'
+    @row-click='(evt, row, index) => onRowClick(row as apppowerrental.AppPowerRental)'
   />
+  <q-dialog
+    v-model='showing'
+    @hide='onMenuHide'
+    position='right'
+  >
+    <q-card class='popup-menu'>
+      <q-card-section>
+        <q-input v-model='target.GoodName' :label='$t("MSG_GOOD_NAME")' />
+        <q-input v-model='target.UnitPrice' :label='$t("MSG_UNIT_PRICE")' type='number' :min='0' />
+        <q-input v-model='target.MinOrderAmount' :label='$t("MSG_MIN_ORDER_AMOUNT")' type='number' :min='0' />
+        <q-input v-model='target.MaxOrderAmount' :label='$t("MSG_MAX_ORDER_AMOUNT")' type='number' :min='0' />
+        <q-input v-model='target.MaxUserAmount' :label='$t("MSG_MAX_USER_AMOUNT")' type='number' :min='0' />
+        <q-input v-model='target.MinOrderDurationSeconds' :label='$t("MSG_MIN_ORDER_DURATION_SECONDS")' type='number' :min='0' />
+        <q-input v-model='target.MaxOrderDurationSeconds' :label='$t("MSG_MAX_ORDER_DURATION_SECONDS")' type='number' :min='0' />
+      </q-card-section>
+      <q-card-section>
+        <q-select
+          :options='goodbase.CancelModes'
+          v-model='target.CancelMode'
+          :label='$t("MSG_CANCEL_MODE")'
+        />
+        <q-input
+          v-model.number='target.CancelableBeforeStartSeconds'
+          :label='$t("MSG_CANCELLABLE_BEFORE_START")'
+          type='number'
+          :min='0'
+          suffix='h'
+          :disable='!sdk.appPowerRentalCancelable(target.EntID)'
+        />
+      </q-card-section>
+      <q-card-section>
+        <q-input v-model.number='target.DisplayIndex' :label='$t("MSG_DISPLAY_INDEX")' type='number' :min='0' />
+        <q-input v-model='target.Banner' :label='$t("MSG_BANNER")' />
+        <q-input v-model='target.ProductPage' :label='$t("MSG_PRODUCT_PAGE")' />
+      </q-card-section>
+      <q-card-section>
+        <div v-if='!updating'>
+          <DateTimePicker v-model:date='target.SaleStartAt' label='MSG_SALE_START_AT' />
+        </div>
+        <div v-if='!updating'>
+          <DateTimePicker v-model:date='target.SaleEndAt' label='MSG_SALE_END_AT' />
+        </div>
+        <DateTimePicker v-model:date='target.ServiceStartAt' label='MSG_SERVICE_START_AT' />
+      </q-card-section>
+      <q-card-section>
+        <div><q-toggle dense v-model='target.EnableSetCommission' :label='$t("MSG_ENABLE_SET_COMMISSION")' /></div>
+        <div><q-toggle dense v-model='target.AppGoodPurchasable' :label='$t("MSG_ENABLE_PURCHASE")' /></div>
+        <div><q-toggle dense v-model='target.EnableProductPage' :label='$t("MSG_ENABLE_PRODUCT_PAGE")' /></div>
+        <div><q-toggle dense v-model='target.Visible' :label='$t("MSG_VISIBLE")' /></div>
+        <div><q-toggle dense v-model='target.AppGoodOnline' :label='$t("MSG_ONLINE")' /></div>
+        <div><q-toggle dense v-model='target.PackageWithRequireds' :label='$t("MSG_PACKAGE_WITH_REQUIREDS")' /></div>
+      </q-card-section>
+      <q-item class='row'>
+        <q-btn class='btn round' :loading='submitting' :label='$t("MSG_SUBMIT")' @click='onSubmit' />
+        <q-btn class='btn alt round' :label='$t("MSG_CANCEL")' @click='onCancel' />
+      </q-item>
+    </q-card>
+  </q-dialog>
 </template>
 
 <script setup lang='ts'>
-import { appgood, sdk, utils, goodbase } from 'src/npoolstore'
-import { computed, defineProps, toRef } from 'vue'
+import { appgood, sdk, utils, goodbase, apppowerrental } from 'src/npoolstore'
+import { computed, defineProps, ref, toRef } from 'vue'
 import { useI18n } from 'vue-i18n'
 
 // eslint-disable-next-line @typescript-eslint/unbound-method
@@ -36,6 +95,36 @@ const appPowerRentals = computed(() => sdk.appPowerRentals.value.filter((el) => 
   }
   return display
 }))
+
+const showing = ref(false)
+const updating = ref(false)
+const submitting = ref(false)
+const target = ref({} as apppowerrental.AppPowerRental)
+
+const onRowClick = (row: apppowerrental.AppPowerRental) => {
+  showing.value = true
+  updating.value = true
+  target.value = row
+}
+
+const onMenuHide = () => {
+  showing.value = false
+  submitting.value = false
+  target.value = {} as apppowerrental.AppPowerRental
+}
+
+const onCancel = () => {
+  onMenuHide()
+}
+
+const onSubmit = () => {
+  submitting.value = true
+  sdk.updateAppPowerRental(target.value, (error: boolean) => {
+    submitting.value = false
+    if (error) return
+    onMenuHide()
+  })
+}
 
 const appPowerRentalsColumns = computed(() => [
   {
