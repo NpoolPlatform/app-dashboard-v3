@@ -48,13 +48,23 @@
 </template>
 
 <script setup lang='ts'>
-import { order, utils, sdk } from 'src/npoolstore'
-import { onMounted, ref, computed } from 'vue'
+import { order, utils, sdk, goodbase } from 'src/npoolstore'
+import { onMounted, ref, computed, defineProps, toRef } from 'vue'
 import { saveAs } from 'file-saver'
 import { useI18n } from 'vue-i18n'
+import { OrderType } from 'src/npoolstore/order/const'
 
 // eslint-disable-next-line @typescript-eslint/unbound-method
 const { t } = useI18n({ useScope: 'global' })
+
+interface Props {
+  goodTypes?: Array<goodbase.GoodType>
+  orderTypes?: Array<OrderType>
+}
+
+const props = defineProps<Props>()
+const goodTypes = toRef(props, 'goodTypes')
+const orderTypes = toRef(props, 'orderTypes')
 
 const username = ref('')
 const start = ref('')
@@ -75,6 +85,14 @@ const displayOrders = computed(() => orders.value.filter((el) => {
   }
   if (selectedOrderType.value !== 'ALL') {
     display = display && (el.OrderType === selectedOrderType.value)
+  }
+  if (goodTypes.value !== undefined && goodTypes.value?.length > 0) {
+    const index = goodTypes.value.findIndex((gl) => gl === el.GoodType)
+    display = display && (index > -1)
+  }
+  if (orderTypes.value !== undefined && orderTypes.value?.length > 0) {
+    const index = orderTypes.value.findIndex((gl) => gl === el.OrderType)
+    display = display && (index > -1)
   }
   display = display && (el.Simulate === showSimulate.value)
   return display
@@ -160,6 +178,12 @@ const columns = computed(() => [
     label: t('MSG_GOOD_NAME'),
     sortable: true,
     field: (row: order.Order) => row.GoodName
+  },
+  {
+    name: 'GoodType',
+    label: t('MSG_GOOD_TYPE'),
+    sortable: true,
+    field: (row: order.Order) => row.GoodType
   },
   {
     name: 'Type',

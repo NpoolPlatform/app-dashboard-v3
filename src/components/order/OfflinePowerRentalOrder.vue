@@ -9,7 +9,10 @@
       @click='onCreate'
     />
   </div>
-  <OrderPage />
+  <OrderPage
+    :good-types='[goodbase.GoodType.PowerRental, goodbase.GoodType.LegacyPowerRental]'
+    :order-types='[OrderType.Offline]'
+  />
   <q-dialog
     v-model='showing'
     @hide='onMenuHide'
@@ -23,7 +26,7 @@
         <q-item-label>{{ $t('MSG_TOTAL') }}: {{ appPowerRental?.GoodTotal }}</q-item-label>
         <q-item-label>{{ $t('MSG_LOCKED') }}: {{ appPowerRental?.AppGoodLocked }}</q-item-label>
         <q-item-label>{{ $t('MSG_IN_SERVICE') }}: {{ appPowerRental?.AppGoodInService }}</q-item-label>
-        <AppGoodSelector v-model:id='target.AppGoodID' />
+        <AppGoodSelector v-model:app-good-id='target.AppGoodID' />
         <AppUserSelector v-model:id='target.TargetUserID' />
         <q-input
           v-model='target.Units' :label='$t("MSG_PURCHASE_UNITS")' type='number' min='1'
@@ -56,9 +59,10 @@
 </template>
 
 <script setup lang='ts'>
-import { order, powerrentalorder, notify, sdk } from 'src/npoolstore'
+import { order, powerrentalorder, notify, sdk, goodbase } from 'src/npoolstore'
 import { defineAsyncComponent, computed, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
+import { OrderType } from 'src/npoolstore/order/const'
 
 // eslint-disable-next-line @typescript-eslint/unbound-method
 const { t } = useI18n({ useScope: 'global' })
