@@ -29,19 +29,19 @@
 import { computed, onMounted, ref } from 'vue'
 import { appgoodcomment, sdk, utils } from 'src/npoolstore'
 
-const comments = computed(() => sdk.comments.value)
+const comments = ref(sdk.goodComments.value)
 const selectedComments = ref([] as Array<appgoodcomment.Comment>)
 
 const onDelete = () => {
   if (selectedComments.value?.length > 0) {
-    sdk.deleteComment(selectedComments.value?.[0], () => {
+    sdk.deleteUserGoodComment(selectedComments.value?.[0], () => {
       // TODO
     })
   }
 }
 onMounted(() => {
   if (!comments.value?.length) {
-    sdk.getComments(0, 0)
+    sdk.getGoodComments(0, 0)
   }
 })
 
