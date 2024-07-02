@@ -10,7 +10,6 @@
     selection='single'
     v-model:selected='selectedAppPowerRental'
   />
-
   <q-table
     dense
     flat
@@ -18,6 +17,8 @@
     :rows='recommends'
     row-key='ID'
     :rows-per-page-options='[100]'
+    selection='single'
+    v-model:selected='selectedRecommend'
     @row-click='(evt, row, index) => onRowClick(row as appgoodrecommend.Recommend)'
   >
     <template #top-right>
@@ -29,6 +30,14 @@
           :label='$t("MSG_CREATE")'
           :disable='selectedAppPowerRental.length === 0'
           @click='onCreate'
+        />
+        <q-btn
+          dense
+          flat
+          class='btn flat'
+          :label='$t("MSG_DELETE")'
+          :disable='selectedRecommend.length === 0'
+          @click='onDelete'
         />
       </div>
     </template>
@@ -129,6 +138,13 @@ const updateRecommend = (done: () => void) => {
       return
     }
     onMenuHide()
+  })
+}
+
+const selectedRecommend = ref([] as Array<appgoodrecommend.Recommend>)
+const onDelete = () => {
+  sdk.deleteGoodRecommend(selectedRecommend.value?.[0], () => {
+    // TODO
   })
 }
 

@@ -53,7 +53,7 @@ const target = ref('')
 const emit = defineEmits<{(e: 'update:date', target: number): void}>()
 
 watch(target, () => {
-  if (target.value.length === 0) {
+  if (target.value?.length === 0) {
     emit('update:date', 0)
     return
   }

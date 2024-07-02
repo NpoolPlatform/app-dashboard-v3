@@ -7,6 +7,8 @@
     row-key='ID'
     :columns='columns'
     :rows-per-page-options='[100]'
+    selection='single'
+    v-model:selected='selectedTopMost'
     @row-click='(evt, row, index) => onRowClick(row as topmost.TopMost)'
   >
     <template #top-right>
@@ -33,20 +35,8 @@
       <q-card-section>
         <q-input v-model='target.Title' :label='$t("MSG_TITLE")' />
         <q-input v-model='target.Message' :label='$t("MSG_MESSAGE")' />
-        <q-select :options='goodbase.GoodTypeMostTypes' :disable='updating' v-model='target.TopMostType' :label='$t("MSG_TOPMOST_TYPE")' />
-      </q-card-section>
-      <q-card-section>
-        <q-select
-          label='MSG_POSTERS'
-          filled
-          v-model='target.Posters'
-          use-input
-          use-chips
-          multiple
-          hide-dropdown-icon
-          input-debounce='0'
-          new-value-mode='add'
-        />
+        <q-input v-model='target.TargetUrl' :label='$t("MSG_TARGET_URL")' />
+        <q-select :options='goodbase.GoodTopMostTypes' :disable='updating' v-model='target.TopMostType' :label='$t("MSG_TOPMOST_TYPE")' />
       </q-card-section>
       <q-card-section>
         <div> <DateTimePicker v-model:date='target.StartAt' label='MSG_START_AT' /></div>
@@ -58,7 +48,9 @@
       </q-item>
     </q-card>
   </q-dialog>
+  <TopMostPoster />
   <TopMostGood />
+  <TopMostGoodPoster />
 </template>
 
 <script setup lang='ts'>
@@ -67,7 +59,9 @@ import { topmost, sdk, utils, goodbase } from 'src/npoolstore'
 
 const LoadingButton = defineAsyncComponent(() => import('src/components/button/LoadingButton.vue'))
 const DateTimePicker = defineAsyncComponent(() => import('src/components/date/DateTimePicker.vue'))
+const TopMostPoster = defineAsyncComponent(() => import('src/components/good/TopMostPoster.vue'))
 const TopMostGood = defineAsyncComponent(() => import('src/components/good/TopMostGood.vue'))
+const TopMostGoodPoster = defineAsyncComponent(() => import('src/components/good/TopMostGoodPoster.vue'))
 
 const topMosts = computed(() => sdk.topMosts.value)
 const target = ref({} as topmost.TopMost)
@@ -111,6 +105,8 @@ const onSubmit = (done: () => void) => {
   }
 }
 
+const selectedTopMost = ref([] as Array<topmost.TopMost>)
+
 onMounted(() => {
   if (!topMosts.value?.length) {
     sdk.getTopMosts(0, 0)
@@ -129,6 +125,12 @@ const columns = computed(() => [
     label: 'MSG_ENT_ID',
     sortable: true,
     field: (row: topmost.TopMost) => row.EntID
+  },
+  {
+    name: 'AppID',
+    label: 'MSG_APP_ID',
+    sortable: true,
+    field: (row: topmost.TopMost) => row.AppID
   },
   {
     name: 'AppID',

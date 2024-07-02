@@ -2,12 +2,12 @@
   <q-table
     dense
     flat
-    :title='$t("MSG_TOPMOST_GOODS")'
-    :rows='topMostGoods'
+    :title='$t("MSG_TOPMOST_GOOD_POSTER")'
+    :rows='topMostGoodPosters'
     row-key='ID'
     :columns='columns'
     :rows-per-page-options='[100]'
-    @row-click='(evt, row, index) => onRowClick(row as topmostgood.TopMostGood)'
+    @row-click='(evt, row, index) => onRowClick(row as topmostgoodposter.Poster)'
   >
     <template #top-right>
       <div class='row indent flat'>
@@ -28,15 +28,12 @@
   >
     <q-card class='popup-menu'>
       <q-card-section>
-        <span>{{ $t('MSG_TOPMOST_GOOD') }}</span>
+        <span>{{ $t('MSG_TOPMOST') }}</span>
       </q-card-section>
       <q-card-section>
-        <AppGoodSelector :label='$t("MSG_APP_GOOD")' v-if='!updating' v-model:app-good-id='target.AppGoodID' />
-        <TopMostSelector :label='$t("MSG_TOP_MOST")' v-if='!updating' v-model:id='target.TopMostID' />
-      </q-card-section>
-      <q-card-section>
-        <q-input v-model='target.UnitPrice' :label='$t("MSG_UNIT_PRICE")' />
-        <q-input v-model.number='target.DisplayIndex' :label='$t("MSG_DISPLAY_INDEX")' />
+        <TopMostSelector v-model:id='target.TopMostID' v-if='!updating' :label='$t("MSG_TOP_MOST")' />
+        <q-input v-model='target.Poster' :label='$t("MSG_POSTER")' />
+        <q-input v-model.number='target.Index' :label='$t("MSG_INDEX")' />
       </q-card-section>
       <q-item class='row'>
         <LoadingButton loading :label='$t("MSG_SUBMIT")' @click='onSubmit' />
@@ -45,17 +42,15 @@
     </q-card>
   </q-dialog>
 </template>
-
 <script setup lang='ts'>
 import { computed, defineAsyncComponent, onMounted, ref } from 'vue'
-import { topmostgood, sdk, utils } from 'src/npoolstore'
+import { topmostgoodposter, sdk, utils } from 'src/npoolstore'
 
 const LoadingButton = defineAsyncComponent(() => import('src/components/button/LoadingButton.vue'))
-const AppGoodSelector = defineAsyncComponent(() => import('src/components/good/AppGoodSelector.vue'))
 const TopMostSelector = defineAsyncComponent(() => import('src/components/good/TopMostSelector.vue'))
 
-const topMostGoods = computed(() => sdk.topMostGoods.value)
-const target = ref({} as topmostgood.TopMostGood)
+const topMostGoodPosters = computed(() => sdk.topMostGoodPosters.value)
+const target = ref({} as topmostgoodposter.Poster)
 
 const showing = ref(false)
 const updating = ref(false)
@@ -65,14 +60,14 @@ const onCreate = () => {
   showing.value = true
 }
 
-const onRowClick = (row: topmostgood.TopMostGood) => {
+const onRowClick = (row: topmostgoodposter.Poster) => {
   updating.value = true
   showing.value = true
   target.value = { ...row }
 }
 
 const onMenuHide = () => {
-  target.value = {} as topmostgood.TopMostGood
+  target.value = {} as topmostgoodposter.Poster
   showing.value = false
 }
 
@@ -82,27 +77,23 @@ const onCancel = () => {
 
 const onSubmit = (done: () => void) => {
   if (updating.value) {
-    sdk.updateTopMostGood(target.value, (error: boolean) => {
+    sdk.updateTopMostGoodPoster(target.value, (error: boolean) => {
       done()
-      if (error) {
-        return
-      }
+      if (error) return
       onMenuHide()
     })
   } else {
-    sdk.createTopMostGood(target.value, (error: boolean) => {
+    sdk.createTopMostGoodPoster(target.value, (error: boolean) => {
       done()
-      if (error) {
-        return
-      }
+      if (error) return
       onMenuHide()
     })
   }
 }
 
 onMounted(() => {
-  if (!topMostGoods.value?.length) {
-    sdk.getTopMostGoods(0, 0)
+  if (!topMostGoodPosters.value?.length) {
+    sdk.getTopMostGoodPosters(0, 0)
   }
 })
 
@@ -111,61 +102,49 @@ const columns = computed(() => [
     name: 'ID',
     label: 'MSG_ID',
     sortable: true,
-    field: (row: topmostgood.TopMostGood) => row.ID
+    field: (row: topmostgoodposter.Poster) => row.ID
   },
   {
     name: 'EntID',
     label: 'MSG_ENT_ID',
     sortable: true,
-    field: (row: topmostgood.TopMostGood) => row.EntID
+    field: (row: topmostgoodposter.Poster) => row.EntID
   },
   {
     name: 'AppID',
     label: 'MSG_APP_ID',
     sortable: true,
-    field: (row: topmostgood.TopMostGood) => row.AppID
-  },
-  {
-    name: 'AppGoodID',
-    label: 'MSG_APP_GOOD_ID',
-    sortable: true,
-    field: (row: topmostgood.TopMostGood) => row.AppGoodID
+    field: (row: topmostgoodposter.Poster) => row.AppID
   },
   {
     name: 'AppGoodName',
     label: 'MSG_APP_GOOD_NAME',
     sortable: true,
-    field: (row: topmostgood.TopMostGood) => row.AppGoodName
-  },
-  {
-    name: 'TopMostTitle',
-    label: 'MSG_TOP_MOST_TITLE',
-    sortable: true,
-    field: (row: topmostgood.TopMostGood) => row.TopMostTitle
+    field: (row: topmostgoodposter.Poster) => row.AppGoodName
   },
   {
     name: 'TopMostType',
     label: 'MSG_TOP_MOST_TYPE',
     sortable: true,
-    field: (row: topmostgood.TopMostGood) => row.TopMostType
+    field: (row: topmostgoodposter.Poster) => row.TopMostType
   },
   {
-    name: 'UnitPrice',
-    label: 'MSG_UNIT_PRICE',
+    name: 'Poster',
+    label: 'MSG_POSTER',
     sortable: true,
-    field: (row: topmostgood.TopMostGood) => row.UnitPrice
+    field: (row: topmostgoodposter.Poster) => row.Poster
   },
   {
-    name: 'Posters',
-    label: 'MSG_POSTERS',
+    name: 'Index',
+    label: 'MSG_INDEX',
     sortable: true,
-    field: (row: topmostgood.TopMostGood) => row.Posters?.join(',')
+    field: (row: topmostgoodposter.Poster) => row.Index
   },
   {
     name: 'CreatedAt',
     label: 'MSG_CREATED_AT',
     sortable: true,
-    field: (row: topmostgood.TopMostGood) => utils.formatTime(row.CreatedAt)
+    field: (row: topmostgoodposter.Poster) => utils.formatTime(row.CreatedAt, undefined)
   }
 ])
 </script>
