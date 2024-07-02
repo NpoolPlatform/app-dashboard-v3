@@ -16,7 +16,7 @@
   >
     <q-card class='popup-menu'>
       <q-card-section>
-        <span>{{ $t('MSG_APP_DEFAULT_GOOD') }}</span>
+        <span>{{ $t('MSG_APP_FEE') }}</span>
       </q-card-section>
       <q-card-section>
         <q-input v-model='target.AppGoodName' :label='$t("MSG_NAME")' />
