@@ -9,7 +9,9 @@
       @click='onCreate'
     />
   </div>
-  <OrderPage />
+  <OrderPage
+    :good-types='[goodbase.GoodType.TechniqueServiceFee, goodbase.GoodType.ElectricityFee]'
+  />
   <q-dialog
     v-model='showing'
     @hide='onMenuHide'
