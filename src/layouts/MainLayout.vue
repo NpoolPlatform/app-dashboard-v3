@@ -45,6 +45,7 @@ watch(trigger, () => {
 })
 
 const appPowerRentals = computed(() => sdk.appPowerRentals.value)
+const appGoods = sdk.appGoods
 
 onMounted(() => {
   notification.$subscribe((_, state) => {
@@ -57,6 +58,9 @@ onMounted(() => {
   })
   if (!appPowerRentals.value.length) {
     sdk.getAppPowerRentals(0, 0)
+  }
+  if (!appGoods.value?.length) {
+    sdk.getAppGoods(0, 0)
   }
 })
 </script>
