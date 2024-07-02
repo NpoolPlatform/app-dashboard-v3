@@ -29,7 +29,7 @@
 import { computed, onMounted, ref } from 'vue'
 import { appgoodcomment, sdk, utils } from 'src/npoolstore'
 
-const comments = ref(sdk.goodComments.value)
+const comments = sdk.goodComments
 const selectedComments = ref([] as Array<appgoodcomment.Comment>)
 
 const onDelete = () => {
