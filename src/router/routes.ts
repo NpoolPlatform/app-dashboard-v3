@@ -122,7 +122,7 @@ const routes: RouteRecordRaw[] = [
         }
       }, {
         path: 'app/goods',
-        component: () => import('pages/good/AppPowerRental.vue'),
+        component: () => import('pages/good/Good.vue'),
         meta: {
           ShowHeaderAnnouncement: true,
           ShowMainHeader: false,

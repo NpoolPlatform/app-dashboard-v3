@@ -22,8 +22,8 @@
         <q-input v-model='target.AppGoodName' :label='$t("MSG_NAME")' />
         <q-input v-model='target.Banner' :label='$t("MSG_BANNER")' />
         <q-input v-model='target.ProductPage' :label='$t("MSG_PRODUCT_PAGE")' />
-        <q-input v-model.number='target.UnitValue' :label='$t("MSG_UNIT_VALUE")' />
-        <q-input v-model.number='target.MinOrderDurationSeconds' :label='$t("MSG_MIN_ORDER_DURATION_SECONDS")' />
+        <q-input v-model.number='target.UnitValue' type='number' :label='$t("MSG_UNIT_VALUE")' />
+        <q-input v-model.number='target.MinOrderDurationSeconds' type='number' :label='$t("MSG_MIN_ORDER_DURATION_SECONDS")' />
         <q-select :options='goodbase.CancelModes' v-model='target.CancelMode' :label='$t("MSG_CANCEL_MODE")' />
       </q-card-section>
       <q-item class='row'>
@@ -112,6 +112,12 @@ const appFeesColumns = computed(() => [
     label: t('MSG_DURATION_DISPLAY_TYPE'),
     sortable: true,
     field: (row: appfee.AppFee) => row.DurationDisplayType
+  },
+  {
+    name: 'MinOrderDurationSeconds',
+    label: t('MSG_MIN_ORDER_DURATION_SECONDS'),
+    sortable: true,
+    field: (row: appfee.AppFee) => row.MinOrderDurationSeconds
   },
   {
     name: 'CreatedAt',
