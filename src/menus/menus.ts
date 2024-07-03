@@ -198,15 +198,6 @@ const MainDrawerMenus = [
       children: []
     } as MenuItem, {
       menuId: uid(),
-      label: '促销',
-      caption: '管理促销信息',
-      icon: 'perm_identity',
-      target: '/app/good/promotions',
-      level: 1,
-      sectionBegin: false,
-      children: []
-    } as MenuItem, {
-      menuId: uid(),
       label: '置顶',
       caption: '管理置顶商品',
       icon: 'perm_identity',
