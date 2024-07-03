@@ -26,7 +26,7 @@
         <q-item-label>{{ $t('MSG_TOTAL') }}: {{ appPowerRental?.GoodTotal }}</q-item-label>
         <q-item-label>{{ $t('MSG_LOCKED') }}: {{ appPowerRental?.AppGoodLocked }}</q-item-label>
         <q-item-label>{{ $t('MSG_IN_SERVICE') }}: {{ appPowerRental?.AppGoodInService }}</q-item-label>
-        <AppGoodSelector v-model:app-good-id='target.AppGoodID' />
+        <AppPowerRentalSelector v-model:app-good-id='target.AppGoodID' />
         <AppUserSelector v-model:id='target.TargetUserID' />
         <q-input
           v-model='target.Units' :label='$t("MSG_PURCHASE_UNITS")' type='number' min='1'
@@ -68,7 +68,7 @@ import { OrderType } from 'src/npoolstore/order/const'
 const { t } = useI18n({ useScope: 'global' })
 
 const OrderPage = defineAsyncComponent(() => import('src/components/billing/Order.vue'))
-const AppGoodSelector = defineAsyncComponent(() => import('src/components/good/AppGoodSelector.vue'))
+const AppPowerRentalSelector = defineAsyncComponent(() => import('src/components/good/AppPowerRentalSelector.vue'))
 const AppUserSelector = defineAsyncComponent(() => import('src/components/user/AppUserSelector.vue'))
 
 const appPowerRental = computed(() => sdk.appPowerRental(target.value?.AppGoodID))
