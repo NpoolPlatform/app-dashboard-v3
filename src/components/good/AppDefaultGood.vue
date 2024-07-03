@@ -41,7 +41,7 @@
         <span>{{ $t('MSG_APP_DEFAULT_GOOD') }}</span>
       </q-card-section>
       <q-card-section>
-        <AppGoodSelector
+        <AppPowerRentalSelector
           v-model:app-good-id='target.AppGoodID'
           :label='$t("MSG_APP_GOODS")'
           :good-types='[
@@ -78,7 +78,7 @@ import { useI18n } from 'vue-i18n'
 const { t } = useI18n({ useScope: 'global' })
 
 const CoinPicker = defineAsyncComponent(() => import('src/components/coin/CoinPicker.vue'))
-const AppGoodSelector = defineAsyncComponent(() => import('src/components/good/AppGoodSelector.vue'))
+const AppPowerRentalSelector = defineAsyncComponent(() => import('src/components/good/AppPowerRentalSelector.vue'))
 
 const appDefaultGoods = sdk.appDefaultGoods
 

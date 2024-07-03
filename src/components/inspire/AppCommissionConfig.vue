@@ -95,7 +95,7 @@
         <span>{{ updating2 ? $t('MSG_UPDATE_APP_GOOD_COMMISSION_SETTING') : $t('MSG_CREATE_APP_GOOD_COMMISSION_SETTING') }}</span>
       </q-card-section>
       <q-card-section v-if='!updating2'>
-        <AppGoodSelector v-model:id='target2.AppGoodID' />
+        <AppPowerRentalSelector v-model:id='target2.AppGoodID' />
       </q-card-section>
       <q-card-section v-if='!updating2'>
         <q-select :options='appcommissionconfig.SettleTypes' v-model='target2.SettleType' :label='$t("MSG_COMMISSION_SETTLE_TYPE")' />
@@ -127,7 +127,7 @@ const { t } = useI18n({ useScope: 'global' })
 
 const LoadingButton = defineAsyncComponent(() => import('src/components/button/LoadingButton.vue'))
 const DateTimePicker = defineAsyncComponent(() => import('src/components/date/DateTimePicker.vue'))
-const AppGoodSelector = defineAsyncComponent(() => import('src/components/good/AppGoodSelector.vue'))
+const AppPowerRentalSelector = defineAsyncComponent(() => import('src/components/good/AppPowerRentalSelector.vue'))
 
 const _commconfig = appcommissionconfig.useAppCommissionConfigStore()
 const commconfigs = computed(() => _commconfig.appCommissionConfigs())
