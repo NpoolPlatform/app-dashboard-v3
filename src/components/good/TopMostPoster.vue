@@ -28,12 +28,12 @@
   >
     <q-card class='popup-menu'>
       <q-card-section>
-        <span>{{ $t('MSG_TOPMOST') }}</span>
+        <span>{{ $t('MSG_TOPMOST_POSTER') }}</span>
       </q-card-section>
       <q-card-section>
+        <TopMostSelector v-model:id='target.TopMostID' v-if='!updating' :label='$t("MSG_TOP_MOST")' />
         <q-input v-model='target.Poster' :label='$t("MSG_POSTER")' />
         <q-input v-model.number='target.Index' :label='$t("MSG_INDEX")' />
-        <TopMostSelector v-model:id='target.TopMostID' v-if='!updating' :label='$t("MSG_TOP_MOST")' />
       </q-card-section>
       <q-item class='row'>
         <LoadingButton loading :label='$t("MSG_SUBMIT")' @click='onSubmit' />

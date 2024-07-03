@@ -28,10 +28,10 @@
   >
     <q-card class='popup-menu'>
       <q-card-section>
-        <span>{{ $t('MSG_TOPMOST') }}</span>
+        <span>{{ $t('MSG_TOPMOST_GOOD_POSTER') }}</span>
       </q-card-section>
       <q-card-section>
-        <TopMostSelector v-model:id='target.TopMostID' v-if='!updating' :label='$t("MSG_TOP_MOST")' />
+        <TopMostGoodSelector v-model:id='target.TopMostGoodID' v-if='!updating' :label='$t("MSG_TOP_MOST_GOOD")' />
         <q-input v-model='target.Poster' :label='$t("MSG_POSTER")' />
         <q-input v-model.number='target.Index' :label='$t("MSG_INDEX")' />
       </q-card-section>
@@ -47,7 +47,7 @@ import { computed, defineAsyncComponent, onMounted, ref } from 'vue'
 import { topmostgoodposter, sdk, utils } from 'src/npoolstore'
 
 const LoadingButton = defineAsyncComponent(() => import('src/components/button/LoadingButton.vue'))
-const TopMostSelector = defineAsyncComponent(() => import('src/components/good/TopMostSelector.vue'))
+const TopMostGoodSelector = defineAsyncComponent(() => import('src/components/good/TopMostGoodSelector.vue'))
 
 const topMostGoodPosters = computed(() => sdk.topMostGoodPosters.value)
 const target = ref({} as topmostgoodposter.Poster)
