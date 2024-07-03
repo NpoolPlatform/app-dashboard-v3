@@ -4,7 +4,6 @@
 
 <script setup lang='ts'>
 import { defineAsyncComponent } from 'vue'
-
 const Good = defineAsyncComponent(() => import('src/components/good/Good.vue'))
 
 </script>
