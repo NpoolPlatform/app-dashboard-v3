@@ -1,0 +1,65 @@
+<template>
+  <q-select
+    v-model='target'
+    :options='displayAppGoods'
+    options-selected-class='text-deep-orange'
+    emit-value
+    label='MSG_APP_GOODS'
+    map-options
+    use-input
+    @update:model-value='onUpdate'
+    @filter='onFilter'
+  >
+    <template #option='scope'>
+      <q-item v-bind='scope.itemProps'>
+        <q-item-section>
+          <q-item-label>{{ scope.opt.label }}</q-item-label>
+        </q-item-section>
+      </q-item>
+    </template>
+  </q-select>
+</template>
+<script setup lang='ts'>
+import { computed, defineEmits, defineProps, toRef, ref, onMounted } from 'vue'
+import { sdk } from 'src/npoolstore'
+
+interface Props {
+  appGoodId: string | undefined
+}
+
+const props = defineProps<Props>()
+const appGoodId = toRef(props, 'appGoodId')
+const target = ref(appGoodId.value)
+
+const appGoods = sdk.appGoods
+const goods = computed(() => Array.from(appGoods.value, (el) => {
+  return {
+    value: el.EntID,
+    label: `${el.GoodName} | ${el.EntID} | ${el.GoodType}`
+  }
+}))
+const displayAppGoods = ref(goods.value)
+
+const emit = defineEmits<{(e: 'update:appGoodId', appGoodId: string | undefined): void}>()
+const onUpdate = () => {
+  emit('update:appGoodId', target.value)
+}
+
+const onFilter = (val: string, doneFn: (callbackFn: () => void) => void) => {
+  doneFn(() => {
+    displayAppGoods.value = goods.value.filter((el) => {
+      return el?.label?.toLowerCase().includes(val.toLowerCase())
+    })
+  })
+}
+
+onMounted(() => {
+  prepare()
+})
+
+const prepare = () => {
+  if (appGoods.value.length === 0) {
+    sdk.getAppGoods(0, 0)
+  }
+}
+</script>
