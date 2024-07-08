@@ -42,7 +42,7 @@
         <q-input v-model='target.Content' :label='$t("MSG_CONTENT")' />
         <AppLanguagePicker v-model:id='target.LangID' :updating='updating' label='MSG_LANGUAGE' />
         <q-select
-          :options='notifbase.NotifTypes'
+          :options='[notifbase.NotifType.Broadcast, notifbase.NotifType.Multicast]'
           v-model='target.AnnouncementType'
           :label='$t("MSG_ANNOUNCEMENT_TYPE")'
         />
