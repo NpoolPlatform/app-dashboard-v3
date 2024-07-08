@@ -38,7 +38,7 @@
         <span>{{ $t('MSG_COUPON') }}</span>
       </q-card-section>
       <q-card-section>
-        <AppUserSelector v-model:id='target.UserID' />
+        <AppUserSelector v-model:user-id='target.UserID' />
         <CouponSelector v-model:id='target.CouponID' />
       </q-card-section>
       <q-item class='row'>

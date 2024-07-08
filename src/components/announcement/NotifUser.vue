@@ -51,7 +51,7 @@
           v-model='target.EventType'
           :label='$t("MSG_USED_FOR")'
         />
-        <AppUserSelector v-model:id='target.UserID' label='MSG_USER' />
+        <AppUserSelector v-model:user-id='target.UserID' label='MSG_USER' />
       </q-card-section>
       <q-item class='row'>
         <LoadingButton loading :label='$t("MSG_SUBMIT")' @click='onSubmit' />

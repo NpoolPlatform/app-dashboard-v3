@@ -6,31 +6,9 @@
     :rows='recommends'
     row-key='ID'
     :rows-per-page-options='[100]'
-    selection='single'
-    v-model:selected='selectedRecommend'
     :columns='columns'
     @row-click='(evt, row, index) => onRowClick(row as appgoodrecommend.Recommend)'
-  >
-    <template #top-right>
-      <div class='row indent flat'>
-        <q-btn
-          dense
-          flat
-          class='btn flat'
-          :label='$t("MSG_CREATE")'
-          @click='onCreate'
-        />
-        <q-btn
-          dense
-          flat
-          class='btn flat'
-          :label='$t("MSG_DELETE")'
-          :disable='selectedRecommend.length === 0'
-          @click='onDelete'
-        />
-      </div>
-    </template>
-  </q-table>
+  />
   <q-dialog
     v-model='showing'
     @hide='onMenuHide'
@@ -41,17 +19,16 @@
         <span> {{ target.GoodName }}</span>
       </q-card-section>
       <q-card-section>
-        <q-input v-model='target.Message' :label='$t("MSG_MESSAGE")' />
-      </q-card-section>
-      <q-card-section>
-        <q-input v-model='target.RecommendIndex' :label='$t("MSG_RECOMMEND_INDEX")' />
-      </q-card-section>
-      <q-card-section>
-        <AppGoodSelector
-          v-model:app-good-id='target.AppGoodID'
-          :label='$t("MSG_APP_GOODS")'
-          :disable='updating'
+        <AppUserSelector
+          v-model:user-id='target.RecommenderID'
+          :label='$t("MSG_RECOMMENDER_ID")'
         />
+      </q-card-section>
+      <q-card-section>
+        <q-input v-model='target.HideReason' :label='$t("MSG_HIDE_REASON")' />
+      </q-card-section>
+      <q-card-section>
+        <div><q-toggle dense v-model='target.Hide' :label='$t("MSG_HIDE")' /></div>
       </q-card-section>
       <q-item class='row'>
         <LoadingButton loading :label='$t("MSG_SUBMIT")' @click='onSubmit' />
@@ -75,7 +52,7 @@ import { useI18n } from 'vue-i18n'
 const { t } = useI18n({ useScope: 'global' })
 
 const LoadingButton = defineAsyncComponent(() => import('src/components/button/LoadingButton.vue'))
-const AppGoodSelector = defineAsyncComponent(() => import('src/components/good/AppGoodSelector.vue'))
+const AppUserSelector = defineAsyncComponent(() => import('src/components/user/AppUserSelector.vue'))
 
 const recommends = sdk.goodRecommends
 const target = ref({} as appgoodrecommend.Recommend)
@@ -83,6 +60,7 @@ const target = ref({} as appgoodrecommend.Recommend)
 const showing = ref(false)
 const updating = ref(false)
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const onCreate = () => {
   updating.value = false
   showing.value = true
@@ -104,11 +82,11 @@ const onMenuHide = () => {
 }
 
 const onSubmit = (done: () => void) => {
-  updating.value ? updateRecommend(done) : createRecommend(done)
+  updateUserRecommend(done)
 }
 
-const createRecommend = (done: () => void) => {
-  sdk.createGoodRecommend({
+const updateUserRecommend = (done: () => void) => {
+  sdk.updateUserGoodRecommend({
     ...target.value
   }, (error: boolean) => {
     done()
@@ -116,25 +94,6 @@ const createRecommend = (done: () => void) => {
       return
     }
     onMenuHide()
-  })
-}
-
-const updateRecommend = (done: () => void) => {
-  sdk.updateGoodRecommend({
-    ...target.value
-  }, (error: boolean) => {
-    done()
-    if (error) {
-      return
-    }
-    onMenuHide()
-  })
-}
-
-const selectedRecommend = ref([] as Array<appgoodrecommend.Recommend>)
-const onDelete = () => {
-  sdk.deleteGoodRecommend(selectedRecommend.value?.[0], () => {
-    // TODO
   })
 }
 
@@ -180,6 +139,18 @@ const columns = computed(() => [
     label: t('MSG_INDEX'),
     sortable: true,
     field: (row: appgoodrecommend.Recommend) => row.RecommendIndex
+  },
+  {
+    name: 'RecommenderID',
+    label: t('MSG_RECOMMENDER_ID'),
+    sortable: true,
+    field: (row: appgoodrecommend.Recommend) => row.RecommenderID
+  },
+  {
+    name: 'EmailAddress',
+    label: t('MSG_EMAIL_ADDRESS'),
+    sortable: true,
+    field: (row: appgoodrecommend.Recommend) => row.EmailAddress
   },
   {
     name: 'Hide',

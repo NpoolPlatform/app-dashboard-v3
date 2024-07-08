@@ -47,7 +47,7 @@
       </q-card-section>
       <q-card-section>
         <AnnouncementPicker v-model:id='target.AnnouncementID' label='MSG_ANNOUNCEMENT' />
-        <AppUserSelector v-if='targetAnnouncement?.AnnouncementType === notifbase.NotifType.Multicast' v-model:id='target.UserID' label='MSG_USER' />
+        <AppUserSelector v-if='targetAnnouncement?.AnnouncementType === notifbase.NotifType.Multicast' v-model:user-id='target.UserID' label='MSG_USER' />
       </q-card-section>
       <q-item class='row'>
         <LoadingButton loading :label='$t("MSG_SUBMIT")' @click='onSubmit' />
