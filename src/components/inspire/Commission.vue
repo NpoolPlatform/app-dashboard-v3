@@ -51,8 +51,8 @@
         <span>{{ updating ? $t('MSG_UPDATE_COMMISSION_SETTING') : $t('MSG_CREATE_COMMISSION_SETTING') }}</span>
       </q-card-section>
       <q-card-section v-if='!updating'>
-        <AppGoodSelector v-model:id='target.AppGoodID' :label='$t("MSG_GOOD")' />
-        <AppUserSelector v-model:id='target.UserID' />
+        <AppGoodSelector v-model:app-good-id='target.AppGoodID' :label='$t("MSG_GOOD")' />
+        <AppUserSelector v-model:user-id='target.UserID' />
         <q-select :options='commission.SettleTypes' v-model='target.SettleType' :label='$t("MSG_COMMISSION_SETTLE_TYPE")' />
         <q-select :options='commission.SettleAmountTypes' v-model='target.SettleAmountType' :label='$t("MSG_COMMISSION_SETTLE_AMOUNT_TYPE")' />
         <q-select :options='commission.SettleIntervals' v-model='target.SettleInterval' :label='$t("MSG_COMMISSION_SETTLE_INTERVAL")' />
@@ -82,8 +82,8 @@
         <span>{{ $t('MSG_CLONE_COMMISSION_SETTING') }}</span>
       </q-card-section>
       <q-card-section>
-        <AppGoodSelector v-model:id='cloneCommission.FromAppGoodID' :label='$t("MSG_FROM_GOOD")' />
-        <AppGoodSelector v-model:id='cloneCommission.ToAppGoodID' :label='$t("MSG_TO_GOOD")' />
+        <AppGoodSelector v-model:app-good-id='cloneCommission.FromAppGoodID' :label='$t("MSG_FROM_GOOD")' />
+        <AppGoodSelector v-model:app-good-id='cloneCommission.ToAppGoodID' :label='$t("MSG_TO_GOOD")' />
         <q-input type='number' v-model='cloneCommission.ScalePercent' :label='$t("MSG_SCALE")' suffix='%' />
       </q-card-section>
       <q-item class='row'>
@@ -104,7 +104,7 @@
         <span>{{ $t('MSG_RECONCILE') }}</span>
       </q-card-section>
       <q-card-section>
-        <AppGoodSelector v-model:id='reconcileRequest.AppGoodID' :label='$t("MSG_GOOD")' />
+        <AppGoodSelector v-model:app-good-id='reconcileRequest.AppGoodID' :label='$t("MSG_GOOD")' />
       </q-card-section>
       <q-item class='row'>
         <LoadingButton loading :label='$t("MSG_RECONCILE")' @click='onSubmit2' />

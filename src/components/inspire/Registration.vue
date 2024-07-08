@@ -46,7 +46,7 @@
         <!-- <AppUserSelector v-model:id='target.UserID' /> -->
       </q-card-section>
       <q-card-section>
-        <AppUserSelector v-model:id='target.InviterID' :label='$t("MSG_INVITER")' />
+        <AppUserSelector v-model:user-id='target.InviterID' :label='$t("MSG_INVITER")' />
       </q-card-section>
       <q-item class='row'>
         <LoadingButton loading :label='$t("MSG_SUBMIT")' @click='onSubmit' />

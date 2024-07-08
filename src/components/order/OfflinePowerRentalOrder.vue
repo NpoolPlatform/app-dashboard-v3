@@ -27,7 +27,7 @@
         <q-item-label>{{ $t('MSG_LOCKED') }}: {{ appPowerRental?.AppGoodLocked }}</q-item-label>
         <q-item-label>{{ $t('MSG_IN_SERVICE') }}: {{ appPowerRental?.AppGoodInService }}</q-item-label>
         <AppGoodSelector v-model:app-good-id='target.AppGoodID' />
-        <AppUserSelector v-model:id='target.TargetUserID' />
+        <AppUserSelector v-model:user-id='target.TargetUserID' />
         <q-input
           v-model='target.Units' :label='$t("MSG_PURCHASE_UNITS")' type='number' min='1'
           :max='maxPurchaseUnits'

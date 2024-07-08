@@ -25,14 +25,14 @@ import { user, sdk } from 'src/npoolstore'
 import { computed, defineEmits, defineProps, toRef, ref, onMounted } from 'vue'
 
 interface Props {
-  id: string
+  userId: string
   updating?: boolean
 }
 
 const props = defineProps<Props>()
-const id = toRef(props, 'id')
+const userId = toRef(props, 'userId')
 const updating = toRef(props, 'updating')
-const target = ref(id.value)
+const target = ref(userId.value)
 
 const _user = user.useUserStore()
 const users = computed(() => Array.from(_user.appUsers(undefined)).map((el) => {
@@ -51,9 +51,9 @@ const onFilter = (val: string, doneFn: (callbackFn: () => void) => void) => {
   })
 }
 
-const emit = defineEmits<{(e: 'update:id', id: string): void}>()
+const emit = defineEmits<{(e: 'update:userId', userId: string): void}>()
 const onUpdate = () => {
-  emit('update:id', target.value)
+  emit('update:userId', target.value)
 }
 
 onMounted(() => {
