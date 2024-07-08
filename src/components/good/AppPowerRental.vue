@@ -71,7 +71,7 @@
 </template>
 
 <script setup lang='ts'>
-import { appgood, sdk, utils, goodbase, apppowerrental } from 'src/npoolstore'
+import { sdk, utils, goodbase, apppowerrental } from 'src/npoolstore'
 import { computed, defineProps, ref, toRef } from 'vue'
 import { useI18n } from 'vue-i18n'
 
@@ -132,55 +132,61 @@ const appPowerRentalsColumns = computed(() => [
     name: 'ID',
     label: t('MSG_ID'),
     sortable: true,
-    field: (row: appgood.Good) => row.ID
+    field: (row: apppowerrental.AppPowerRental) => row.ID
   },
   {
     name: 'EntID',
     label: t('MSG_ENT_ID'),
     sortable: true,
-    field: (row: appgood.Good) => row.EntID
+    field: (row: apppowerrental.AppPowerRental) => row.EntID
   },
   {
-    name: 'GOODID',
-    label: t('MSG_GOODID'),
+    name: 'GoodID',
+    label: t('MSG_GOOD_ID'),
     sortable: true,
-    field: (row: appgood.Good) => row.GoodID
+    field: (row: apppowerrental.AppPowerRental) => row.GoodID
   },
   {
-    name: 'GOODNAME',
-    label: t('MSG_GOODNAME'),
+    name: 'AppGoodID',
+    label: t('MSG_APP_GOOD_ID'),
     sortable: true,
-    field: (row: appgood.Good) => row.GoodName
+    field: (row: apppowerrental.AppPowerRental) => row.AppGoodID
   },
   {
-    name: 'GOODTYPE',
+    name: 'AppGoodName',
+    label: t('MSG_APP_GOOD_NAME'),
+    sortable: true,
+    field: (row: apppowerrental.AppPowerRental) => row.AppGoodName
+  },
+  {
+    name: 'GoodType',
     label: t('MSG_GOOD_TYPE'),
     sortable: true,
-    field: (row: appgood.Good) => row.GoodType
+    field: (row: apppowerrental.AppPowerRental) => row.GoodType
   },
   {
-    name: 'VISIBLE',
+    name: 'Visible',
     label: t('MSG_VISIBLE'),
     sortable: true,
-    field: (row: appgood.Good) => row.Visible
+    field: (row: apppowerrental.AppPowerRental) => row.Visible
   },
   {
-    name: 'BENEFITTYPE',
-    label: t('MSG_BENEFITTYPE'),
+    name: 'BenefitType',
+    label: t('MSG_BENEFIT_TYPE'),
     sortable: true,
-    field: (row: appgood.Good) => row.BenefitType
+    field: (row: apppowerrental.AppPowerRental) => row.BenefitType
   },
   {
     name: 'ServiceStartAt',
     label: t('MSG_SERVICE_START_AT'),
     sortable: true,
-    field: (row: appgood.Good) => utils.formatTime(row?.ServiceStartAt)
+    field: (row: apppowerrental.AppPowerRental) => utils.formatTime(row?.ServiceStartAt)
   },
   {
     name: 'CreatedAt',
     label: t('MSG_CREATED_AT'),
     sortable: true,
-    field: (row: appgood.Good) => utils.formatTime(row?.CreatedAt)
+    field: (row: apppowerrental.AppPowerRental) => utils.formatTime(row?.CreatedAt)
   }
 ])
 </script>

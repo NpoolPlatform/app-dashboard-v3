@@ -21,18 +21,20 @@
   </q-select>
 </template>
 <script setup lang='ts'>
-import { computed, defineEmits, defineProps, toRef, ref, onMounted } from 'vue'
+import { computed, defineEmits, defineProps, toRef, ref, onMounted, watch } from 'vue'
 import { sdk, goodbase } from 'src/npoolstore'
 
 interface Props {
   appGoodId: string | undefined
   goodTypes?: Array<goodbase.GoodType>
   disable?: boolean
+  requiredAppGoodIds: Array<string>
 }
 
 const props = defineProps<Props>()
 const appGoodId = toRef(props, 'appGoodId')
 const goodTypes = toRef(props, 'goodTypes')
+const requiredAppGoodIds = toRef(props, 'requiredAppGoodIds')
 const disable = toRef(props, 'disable')
 
 const target = ref(appGoodId.value)
@@ -41,6 +43,10 @@ const appGoods = computed(() => sdk.appGoods.value.filter((el) => {
   let display = true
   if (goodTypes.value !== undefined && goodTypes.value?.length > 0) {
     const index = goodTypes.value.findIndex((gl) => gl === el.GoodType)
+    display = display && (index > -1)
+  }
+  if (requiredAppGoodIds.value !== undefined) {
+    const index = requiredAppGoodIds.value.findIndex((gl) => gl === el.EntID)
     display = display && (index > -1)
   }
   return display
@@ -66,6 +72,10 @@ const onFilter = (val: string, doneFn: (callbackFn: () => void) => void) => {
     })
   })
 }
+
+watch(requiredAppGoodIds, () => {
+  displayAppGoods.value = goods.value
+})
 
 onMounted(() => {
   prepare()

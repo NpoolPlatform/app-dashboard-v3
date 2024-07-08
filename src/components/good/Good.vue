@@ -1,6 +1,6 @@
 <template>
   <AppPowerRental
-    :title='"AppGoods"'
+    :title='"PowerRentals"'
   />
   <AppFee />
 </template>
