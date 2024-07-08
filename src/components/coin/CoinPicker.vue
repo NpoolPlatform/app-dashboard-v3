@@ -45,7 +45,7 @@ const coins = computed(() => {
   if (hiddenDisabledCoins.value) {
     items = coin.coins().filter((el) => !el.Disabled && !el.CoinDisabled)
   }
-  return Array.from(items.filter((el) => !coinTypeIDs.value || coinTypeIDs.value.includes(el.EntID))).map((el) => {
+  return Array.from(items.filter((el) => !coinTypeIDs.value || coinTypeIDs.value.includes(el.CoinTypeID))).map((el) => {
     return {
       value: el.CoinTypeID,
       label: `${el.Name} | ${el.CoinTypeID} | ${el.Unit}`

@@ -43,7 +43,7 @@
         <span> {{ selectedAppGood?.AppGoodName }}</span>
       </q-card-section>
       <q-card-section>
-        <AppPowerRentalSelector v-if='!updating' v-model:app-good-id='target.AppGoodID' />
+        <AppGoodSelector v-if='!updating' v-model:app-good-id='target.AppGoodID' />
         <q-input v-model='target.Description' :label='$t("MSG_DESCRIPTION")' />
       </q-card-section>
       <q-card-section>
@@ -61,7 +61,7 @@
 import { onMounted, ref, computed } from 'vue'
 import { sdk, appgooddescription } from 'src/npoolstore'
 
-import AppPowerRentalSelector from './AppPowerRentalSelector.vue'
+import AppGoodSelector from './AppGoodSelector.vue'
 
 const appGoods = sdk.appGoods
 const descriptions = sdk.goodDescriptions

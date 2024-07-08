@@ -38,17 +38,9 @@
   >
     <q-card class='popup-menu'>
       <q-card-section>
-        <span>{{ $t('MSG_APP_DEFAULT_GOOD') }}</span>
-      </q-card-section>
-      <q-card-section>
-        <AppPowerRentalSelector
+        <AppGoodSelector
           v-model:app-good-id='target.AppGoodID'
           :label='$t("MSG_APP_GOODS")'
-          :good-types='[
-            goodbase.GoodType.PowerRental,
-            goodbase.GoodType.LegacyPowerRental,
-            goodbase.GoodType.FbmCrowdFunding
-          ]'
         />
         <CoinPicker
           v-model:coin-type-id='target.CoinTypeID'
@@ -57,7 +49,7 @@
         />
       </q-card-section>
       <q-item class='row'>
-        <q-btn :loading='submitting' :label='$t("MSG_SUBMIT")' @click='onSubmit' />
+        <q-btn class='btn round' :loading='submitting' :label='$t("MSG_SUBMIT")' @click='onSubmit' />
         <q-btn class='btn round' :label='$t("MSG_CANCEL")' @click='onCancel' />
       </q-item>
     </q-card>
@@ -70,7 +62,7 @@
 </template>
 
 <script setup lang='ts'>
-import { appdefaultgood, utils, sdk, goodbase } from 'src/npoolstore'
+import { appdefaultgood, utils, sdk } from 'src/npoolstore'
 import { computed, defineAsyncComponent, onMounted, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 
@@ -78,7 +70,7 @@ import { useI18n } from 'vue-i18n'
 const { t } = useI18n({ useScope: 'global' })
 
 const CoinPicker = defineAsyncComponent(() => import('src/components/coin/CoinPicker.vue'))
-const AppPowerRentalSelector = defineAsyncComponent(() => import('src/components/good/AppPowerRentalSelector.vue'))
+const AppGoodSelector = defineAsyncComponent(() => import('src/components/good/AppGoodSelector.vue'))
 
 const appDefaultGoods = sdk.appDefaultGoods
 

@@ -48,7 +48,7 @@
         <span>{{ $t('MSG_SCOPE') }}</span>
       </q-card-section>
       <q-card-section>
-        <AppPowerRentalSelector v-model:app-good-id='target.AppGoodID' :label='"MSG_APP_GOOD"' :appgoods='displayGoods' />
+        <AppGoodSelector v-model:app-good-id='target.AppGoodID' :label='"MSG_APP_GOOD"' :appgoods='displayGoods' />
         <CouponSelector v-model:id='target.CouponID' />
         <q-select
           :options='[
@@ -75,7 +75,7 @@ import { useI18n } from 'vue-i18n'
 // eslint-disable-next-line @typescript-eslint/unbound-method
 const { t } = useI18n({ useScope: 'global' })
 
-const AppPowerRentalSelector = defineAsyncComponent(() => import('src/components/good/AppPowerRentalSelector.vue'))
+const AppGoodSelector = defineAsyncComponent(() => import('src/components/good/AppGoodSelector.vue'))
 const LoadingButton = defineAsyncComponent(() => import('src/components/button/LoadingButton.vue'))
 const CouponSelector = defineAsyncComponent(() => import('src/components/inspire/CouponSelector.vue'))
 

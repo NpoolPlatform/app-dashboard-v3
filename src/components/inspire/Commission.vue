@@ -51,7 +51,7 @@
         <span>{{ updating ? $t('MSG_UPDATE_COMMISSION_SETTING') : $t('MSG_CREATE_COMMISSION_SETTING') }}</span>
       </q-card-section>
       <q-card-section v-if='!updating'>
-        <AppPowerRentalSelector v-model:id='target.AppGoodID' :label='$t("MSG_GOOD")' />
+        <AppGoodSelector v-model:id='target.AppGoodID' :label='$t("MSG_GOOD")' />
         <AppUserSelector v-model:id='target.UserID' />
         <q-select :options='commission.SettleTypes' v-model='target.SettleType' :label='$t("MSG_COMMISSION_SETTLE_TYPE")' />
         <q-select :options='commission.SettleAmountTypes' v-model='target.SettleAmountType' :label='$t("MSG_COMMISSION_SETTLE_AMOUNT_TYPE")' />
@@ -82,8 +82,8 @@
         <span>{{ $t('MSG_CLONE_COMMISSION_SETTING') }}</span>
       </q-card-section>
       <q-card-section>
-        <AppPowerRentalSelector v-model:id='cloneCommission.FromAppGoodID' :label='$t("MSG_FROM_GOOD")' />
-        <AppPowerRentalSelector v-model:id='cloneCommission.ToAppGoodID' :label='$t("MSG_TO_GOOD")' />
+        <AppGoodSelector v-model:id='cloneCommission.FromAppGoodID' :label='$t("MSG_FROM_GOOD")' />
+        <AppGoodSelector v-model:id='cloneCommission.ToAppGoodID' :label='$t("MSG_TO_GOOD")' />
         <q-input type='number' v-model='cloneCommission.ScalePercent' :label='$t("MSG_SCALE")' suffix='%' />
       </q-card-section>
       <q-item class='row'>
@@ -104,7 +104,7 @@
         <span>{{ $t('MSG_RECONCILE') }}</span>
       </q-card-section>
       <q-card-section>
-        <AppPowerRentalSelector v-model:id='reconcileRequest.AppGoodID' :label='$t("MSG_GOOD")' />
+        <AppGoodSelector v-model:id='reconcileRequest.AppGoodID' :label='$t("MSG_GOOD")' />
       </q-card-section>
       <q-item class='row'>
         <LoadingButton loading :label='$t("MSG_RECONCILE")' @click='onSubmit2' />
@@ -127,7 +127,7 @@ const { t } = useI18n({ useScope: 'global' })
 
 const LoadingButton = defineAsyncComponent(() => import('src/components/button/LoadingButton.vue'))
 const DateTimePicker = defineAsyncComponent(() => import('src/components/date/DateTimePicker.vue'))
-const AppPowerRentalSelector = defineAsyncComponent(() => import('src/components/good/AppPowerRentalSelector.vue'))
+const AppGoodSelector = defineAsyncComponent(() => import('src/components/good/AppGoodSelector.vue'))
 const AppUserSelector = defineAsyncComponent(() => import('src/components/user/AppUserSelector.vue'))
 
 const _commission = commission.useCommissionStore()
