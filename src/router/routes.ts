@@ -181,6 +181,18 @@ const routes: RouteRecordRaw[] = [
           NeedLogined: true
         }
       }, {
+        path: 'good/malfunctions',
+        component: () => import('pages/good/Malfunction.vue'),
+        meta: {
+          ShowHeaderAnnouncement: true,
+          ShowMainHeader: false,
+          ShowBigLogo: true,
+          ShowFooterTop: true,
+          ShowSignHelper: true,
+          ShowTopTip: false,
+          NeedLogined: true
+        }
+      }, {
         path: 'app/good/defaults',
         component: () => import('pages/good/AppDefaultGood.vue'),
         meta: {
