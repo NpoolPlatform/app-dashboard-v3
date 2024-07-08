@@ -19,11 +19,18 @@
   >
     <q-card class='popup-menu'>
       <q-card-section>
-        <span>{{ $t('MSG_CREATE_OFFLINE_FEE_ORDER') }}</span>
-      </q-card-section>
-      <q-card-section>
-        <AppFeeSelector v-model:app-good-id='target.AppGoodID' />
-        <AppUserSelector v-model:id='target.TargetUserID' />
+        <ParentOrderSelector
+          v-model:parent-order-id='target.ParentOrderID'
+          :order-states='[order.OrderState.PAID, order.OrderState.IN_SERVICE]'
+        />
+        <AppGoodSelector
+          v-model:app-good-id='target.AppGoodID'
+          :good-types='[
+            goodbase.GoodType.ElectricityFee,
+            goodbase.GoodType.TechniqueServiceFee
+          ]'
+        />
+        <AppUserSelector v-model:user-id='target.TargetUserID' />
         <q-input
           v-model='target.DurationSeconds' :label='$t("MSG_DURATIONS")' type='number' min='1'
           :suffix='sdk.durationUnit(appFee?.DurationDisplayType as goodbase.GoodDurationType)'
@@ -40,7 +47,7 @@
         />
       </q-card-section>
       <q-item class='row'>
-        <q-btn :loading='submitting' @click='onSubmit' :label='$t("MSG_SUBMIT")' />
+        <q-btn class='btn round' :loading='submitting' @click='onSubmit' :label='$t("MSG_SUBMIT")' />
         <q-btn class='btn round' :label='$t("MSG_CANCEL")' @click='onCancel' />
       </q-item>
     </q-card>
@@ -57,12 +64,11 @@ import { feeorder, order, sdk, goodbase } from 'src/npoolstore'
 import { defineAsyncComponent, computed, ref } from 'vue'
 
 const OrderPage = defineAsyncComponent(() => import('src/components/billing/Order.vue'))
-const AppFeeSelector = defineAsyncComponent(() => import('src/components/fee/AppFeeSelector.vue'))
+const ParentOrderSelector = defineAsyncComponent(() => import('src/components/order/ParentOrderSelector.vue'))
+const AppGoodSelector = defineAsyncComponent(() => import('src/components/good/AppGoodSelector.vue'))
 const AppUserSelector = defineAsyncComponent(() => import('src/components/user/AppUserSelector.vue'))
 
 const appFee = computed(() => sdk.appFee(target.value?.AppGoodID))
-
-// TODO: support select parent order
 
 const target = ref({
   OrderType: order.OrderType.Offline

@@ -110,7 +110,7 @@ const onSubmit = () => {
 }
 
 const onDelete = () => {
-  sdk.adminDeleteGoodLabel(selectedLabel.value, () => {
+  sdk.deleteGoodLabel(selectedLabel.value, () => {
     selectedLabels.value = []
   })
 }
