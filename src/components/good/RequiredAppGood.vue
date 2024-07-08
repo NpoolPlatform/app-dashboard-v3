@@ -60,6 +60,7 @@ import { onMounted, ref, defineAsyncComponent } from 'vue'
 import { sdk, requiredappgood } from 'src/npoolstore'
 
 const AppGoodSelector = defineAsyncComponent(() => import('src/components/good/AppGoodSelector.vue'))
+// const Required = defineAsyncComponent(() => import('src/components/good/Required.vue'))
 
 const requireds = sdk.requiredAppGoods
 const selectedRequireds = ref([] as Array<requiredappgood.Required>)
