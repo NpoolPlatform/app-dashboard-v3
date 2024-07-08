@@ -207,6 +207,15 @@ const MainDrawerMenus = [
       children: []
     } as MenuItem, {
       menuId: uid(),
+      label: '商品依赖',
+      caption: '管理商品依赖关系',
+      icon: 'perm_identity',
+      target: '/app/good/requireds',
+      level: 1,
+      sectionBegin: false,
+      children: []
+    } as MenuItem, {
+      menuId: uid(),
       label: '默认商品',
       caption: '设置币种默认商品',
       icon: 'perm_identity',

@@ -6,6 +6,7 @@
     emit-value
     :label='$t("MSG_SELECT_ORDER")'
     map-options
+    use-input
     @filter='onFilter'
     @update:model-value='onUpdate'
   >
@@ -26,12 +27,14 @@ interface Props {
   orderId: string
   orderTypes?: order.OrderType[]
   goodTypes?: Array<goodbase.GoodType>
+  orderStates?: Array<order.OrderState>
 }
 
 const props = defineProps<Props>()
 const orderId = toRef(props, 'orderId')
 const orderTypes = toRef(props, 'orderTypes')
 const goodTypes = toRef(props, 'goodTypes')
+const orderStates = toRef(props, 'orderStates')
 
 const target = ref(orderId.value)
 
@@ -43,6 +46,10 @@ const orders = computed(() => sdk.orders.value.filter((el) => {
   }
   if (goodTypes.value !== undefined && goodTypes.value?.length > 0) {
     const index = goodTypes.value.findIndex((gl) => gl === el.GoodType)
+    display = display && (index > -1)
+  }
+  if (orderStates.value !== undefined && orderStates.value?.length > 0) {
+    const index = orderStates.value.findIndex((gl) => gl === el.OrderState)
     display = display && (index > -1)
   }
   return display

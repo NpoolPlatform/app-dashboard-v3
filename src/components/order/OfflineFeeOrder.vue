@@ -19,18 +19,21 @@
   >
     <q-card class='popup-menu'>
       <q-card-section>
-        <ParentOrderSelector
-          v-model:parent-order-id='target.ParentOrderID'
+        <q-item-label>{{ $t('MSG_USER_EMAIL_ADDRESS') }}: {{ appOrder?.EmailAddress }}</q-item-label>
+      </q-card-section>
+      <q-card-section>
+        <OrderSelector
+          v-model:order-id='target.ParentOrderID'
           :order-states='[order.OrderState.PAID, order.OrderState.IN_SERVICE]'
+          :good-types='[
+            goodbase.GoodType.PowerRental,
+            goodbase.GoodType.LegacyPowerRental
+          ]'
         />
         <AppGoodSelector
           v-model:app-good-id='target.AppGoodID'
-          :good-types='[
-            goodbase.GoodType.ElectricityFee,
-            goodbase.GoodType.TechniqueServiceFee
-          ]'
+          :required-app-good-ids='requiredAppGoodIds'
         />
-        <AppUserSelector v-model:user-id='target.TargetUserID' />
         <q-input
           v-model='target.DurationSeconds' :label='$t("MSG_DURATIONS")' type='number' min='1'
           :suffix='sdk.durationUnit(appFee?.DurationDisplayType as goodbase.GoodDurationType)'
@@ -61,18 +64,17 @@
 
 <script setup lang='ts'>
 import { feeorder, order, sdk, goodbase } from 'src/npoolstore'
-import { defineAsyncComponent, computed, ref } from 'vue'
+import { defineAsyncComponent, computed, ref, onMounted, watch } from 'vue'
 
 const OrderPage = defineAsyncComponent(() => import('src/components/billing/Order.vue'))
-const ParentOrderSelector = defineAsyncComponent(() => import('src/components/order/ParentOrderSelector.vue'))
+const OrderSelector = defineAsyncComponent(() => import('src/components/order/OrderSelector.vue'))
 const AppGoodSelector = defineAsyncComponent(() => import('src/components/good/AppGoodSelector.vue'))
-const AppUserSelector = defineAsyncComponent(() => import('src/components/user/AppUserSelector.vue'))
 
+const appFees = computed(() => sdk.appFees.value)
 const appFee = computed(() => sdk.appFee(target.value?.AppGoodID))
+const appOrder = computed(() => sdk.appOrder(target.value.ParentOrderID))
 
-const target = ref({
-  OrderType: order.OrderType.Offline
-} as feeorder.CreateUserFeeOrderRequest)
+const target = ref({ OrderType: order.OrderType.Offline } as feeorder.CreateUserFeeOrderRequest)
 
 const showing = ref(false)
 const submitting = ref(false)
@@ -94,10 +96,33 @@ const onCancel = () => {
 
 const onSubmit = () => {
   submitting.value = true
+  target.value.TargetUserID = appOrder.value?.UserID as string
+  target.value.DurationSeconds = target.value.DurationSeconds * sdk.durationUnitSeconds(appFee?.value?.DurationDisplayType as goodbase.GoodDurationType)
   sdk.createUserFeeOrder(target.value, (error: boolean) => {
     submitting.value = false
     if (error) return
     onMenuHide()
   })
 }
+
+const requireds = sdk.requiredAppGoods
+const requiredAppGoodIds = ref([] as Array<string>)
+
+watch(() => appOrder.value?.AppGoodID, () => {
+  requiredAppGoodIds.value = [] as Array<string>
+  requireds.value.forEach((el) => {
+    if (appOrder.value?.AppGoodID === el.MainAppGoodID) {
+      requiredAppGoodIds.value.push(el.RequiredAppGoodID)
+    }
+  })
+})
+
+onMounted(() => {
+  if (!requireds.value.length) {
+    sdk.getRequiredAppGoods(0, 0)
+  }
+  if (!appFees.value.length) {
+    sdk.getAppFees(0, 0)
+  }
+})
 </script>
