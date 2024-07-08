@@ -19,12 +19,6 @@
         <span> {{ target.GoodName }}</span>
       </q-card-section>
       <q-card-section>
-        <AppUserSelector
-          v-model:user-id='target.RecommenderID'
-          :label='$t("MSG_RECOMMENDER_ID")'
-        />
-      </q-card-section>
-      <q-card-section>
         <q-input v-model='target.HideReason' :label='$t("MSG_HIDE_REASON")' />
       </q-card-section>
       <q-card-section>
@@ -52,7 +46,6 @@ import { useI18n } from 'vue-i18n'
 const { t } = useI18n({ useScope: 'global' })
 
 const LoadingButton = defineAsyncComponent(() => import('src/components/button/LoadingButton.vue'))
-const AppUserSelector = defineAsyncComponent(() => import('src/components/user/AppUserSelector.vue'))
 
 const recommends = sdk.goodRecommends
 const target = ref({} as appgoodrecommend.Recommend)

@@ -45,10 +45,7 @@
   >
     <q-card class='popup-menu'>
       <q-card-section>
-        <span>{{ $t('MSG_SCOPE') }}</span>
-      </q-card-section>
-      <q-card-section>
-        <AppGoodSelector v-model:app-good-id='target.AppGoodID' :label='"MSG_APP_GOOD"' :appgoods='displayGoods' />
+        <AppGoodSelector v-model:app-good-id='target.AppGoodID' :label='"MSG_APP_GOOD"' />
         <CouponSelector v-model:id='target.CouponID' />
         <q-select
           :options='[
@@ -121,9 +118,6 @@ const onDelete = () => {
 }
 
 const appPowerRentals = computed(() => sdk.appPowerRentals.value)
-
-const goodID = ref('')
-const displayGoods = computed(() => appPowerRentals.value?.filter((el) => el.GoodID === goodID.value))
 
 const _couponscope = couponscope.useScopeStore()
 const couponscopes = computed(() => _couponscope.scopes())
