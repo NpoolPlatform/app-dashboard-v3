@@ -57,7 +57,7 @@
           basetypes.EventType.Signup ||
           basetypes.EventType.AffiliateSignup'
       >
-        <AppPowerRentalSelector v-model:id='target.GoodID' v-if='!updating' :label='$t("MSG_GOOD")' />
+        <AppGoodSelector v-model:id='target.GoodID' v-if='!updating' :label='$t("MSG_GOOD")' />
         <CouponSelectors v-model:ids='couponIDs' />
       </q-card-section>
       <q-card-section>
@@ -88,7 +88,7 @@ import { useI18n } from 'vue-i18n'
 const { t } = useI18n({ useScope: 'global' })
 
 const LoadingButton = defineAsyncComponent(() => import('src/components/button/LoadingButton.vue'))
-const AppPowerRentalSelector = defineAsyncComponent(() => import('src/components/good/AppPowerRentalSelector.vue'))
+const AppGoodSelector = defineAsyncComponent(() => import('src/components/good/AppGoodSelector.vue'))
 const CouponSelectors = defineAsyncComponent(() => import('src/components/inspire/CouponSelectors.vue'))
 
 const _coupon = coupon.useCouponStore()

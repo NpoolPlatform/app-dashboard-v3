@@ -39,7 +39,7 @@
   >
     <q-card class='popup-menu'>
       <q-card-section>
-        <AppPowerRentalSelector v-if='!updating' v-model:app-good-id='target.AppGoodID' :label='$t("MSG_APP_GOOD")' />
+        <AppGoodSelector v-if='!updating' v-model:app-good-id='target.AppGoodID' :label='$t("MSG_APP_GOOD")' />
         <q-input v-model='target.Color' :label='$t("MSG_COLOR")' />
         <q-input v-model.number='target.Index' :label='$t("MSG_INDEX")' type='number' :min='0' />
       </q-card-section>
@@ -59,7 +59,7 @@ import { useI18n } from 'vue-i18n'
 // eslint-disable-next-line @typescript-eslint/unbound-method
 const { t } = useI18n({ useScope: 'global' })
 
-const AppPowerRentalSelector = defineAsyncComponent(() => import('src/components/good/AppPowerRentalSelector.vue'))
+const AppGoodSelector = defineAsyncComponent(() => import('src/components/good/AppGoodSelector.vue'))
 
 const goodDisplayColors = computed(() => sdk.goodDisplayColors.value)
 const selectedName = ref([] as Array<appgooddisplaycolor.DisplayColor>)
