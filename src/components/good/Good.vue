@@ -3,13 +3,11 @@
     :title='"AppGoods"'
   />
   <AppFee />
-  <MalFunction />
 </template>
 <script setup lang='ts'>
 import { defineAsyncComponent } from 'vue'
 
 const AppPowerRental = defineAsyncComponent(() => import('src/components/good/AppPowerRental.vue'))
 const AppFee = defineAsyncComponent(() => import('src/components/good/AppFee.vue'))
-const MalFunction = defineAsyncComponent(() => import('src/components/good/MalFunction.vue'))
 
 </script>

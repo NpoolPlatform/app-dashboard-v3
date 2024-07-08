@@ -216,6 +216,15 @@ const MainDrawerMenus = [
       children: []
     } as MenuItem, {
       menuId: uid(),
+      label: '商品故障管理',
+      caption: '添加与编辑商品故障记录',
+      icon: 'perm_identity',
+      target: '/good/malfunctions',
+      level: 1,
+      sectionBegin: false,
+      children: []
+    } as MenuItem, {
+      menuId: uid(),
       label: '商品描述',
       caption: '创建和编辑商品描述',
       icon: 'perm_identity',
