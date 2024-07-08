@@ -27,14 +27,11 @@
   >
     <q-card class='popup-menu'>
       <q-card-section>
-        <span>{{ $t('MSG_CREATE_COIN') }}</span>
-      </q-card-section>
-      <q-card-section>
-        <CoinPicker v-model:id='target.CoinTypeID' :updating='updating' />
-      </q-card-section>
-      <q-card-section>
         <q-input v-model='target.Title' :label='$t("MSG_TITLE")' />
         <q-input v-model='target.Message' :label='$t("MSG_MESSAGE")' type='textarea' />
+      </q-card-section>
+      <q-card-section>
+        <CoinPicker v-model:coin-type-id='target.CoinTypeID' :updating='updating' />
       </q-card-section>
       <q-card-section>
         <q-select dense :options='appcoindescription.CoinDescriptionUsedFors' v-model='target.UsedFor' :label='$t("MSG_USED_FOR")' />
