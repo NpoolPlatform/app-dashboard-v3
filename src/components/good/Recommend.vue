@@ -2,23 +2,13 @@
   <q-table
     dense
     flat
-    :title='$t("MSG_APP_GOODS")'
-    :rows='appPowerRentals'
-    :columns='appPowerRentalsColumns'
-    row-key='ID'
-    :rows-per-page-options='[100]'
-    selection='single'
-    v-model:selected='selectedAppPowerRental'
-  />
-  <q-table
-    dense
-    flat
     :title='$t("MSG_APP_GOOD_RECOMMENDS")'
     :rows='recommends'
     row-key='ID'
     :rows-per-page-options='[100]'
     selection='single'
     v-model:selected='selectedRecommend'
+    :columns='columns'
     @row-click='(evt, row, index) => onRowClick(row as appgoodrecommend.Recommend)'
   >
     <template #top-right>
@@ -28,7 +18,6 @@
           flat
           class='btn flat'
           :label='$t("MSG_CREATE")'
-          :disable='selectedAppPowerRental.length === 0'
           @click='onCreate'
         />
         <q-btn
@@ -49,16 +38,20 @@
   >
     <q-card class='popup-menu'>
       <q-card-section>
-        <span>{{ $t('MSG_CREATE_RECOMMEND') }}</span>
-      </q-card-section>
-      <q-card-section>
-        <span> {{ updating? target.GoodName : selectedAppPowerRental[0]?.GoodName }}</span>
+        <span> {{ target.GoodName }}</span>
       </q-card-section>
       <q-card-section>
         <q-input v-model='target.Message' :label='$t("MSG_MESSAGE")' />
       </q-card-section>
       <q-card-section>
         <q-input v-model='target.RecommendIndex' :label='$t("MSG_RECOMMEND_INDEX")' />
+      </q-card-section>
+      <q-card-section>
+        <AppGoodSelector
+          v-model:app-good-id='target.AppGoodID'
+          :label='$t("MSG_APP_GOODS")'
+          :disable='updating'
+        />
       </q-card-section>
       <q-item class='row'>
         <LoadingButton loading :label='$t("MSG_SUBMIT")' @click='onSubmit' />
@@ -75,18 +68,16 @@
 
 <script setup lang='ts'>
 import { computed, defineAsyncComponent, onMounted, ref } from 'vue'
+import { sdk, appgoodrecommend, utils } from 'src/npoolstore'
 import { useI18n } from 'vue-i18n'
-import { sdk, utils, apppowerrental, appgoodrecommend } from 'src/npoolstore'
+
 // eslint-disable-next-line @typescript-eslint/unbound-method
 const { t } = useI18n({ useScope: 'global' })
 
 const LoadingButton = defineAsyncComponent(() => import('src/components/button/LoadingButton.vue'))
-
-const appPowerRentals = computed(() => sdk.appPowerRentals.value)
-const selectedAppPowerRental = ref([] as Array<apppowerrental.AppPowerRental>)
+const AppGoodSelector = defineAsyncComponent(() => import('src/components/good/AppGoodSelector.vue'))
 
 const recommends = sdk.goodRecommends
-
 const target = ref({} as appgoodrecommend.Recommend)
 
 const showing = ref(false)
@@ -95,7 +86,6 @@ const updating = ref(false)
 const onCreate = () => {
   updating.value = false
   showing.value = true
-  target.value.AppGoodID = selectedAppPowerRental.value[0]?.AppGoodID
 }
 
 const onRowClick = (row: appgoodrecommend.Recommend) => {
@@ -154,54 +144,66 @@ onMounted(() => {
   }
 })
 
-const appPowerRentalsColumns = computed(() => [
+const columns = computed(() => [
   {
     name: 'ID',
     label: t('MSG_ID'),
     sortable: true,
-    field: (row: apppowerrental.AppPowerRental) => row.ID
+    field: (row: appgoodrecommend.Recommend) => row.ID
   },
   {
     name: 'EntID',
     label: t('MSG_ENT_ID'),
     sortable: true,
-    field: (row: apppowerrental.AppPowerRental) => row.EntID
+    field: (row: appgoodrecommend.Recommend) => row.EntID
   },
   {
-    name: 'GOODID',
-    label: t('MSG_GOODID'),
+    name: 'AppGoodID',
+    label: t('MSG_APP_GOOD_ID'),
     sortable: true,
-    field: (row: apppowerrental.AppPowerRental) => row.GoodID
+    field: (row: appgoodrecommend.Recommend) => row.AppGoodID
   },
   {
-    name: 'GOODNAME',
-    label: t('MSG_GOODNAME'),
+    name: 'GoodName',
+    label: t('MSG_GOOD_NAME'),
     sortable: true,
-    field: (row: apppowerrental.AppPowerRental) => row.GoodName
+    field: (row: appgoodrecommend.Recommend) => row.GoodName
   },
   {
-    name: 'GOODTYPE',
-    label: t('MSG_GOOD_TYPE'),
+    name: 'Message',
+    label: t('MSG_MESSAGE'),
     sortable: true,
-    field: (row: apppowerrental.AppPowerRental) => row.GoodType
+    field: (row: appgoodrecommend.Recommend) => row.Message
   },
   {
-    name: 'VISIBLE',
-    label: t('MSG_VISIBLE'),
+    name: 'RecommendIndex',
+    label: t('MSG_INDEX'),
     sortable: true,
-    field: (row: apppowerrental.AppPowerRental) => row.Visible
+    field: (row: appgoodrecommend.Recommend) => row.RecommendIndex
   },
   {
-    name: 'BENEFITTYPE',
-    label: t('MSG_BENEFITTYPE'),
+    name: 'Hide',
+    label: t('MSG_HIDE'),
     sortable: true,
-    field: (row: apppowerrental.AppPowerRental) => row.BenefitType
+    field: (row: appgoodrecommend.Recommend) => row.Hide
   },
   {
-    name: 'ServiceStartAt',
-    label: t('MSG_SERVICE_START_AT'),
+    name: 'HideReason',
+    label: t('MSG_HIDE_REASON'),
     sortable: true,
-    field: (row: apppowerrental.AppPowerRental) => utils.formatTime(row?.ServiceStartAt)
+    field: (row: appgoodrecommend.Recommend) => row.HideReason
+  },
+  {
+    name: 'CreatedAt',
+    label: t('MSG_CREATED_AT'),
+    sortable: true,
+    field: (row: appgoodrecommend.Recommend) => utils.formatTime(row.CreatedAt)
+  },
+  {
+    name: 'UpdatedAt',
+    label: t('MSG_UPDATED_AT'),
+    sortable: true,
+    field: (row: appgoodrecommend.Recommend) => utils.formatTime(row.UpdatedAt)
   }
 ])
 </script>

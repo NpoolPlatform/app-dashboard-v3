@@ -180,7 +180,7 @@ const MainDrawerMenus = [
     sectionBegin: false,
     children: [{
       menuId: uid(),
-      label: '上下架',
+      label: '商品上下架',
       caption: '价格与上下架管理',
       icon: 'perm_identity',
       target: '/app/goods',
@@ -189,16 +189,7 @@ const MainDrawerMenus = [
       children: []
     } as MenuItem, {
       menuId: uid(),
-      label: '推荐',
-      caption: '添加商品推荐',
-      icon: 'perm_identity',
-      target: '/app/good/recommends',
-      level: 1,
-      sectionBegin: false,
-      children: []
-    } as MenuItem, {
-      menuId: uid(),
-      label: '置顶',
+      label: '商品置顶',
       caption: '管理置顶商品',
       icon: 'perm_identity',
       target: '/app/good/topmosts',
@@ -207,10 +198,10 @@ const MainDrawerMenus = [
       children: []
     } as MenuItem, {
       menuId: uid(),
-      label: '商品评论',
-      caption: '管理商品评论',
+      label: '商品推荐',
+      caption: '添加商品推荐',
       icon: 'perm_identity',
-      target: '/app/good/comments',
+      target: '/app/good/recommends',
       level: 1,
       sectionBegin: false,
       children: []
@@ -256,6 +247,15 @@ const MainDrawerMenus = [
       caption: '管理商品标签',
       icon: 'perm_identity',
       target: '/app/good/labels',
+      level: 1,
+      sectionBegin: false,
+      children: []
+    } as MenuItem, {
+      menuId: uid(),
+      label: '商品评论',
+      caption: '管理商品评论',
+      icon: 'perm_identity',
+      target: '/app/good/comments',
       level: 1,
       sectionBegin: false,
       children: []

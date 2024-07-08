@@ -9,6 +9,7 @@
     use-input
     @update:model-value='onUpdate'
     @filter='onFilter'
+    :disable='disable'
   >
     <template #option='scope'>
       <q-item v-bind='scope.itemProps'>
@@ -26,11 +27,14 @@ import { sdk, goodbase } from 'src/npoolstore'
 interface Props {
   appGoodId: string | undefined
   goodTypes?: Array<goodbase.GoodType>
+  disable?: boolean
 }
 
 const props = defineProps<Props>()
 const appGoodId = toRef(props, 'appGoodId')
 const goodTypes = toRef(props, 'goodTypes')
+const disable = toRef(props, 'disable')
+
 const target = ref(appGoodId.value)
 
 const appGoods = computed(() => sdk.appGoods.value.filter((el) => {
