@@ -217,7 +217,7 @@ const MainDrawerMenus = [
     } as MenuItem, {
       menuId: uid(),
       label: '商品故障管理',
-      caption: '添加与编辑商品故障记录',
+      caption: '查看商品故障记录',
       icon: 'perm_identity',
       target: '/good/malfunctions',
       level: 1,
