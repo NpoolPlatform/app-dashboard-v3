@@ -20,13 +20,16 @@
   >
     <q-card class='popup-menu'>
       <q-card-section>
-        <span>{{ $t('MSG_CREATE_OFFLINE_ORDER') }}</span>
-      </q-card-section>
-      <q-card-section>
         <q-item-label>{{ $t('MSG_TOTAL') }}: {{ appPowerRental?.GoodTotal }}</q-item-label>
         <q-item-label>{{ $t('MSG_LOCKED') }}: {{ appPowerRental?.AppGoodLocked }}</q-item-label>
         <q-item-label>{{ $t('MSG_IN_SERVICE') }}: {{ appPowerRental?.AppGoodInService }}</q-item-label>
-        <AppGoodSelector v-model:app-good-id='target.AppGoodID' />
+        <AppGoodSelector
+          v-model:app-good-id='target.AppGoodID'
+          :good-types='[
+            goodbase.GoodType.PowerRental,
+            goodbase.GoodType.LegacyPowerRental
+          ]'
+        />
         <AppUserSelector v-model:user-id='target.TargetUserID' />
         <q-input
           v-model='target.Units' :label='$t("MSG_PURCHASE_UNITS")' type='number' min='1'
@@ -46,7 +49,7 @@
         />
       </q-card-section>
       <q-item class='row'>
-        <q-btn :loading='submitting' @click='onSubmit' :label='$t("MSG_SUBMIT")' />
+        <q-btn class='btn round' :loading='submitting' @click='onSubmit' :label='$t("MSG_SUBMIT")' />
         <q-btn class='btn round' :label='$t("MSG_CANCEL")' @click='onCancel' />
       </q-item>
     </q-card>
@@ -102,6 +105,7 @@ const onSubmit = () => {
   if (Number(target.value?.Units) > maxPurchaseUnits.value) return
   sdk.createUserPowerRentalOrder({
     ...target.value,
+    AppGoodStockID: appPowerRental.value?.AppGoodStockID as string,
     Message: {
       Error: {
         Title: t('MSG_CREATE_POWERRENTAL_ORDER'),

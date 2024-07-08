@@ -43,7 +43,7 @@
         <span>{{ $t('MSG_UPDATE_COMMISSION_SETTING') }}</span>
       </q-card-section>
       <q-card-section>
-        <!-- <AppUserSelector v-model:id='target.UserID' /> -->
+        <!-- <AppUserSelector v-model:user-id='target.UserID' /> -->
       </q-card-section>
       <q-card-section>
         <AppUserSelector v-model:user-id='target.InviterID' :label='$t("MSG_INVITER")' />
