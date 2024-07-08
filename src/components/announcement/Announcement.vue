@@ -38,17 +38,14 @@
   >
     <q-card class='popup-menu'>
       <q-card-section>
-        <span>{{ $t('MSG_ANNOUNCEMENT') }}</span>
-      </q-card-section>
-      <q-card-section>
         <q-input v-model='target.Title' :label='$t("MSG_TITLE")' />
         <q-input v-model='target.Content' :label='$t("MSG_CONTENT")' />
+        <AppLanguagePicker v-model:id='target.LangID' :updating='updating' label='MSG_LANGUAGE' />
         <q-select
           :options='notifbase.NotifTypes'
           v-model='target.AnnouncementType'
           :label='$t("MSG_ANNOUNCEMENT_TYPE")'
         />
-        <AppLanguagePicker v-model:id='target.LangID' :updating='updating' label='MSG_LANGUAGE' />
         <q-select
           :options='notifbase.NotifChannels'
           v-model='target.Channel'
