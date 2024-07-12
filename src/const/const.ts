@@ -18,7 +18,10 @@ if (window.location.host.includes('.ohhash.npool.top')) {
 if (window.location.host.includes('.lpsb.npool.top')) {
   AppID = '9141b71a-ff6e-4229-8cf5-cc71459e9803'
 }
-if (window.location.host.includes('.epool.tech')) {
+if (window.location.host.includes('.xhash.ai')) {
+  AppID = 'e203d5ec-2ded-11ef-86a0-abe478da2125'
+}
+if (window.location.host.includes('.xhash.npool.top')) {
   AppID = 'e203d5ec-2ded-11ef-86a0-abe478da2125'
 }
 
