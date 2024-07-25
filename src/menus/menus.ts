@@ -223,7 +223,7 @@ const MainDrawerMenus = [
       level: 1,
       sectionBegin: false,
       children: []
-    } as MenuItem, /* {
+    } as MenuItem, {
       menuId: uid(),
       label: '商品故障管理',
       caption: '查看商品故障记录',
@@ -232,7 +232,7 @@ const MainDrawerMenus = [
       level: 1,
       sectionBegin: false,
       children: []
-    } as MenuItem, */ {
+    } as MenuItem, {
       menuId: uid(),
       label: '商品描述',
       caption: '创建和编辑商品描述',
