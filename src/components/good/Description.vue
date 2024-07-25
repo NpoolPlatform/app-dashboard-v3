@@ -95,18 +95,18 @@ const onMenuHide = () => {
 const onSubmit = () => {
   submitting.value = true
   if (updating.value) {
-    sdk.adminUpdateGoodDescription(target.value, () => {
+    sdk.updateGoodDescription(target.value, () => {
       showing.value = false
     })
   } else {
-    sdk.adminCreateGoodDescription(target.value, () => {
+    sdk.createGoodDescription(target.value, () => {
       showing.value = false
     })
   }
 }
 
 const onDelete = () => {
-  sdk.adminDeleteGoodDescription(selectedDescription.value, () => {
+  sdk.deleteGoodDescription(selectedDescription.value, () => {
     selectedDescriptions.value = []
   })
 }
