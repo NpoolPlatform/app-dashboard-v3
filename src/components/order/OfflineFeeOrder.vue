@@ -70,7 +70,7 @@ const OrderPage = defineAsyncComponent(() => import('src/components/billing/Orde
 const OrderSelector = defineAsyncComponent(() => import('src/components/order/OrderSelector.vue'))
 const AppGoodSelector = defineAsyncComponent(() => import('src/components/good/AppGoodSelector.vue'))
 
-const appFees = computed(() => sdk.appFees.value)
+const appFees = computed(() => sdk.appFees.value.sort((a, b) => a.CreatedAt > b.CreatedAt ? -1 : 1))
 const appFee = computed(() => sdk.appFee(target.value?.AppGoodID))
 const appOrder = computed(() => sdk.appOrder(target.value.ParentOrderID))
 
