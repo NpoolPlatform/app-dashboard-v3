@@ -70,7 +70,7 @@ const username = ref('')
 const start = ref('')
 const end = ref('')
 
-const orders = sdk.orders
+const orders = computed(() => sdk.orders.value?.sort((a, b) => a.CreatedAt > b.CreatedAt ? -1 : 1))
 
 const selectedOrderType = ref('ALL')
 const showSimulate = ref(false)

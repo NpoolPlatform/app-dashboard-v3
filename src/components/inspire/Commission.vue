@@ -51,7 +51,7 @@
         <span>{{ updating ? $t('MSG_UPDATE_COMMISSION_SETTING') : $t('MSG_CREATE_COMMISSION_SETTING') }}</span>
       </q-card-section>
       <q-card-section v-if='!updating'>
-        <AppGoodSelector v-model:app-good-id='target.AppGoodID' :label='$t("MSG_GOOD")' />
+        <AppGoodSelector v-model:app-good-id='target.AppGoodID' :label='$t("MSG_APP_GOOD")' />
         <AppUserSelector v-model:user-id='target.UserID' />
         <q-select :options='commission.SettleTypes' v-model='target.SettleType' :label='$t("MSG_COMMISSION_SETTLE_TYPE")' />
         <q-select :options='commission.SettleAmountTypes' v-model='target.SettleAmountType' :label='$t("MSG_COMMISSION_SETTLE_AMOUNT_TYPE")' />
@@ -104,7 +104,7 @@
         <span>{{ $t('MSG_RECONCILE') }}</span>
       </q-card-section>
       <q-card-section>
-        <AppGoodSelector v-model:app-good-id='reconcileRequest.AppGoodID' :label='$t("MSG_GOOD")' />
+        <AppGoodSelector v-model:app-good-id='reconcileRequest.AppGoodID' :label='$t("MSG_APP_GOOD")' />
       </q-card-section>
       <q-item class='row'>
         <LoadingButton loading :label='$t("MSG_RECONCILE")' @click='onSubmit2' />

@@ -57,7 +57,7 @@
           basetypes.EventType.Signup ||
           basetypes.EventType.AffiliateSignup'
       >
-        <AppGoodSelector v-model:app-good-id='target.GoodID' v-if='!updating' :label='$t("MSG_GOOD")' />
+        <AppGoodSelector v-model:app-good-id='target.GoodID' v-if='!updating' :label='$t("MSG_APP_GOOD")' />
         <CouponSelectors v-model:ids='couponIDs' />
       </q-card-section>
       <q-card-section>

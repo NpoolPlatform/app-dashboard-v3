@@ -62,13 +62,9 @@
 </template>
 
 <script setup lang='ts'>
-import { order, powerrentalorder, notify, sdk, goodbase } from 'src/npoolstore'
+import { order, powerrentalorder, sdk, goodbase } from 'src/npoolstore'
 import { defineAsyncComponent, computed, ref } from 'vue'
-import { useI18n } from 'vue-i18n'
 import { OrderType } from 'src/npoolstore/order/const'
-
-// eslint-disable-next-line @typescript-eslint/unbound-method
-const { t } = useI18n({ useScope: 'global' })
 
 const OrderPage = defineAsyncComponent(() => import('src/components/billing/Order.vue'))
 const AppGoodSelector = defineAsyncComponent(() => import('src/components/good/AppGoodSelector.vue'))
@@ -105,16 +101,9 @@ const onSubmit = () => {
   if (Number(target.value?.Units) > maxPurchaseUnits.value) return
   sdk.createUserPowerRentalOrder({
     ...target.value,
-    AppGoodStockID: appPowerRental.value?.AppGoodStockID as string,
-    Message: {
-      Error: {
-        Title: t('MSG_CREATE_POWERRENTAL_ORDER'),
-        Message: t('MSG_CREATE_POWERRENTAL_ORDER_FAIL'),
-        Popup: true,
-        Type: notify.NotifyType.Error
-      }
-    }
-  }, (error: boolean) => {
+    AppGoodStockID: appPowerRental.value?.AppGoodStockID as string
+  }, (error: boolean, row?: powerrentalorder.PowerRentalOrder) => {
+    console.log('resp: ', row)
     if (error) {
       return
     }
