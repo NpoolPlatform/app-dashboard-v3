@@ -142,7 +142,7 @@ const onExport = () => {
   })
 
   const blob = new Blob([orderStr], { type: 'text/plain;charset=utf-8' })
-  const filename = 'procyon' + '-Orders-' +
+  const filename = '-Orders-' +
                    utils.formatTime(new Date().getTime() / 1000) +
                    '.csv'
   saveAs(blob, filename)
