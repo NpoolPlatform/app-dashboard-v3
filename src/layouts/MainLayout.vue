@@ -44,7 +44,7 @@ watch(trigger, () => {
   }
 })
 
-const appPowerRentals = computed(() => sdk.appPowerRentals.value)
+const appPowerRentals = computed(() => sdk.appPowerRental.appPowerRentals.value)
 const appGoods = sdk.appGoods
 
 onMounted(() => {
@@ -57,7 +57,7 @@ onMounted(() => {
     })
   })
   if (!appPowerRentals.value.length) {
-    sdk.getAppPowerRentals(0, 0)
+    sdk.appPowerRental.getAppPowerRentals(0, 0)
   }
   if (!appGoods.value?.length) {
     sdk.getAppGoods(0, 0)

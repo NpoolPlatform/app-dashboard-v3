@@ -117,7 +117,7 @@ const onDelete = () => {
   })
 }
 
-const appPowerRentals = computed(() => sdk.appPowerRentals.value)
+const appPowerRentals = computed(() => sdk.appPowerRental.appPowerRentals.value)
 
 const _couponscope = couponscope.useScopeStore()
 const couponscopes = computed(() => _couponscope.scopes())
@@ -130,7 +130,7 @@ onMounted(() => {
     sdk.getScopes(0, 0)
   }
   if (!appPowerRentals.value.length) {
-    sdk.getAppPowerRentals(0, 0)
+    sdk.appPowerRental.getAppPowerRentals(0, 0)
   }
 })
 
