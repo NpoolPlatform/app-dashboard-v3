@@ -5,7 +5,7 @@
     :options='displayUsers'
     options-selected-class='text-deep-orange'
     emit-value
-    label='MSG_USERS'
+    label='MSG_USER'
     map-options
     @update:model-value='onUpdate'
     use-input

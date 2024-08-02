@@ -4,7 +4,7 @@
     :options='displayAppGoods'
     options-selected-class='text-deep-orange'
     emit-value
-    label='MSG_APP_GOODS'
+    label='MSG_APP_GOOD'
     map-options
     use-input
     @update:model-value='onUpdate'
