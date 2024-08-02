@@ -1,10 +1,10 @@
 <template>
   <q-select
     v-model='target'
-    :options='displayGoods'
+    :options='displayAppPowerRentals'
     options-selected-class='text-deep-orange'
     emit-value
-    :label='label'
+    :label='label? label : "MSG_APP_GOOD"'
     map-options
     @update:model-value='onUpdate'
     use-input
@@ -35,19 +35,19 @@ const label = toRef(props, 'label')
 const goodTypes = toRef(props, 'goodTypes')
 const target = ref(appGoodID.value)
 
-const appGoods = sdk.appGoods
+const appPowerRentals = computed(() => sdk.appPowerRental.appPowerRentals.value)
 
-const goods = computed(() => Array.from(appGoods.value.filter((el) => !goodTypes.value || goodTypes.value.includes(el.GoodType)), (el) => {
+const goods = computed(() => Array.from(appPowerRentals.value.filter((el) => !goodTypes.value || goodTypes.value.includes(el.GoodType)), (el) => {
   return {
-    value: el.EntID,
-    label: `${el.GoodName} | ${el.EntID} | ${el.GoodType}`
+    value: el.AppGoodID,
+    label: `${el.AppGoodName} | ${el.AppGoodID} | ${el.GoodType}`
   }
 }))
-const displayGoods = ref(goods.value)
+const displayAppPowerRentals = ref(goods.value)
 
 const onFilter = (val: string, doneFn: (callbackFn: () => void) => void) => {
   doneFn(() => {
-    displayGoods.value = goods.value.filter((el) => {
+    displayAppPowerRentals.value = goods.value.filter((el) => {
       return el?.label?.toLowerCase().includes(val.toLowerCase())
     })
   })

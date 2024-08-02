@@ -131,7 +131,7 @@ const AppGoodSelector = defineAsyncComponent(() => import('src/components/good/A
 const AppUserSelector = defineAsyncComponent(() => import('src/components/user/AppUserSelector.vue'))
 
 const _commission = commission.useCommissionStore()
-const commissions = computed(() => _commission.commissions())
+const commissions = computed(() => _commission.commissions().sort((a, b) => a.ID > b.ID ? -1 : 1))
 
 const username = ref('')
 const displayCommissions = computed(() => commissions.value.filter((el) => {
