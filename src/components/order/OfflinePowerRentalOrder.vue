@@ -97,6 +97,7 @@ const onCancel = () => {
   onMenuHide()
 }
 
+const _order = order.useOrderStore()
 const onSubmit = () => {
   if (Number(target.value?.Units) > maxPurchaseUnits.value) return
   sdk.powerRentalOrder.createUserPowerRentalOrder({
@@ -106,6 +107,8 @@ const onSubmit = () => {
     if (error) {
       return
     }
+    _order.$reset()
+    sdk.getOrders(0, 0)
     onMenuHide()
   })
 }

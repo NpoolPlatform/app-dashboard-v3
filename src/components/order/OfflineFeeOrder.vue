@@ -94,6 +94,7 @@ const onCancel = () => {
   onMenuHide()
 }
 
+const _order = order.useOrderStore()
 const onSubmit = () => {
   submitting.value = true
   target.value.TargetUserID = appOrder.value?.UserID as string
@@ -101,6 +102,8 @@ const onSubmit = () => {
   sdk.createUserFeeOrder(target.value, (error: boolean) => {
     submitting.value = false
     if (error) return
+    _order.$reset()
+    sdk.getOrders(0, 0)
     onMenuHide()
   })
 }
