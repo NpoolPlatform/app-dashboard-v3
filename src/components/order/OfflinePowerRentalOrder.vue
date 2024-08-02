@@ -11,7 +11,7 @@
   </div>
   <OrderPage
     :good-types='[goodbase.GoodType.PowerRental, goodbase.GoodType.LegacyPowerRental]'
-    :order-types='[OrderType.Offline]'
+    :order-types='[OrderType.Offline, OrderType.Airdrop]'
   />
   <q-dialog
     v-model='showing'
