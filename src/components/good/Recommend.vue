@@ -16,10 +16,11 @@
   >
     <q-card class='popup-menu'>
       <q-card-section>
-        <span> {{ target.GoodName }}</span>
-      </q-card-section>
-      <q-card-section>
-        <q-input v-model='target.HideReason' :label='$t("MSG_HIDE_REASON")' />
+        <q-select
+          :options='goodbase.GoodCommentHideReasons'
+          v-model='target.HideReason'
+          :label='$t("MSG_HIDE_REASON")'
+        />
       </q-card-section>
       <q-card-section>
         <div><q-toggle dense v-model='target.Hide' :label='$t("MSG_HIDE")' /></div>
@@ -39,7 +40,7 @@
 
 <script setup lang='ts'>
 import { computed, defineAsyncComponent, onMounted, ref } from 'vue'
-import { sdk, appgoodrecommend, utils } from 'src/npoolstore'
+import { sdk, appgoodrecommend, utils, goodbase } from 'src/npoolstore'
 import { useI18n } from 'vue-i18n'
 
 // eslint-disable-next-line @typescript-eslint/unbound-method
