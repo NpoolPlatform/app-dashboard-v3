@@ -180,6 +180,18 @@ const columns = computed(() => [
     field: (row: order.Order) => row.GoodName
   },
   {
+    name: 'AppGoodID',
+    label: t('MSG_APP_GOOD_ID'),
+    sortable: true,
+    field: (row: order.Order) => row.AppGoodID
+  },
+  {
+    name: 'AppGoodName',
+    label: t('MSG_APP_GOOD_NAME'),
+    sortable: true,
+    field: (row: order.Order) => row.AppGoodName
+  },
+  {
     name: 'GoodType',
     label: t('MSG_GOOD_TYPE'),
     sortable: true,
