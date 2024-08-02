@@ -76,7 +76,7 @@ const appDefaultGoods = sdk.appDefaultGoods
 
 const target = ref({} as appdefaultgood.Default)
 const coinTypeIDs = computed(() => {
-  const appPowerRental = sdk.appPowerRental(target.value.AppGoodID)
+  const appPowerRental = sdk.appPowerRental.appPowerRental(target.value.AppGoodID)
   if (appPowerRental) {
     return appPowerRental.GoodCoins.map((el) => el.CoinTypeID)
   }

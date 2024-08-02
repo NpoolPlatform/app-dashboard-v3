@@ -37,7 +37,7 @@
           type='number'
           :min='0'
           suffix='h'
-          :disable='!sdk.appPowerRentalCancelable(target.EntID)'
+          :disable='!sdk.appPowerRental.cancelable(target.AppGoodID)'
         />
       </q-card-section>
       <q-card-section>
@@ -88,7 +88,7 @@ const goodTypes = toRef(props, 'goodTypes')
 const title = toRef(props, 'title')
 const displayTitle = computed(() => title.value ? title.value : t('MSG_APP_GOODS'))
 
-const appPowerRentals = computed(() => sdk.appPowerRentals.value.filter((el) => {
+const appPowerRentals = computed(() => sdk.appPowerRental.appPowerRentals.value.filter((el) => {
   let display = true
   if (goodTypes.value !== undefined && goodTypes.value?.length > 0) {
     const index = goodTypes.value.findIndex((gl) => gl === el.GoodType)
@@ -120,7 +120,7 @@ const onCancel = () => {
 
 const onSubmit = () => {
   submitting.value = true
-  sdk.updateAppPowerRental(target.value, (error: boolean) => {
+  sdk.appPowerRental.updateAppPowerRental(target.value, (error: boolean) => {
     submitting.value = false
     if (error) return
     onMenuHide()

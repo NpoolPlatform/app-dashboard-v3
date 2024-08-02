@@ -70,8 +70,8 @@ const OrderPage = defineAsyncComponent(() => import('src/components/billing/Orde
 const AppGoodSelector = defineAsyncComponent(() => import('src/components/good/AppGoodSelector.vue'))
 const AppUserSelector = defineAsyncComponent(() => import('src/components/user/AppUserSelector.vue'))
 
-const appPowerRental = computed(() => sdk.appPowerRental(target.value?.AppGoodID))
-const maxPurchaseUnits = computed(() => sdk.appPowerRentalMaxPurchasedUnits(target.value?.AppGoodID))
+const appPowerRental = computed(() => sdk.appPowerRental.appPowerRental(target.value?.AppGoodID))
+const maxPurchaseUnits = computed(() => sdk.appPowerRental.purchaseLimit(target.value?.AppGoodID))
 
 const target = ref({
   OrderType: order.OrderType.Offline,
@@ -99,11 +99,10 @@ const onCancel = () => {
 
 const onSubmit = () => {
   if (Number(target.value?.Units) > maxPurchaseUnits.value) return
-  sdk.createUserPowerRentalOrder({
+  sdk.powerRentalOrder.createUserPowerRentalOrder({
     ...target.value,
     AppGoodStockID: appPowerRental.value?.AppGoodStockID as string
-  }, (error: boolean, row?: powerrentalorder.PowerRentalOrder) => {
-    console.log('resp: ', row)
+  }, (error: boolean) => {
     if (error) {
       return
     }
