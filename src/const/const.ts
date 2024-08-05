@@ -24,6 +24,9 @@ if (window.location.host.includes('.xhash.ai')) {
 if (window.location.host.includes('.xhash.npool.top')) {
   AppID = 'e203d5ec-2ded-11ef-86a0-abe478da2125'
 }
+if (window.location.host.includes('.lpsb.xpool.top')) {
+  AppID = '9141b71a-ff6e-4229-8cf5-cc71459e9803'
+}
 
 export {
   AppID
