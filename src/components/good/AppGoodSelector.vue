@@ -55,7 +55,7 @@ const appGoods = computed(() => sdk.appGoods.value.filter((el) => {
 const goods = computed(() => Array.from(appGoods.value, (el) => {
   return {
     value: el.EntID,
-    label: `${el.GoodName} | ${el.EntID} | ${el.GoodType}`
+    label: `${el.AppGoodName} | ${el.EntID} | ${el.GoodType}`
   }
 }))
 const displayAppGoods = ref(goods.value)
