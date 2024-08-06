@@ -48,7 +48,7 @@
 </template>
 
 <script setup lang='ts'>
-import { order, utils, sdk, goodbase } from 'src/npoolstore'
+import { order, utils, sdk, goodbase, app, notify } from 'src/npoolstore'
 import { onMounted, ref, computed, defineProps, toRef } from 'vue'
 import { saveAs } from 'file-saver'
 import { useI18n } from 'vue-i18n'
@@ -100,11 +100,30 @@ const displayOrders = computed(() => orders.value.filter((el) => {
 
 const orderLoading = ref(false)
 
+const application = app.useApplicationStore()
 onMounted(() => {
   if (!orders.value.length) {
     sdk.getOrders(0, 0)
   }
+  if (!application.app(undefined)) {
+    getApplication()
+  }
 })
+
+const getApplication = () => {
+  application.getApp({
+    Message: {
+      Error: {
+        Title: 'MSG_GET_APP',
+        Message: 'MSG_GET_APP_FAIL',
+        Popup: true,
+        Type: notify.NotifyType.Error
+      }
+    }
+  }, () => {
+    // TODO
+  })
+}
 
 const onExport = () => {
   let orderStr = ''
@@ -142,9 +161,7 @@ const onExport = () => {
   })
 
   const blob = new Blob([orderStr], { type: 'text/plain;charset=utf-8' })
-  const filename = '-Orders-' +
-                   utils.formatTime(new Date().getTime() / 1000) +
-                   '.csv'
+  const filename = `${application.app()?.Name as string}-Orders-${utils.formatTime(new Date().getTime() / 1000)}.csv`
   saveAs(blob, filename)
 }
 
