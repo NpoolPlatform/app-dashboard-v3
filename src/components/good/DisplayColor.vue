@@ -53,7 +53,7 @@
 
 <script setup lang='ts'>
 import { sdk, utils, appgooddisplaycolor } from 'src/npoolstore'
-import { computed, defineAsyncComponent, ref } from 'vue'
+import { computed, defineAsyncComponent, onMounted, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 
 // eslint-disable-next-line @typescript-eslint/unbound-method
@@ -122,6 +122,13 @@ const onDelete = () => {
     // TODO
   })
 }
+
+onMounted(() => {
+  if (!goodDisplayColors.value?.length) {
+    sdk.getGoodDisplayColors(0, 0)
+  }
+})
+
 const goodDisplayColorColumns = computed(() => [
   {
     name: 'ID',
