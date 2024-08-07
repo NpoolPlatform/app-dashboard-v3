@@ -60,7 +60,7 @@
 
 <script setup lang='ts'>
 import { sdk, utils, appgooddisplayname } from 'src/npoolstore'
-import { computed, defineAsyncComponent, ref } from 'vue'
+import { computed, defineAsyncComponent, onMounted, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 
 // eslint-disable-next-line @typescript-eslint/unbound-method
@@ -131,6 +131,13 @@ const onDelete = () => {
     // TODO
   })
 }
+
+onMounted(() => {
+  if (!goodDisplayNames.value?.length) {
+    sdk.getGoodDisplayNames(0, 0)
+  }
+})
+
 const goodDisplayNamesColumns = computed(() => [
   {
     name: 'ID',
