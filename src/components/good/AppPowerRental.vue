@@ -26,7 +26,6 @@
       </q-card-section>
       <q-card-section>
         <q-select
-          v-if='!updating'
           :options='goodbase.CancelModes'
           v-model='target.CancelMode'
           :label='$t("MSG_CANCEL_MODE")'
@@ -39,6 +38,16 @@
           suffix='h'
           :disable='!sdk.appPowerRental.cancelable(target.AppGoodID)'
         />
+        <q-select
+          :options='goodbase.GoodSaleModes'
+          v-model='target.SaleMode'
+          :label='$t("MSG_SALE_MODE")'
+        />
+        <q-select
+          :options='goodbase.StartModes'
+          v-model='target.GoodStartMode'
+          :label='$t("MSG_GOOD_START_MODE")'
+        />
       </q-card-section>
       <q-card-section>
         <q-input v-model='target.Banner' :label='$t("MSG_BANNER")' />
@@ -46,10 +55,10 @@
         <q-input v-model.number='target.DisplayIndex' :label='$t("MSG_DISPLAY_INDEX")' type='number' :min='0' />
       </q-card-section>
       <q-card-section>
-        <div v-if='!updating'>
+        <div>
           <DateTimePicker v-model:date='target.SaleStartAt' label='MSG_SALE_START_AT' />
         </div>
-        <div v-if='!updating'>
+        <div>
           <DateTimePicker v-model:date='target.SaleEndAt' label='MSG_SALE_END_AT' />
         </div>
         <DateTimePicker v-model:date='target.ServiceStartAt' label='MSG_SERVICE_START_AT' />
@@ -72,8 +81,10 @@
 
 <script setup lang='ts'>
 import { sdk, utils, goodbase, apppowerrental } from 'src/npoolstore'
-import { computed, defineProps, ref, toRef } from 'vue'
+import { computed, defineProps, ref, toRef, defineAsyncComponent } from 'vue'
 import { useI18n } from 'vue-i18n'
+
+const DateTimePicker = defineAsyncComponent(() => import('src/components/date/DateTimePicker.vue'))
 
 // eslint-disable-next-line @typescript-eslint/unbound-method
 const { t } = useI18n({ useScope: 'global' })
