@@ -191,9 +191,10 @@ const updateCommission = (done: () => void) => {
   })
 }
 const createUserCommission = (done: () => void) => {
+  const { UserID, ...WithoutUserID } = target.value
   _commission.createUserCommission({
-    TargetUserID: target.value.UserID,
-    ...target.value,
+    TargetUserID: UserID,
+    ...WithoutUserID,
     Message: {
       Error: {
         Title: t('MSG_CREATE_COMMISSION'),
