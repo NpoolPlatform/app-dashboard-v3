@@ -3,7 +3,7 @@
     dense
     flat
     :title='$t("MSG_DISPLAY_COLORS")'
-    :rows='goodDisplayColors'
+    :rows='displayColors'
     :columns='goodDisplayColorColumns'
     row-key='ID'
     :rows-per-page-options='[100]'
@@ -62,6 +62,11 @@ const { t } = useI18n({ useScope: 'global' })
 const AppGoodSelector = defineAsyncComponent(() => import('src/components/good/AppGoodSelector.vue'))
 
 const goodDisplayColors = computed(() => sdk.goodDisplayColors.value)
+const color = ref('')
+const displayColors = computed(() => {
+  const _color = color.value?.toLowerCase()
+  return goodDisplayColors.value?.filter((el) => el.Color?.toLowerCase().includes(_color))
+})
 const selectedName = ref([] as Array<appgooddisplaycolor.DisplayColor>)
 
 const showing = ref(false)

@@ -3,7 +3,7 @@
     dense
     flat
     :title='$t("MSG_DISPLAY_NAMES")'
-    :rows='goodDisplayNames'
+    :rows='displayNames'
     :columns='goodDisplayNamesColumns'
     row-key='ID'
     :rows-per-page-options='[100]'
@@ -13,6 +13,13 @@
   >
     <template #top-right>
       <div class='row indent flat'>
+        <q-input
+          dense
+          flat
+          class='small'
+          v-model='name'
+          :label='$t("MSG_NAME")'
+        />
         <q-btn
           dense
           flat
@@ -62,6 +69,13 @@ const { t } = useI18n({ useScope: 'global' })
 const AppGoodSelector = defineAsyncComponent(() => import('src/components/good/AppGoodSelector.vue'))
 
 const goodDisplayNames = computed(() => sdk.goodDisplayNames.value)
+const name = ref('')
+const displayNames = computed(() => {
+  const _name = name.value?.toLocaleLowerCase()
+  return goodDisplayNames.value?.filter((el) => {
+    return el.Name?.toLocaleLowerCase().includes(_name)
+  })
+})
 const selectedName = ref([] as Array<appgooddisplayname.DisplayName>)
 
 const showing = ref(false)
