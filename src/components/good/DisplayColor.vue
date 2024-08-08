@@ -65,7 +65,7 @@ const goodDisplayColors = computed(() => sdk.goodDisplayColors.value)
 const color = ref('')
 const displayColors = computed(() => {
   const _color = color.value?.toLowerCase()
-  return goodDisplayColors.value?.filter((el) => el.Color?.toLowerCase().includes(_color))
+  return goodDisplayColors.value?.filter((el) => el.Color?.toLowerCase().includes(_color) || el.AppGoodID?.toLowerCase().includes(_color) || el.GoodID?.toLowerCase().includes(_color))
 })
 const selectedName = ref([] as Array<appgooddisplaycolor.DisplayColor>)
 
