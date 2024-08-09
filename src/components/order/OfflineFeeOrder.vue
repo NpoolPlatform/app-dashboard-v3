@@ -22,8 +22,12 @@
         <q-item-label>{{ $t('MSG_USER_EMAIL_ADDRESS') }}: {{ appOrder?.EmailAddress }}</q-item-label>
       </q-card-section>
       <q-card-section>
+        <AppUserSelector
+          v-model:user-id='target.TargetUserID'
+        />
         <OrderSelector
           v-model:order-id='target.ParentOrderID'
+          :user-ids='selectedUserID'
           :order-states='[order.OrderState.PAID, order.OrderState.IN_SERVICE]'
           :good-types='[
             goodbase.GoodType.PowerRental,
@@ -69,6 +73,7 @@ import { defineAsyncComponent, computed, ref, onMounted, watch } from 'vue'
 const OrderPage = defineAsyncComponent(() => import('src/components/billing/Order.vue'))
 const OrderSelector = defineAsyncComponent(() => import('src/components/order/OrderSelector.vue'))
 const AppGoodSelector = defineAsyncComponent(() => import('src/components/good/AppGoodSelector.vue'))
+const AppUserSelector = defineAsyncComponent(() => import('src/components/user/AppUserSelector.vue'))
 
 const appFees = computed(() => sdk.appFees.value.sort((a, b) => a.CreatedAt > b.CreatedAt ? -1 : 1))
 const appFee = computed(() => sdk.appFee(target.value?.AppGoodID))
@@ -78,6 +83,8 @@ const target = ref({ OrderType: order.OrderType.Offline } as feeorder.CreateUser
 
 const showing = ref(false)
 const submitting = ref(false)
+
+const selectedUserID = computed(() => [target.value.TargetUserID])
 
 const onCreate = () => {
   showing.value = true
@@ -97,7 +104,6 @@ const onCancel = () => {
 const _order = order.useOrderStore()
 const onSubmit = () => {
   submitting.value = true
-  target.value.TargetUserID = appOrder.value?.UserID as string
   target.value.DurationSeconds = target.value.DurationSeconds * sdk.durationUnitSeconds(appFee?.value?.DurationDisplayType as goodbase.GoodDurationType)
   sdk.createUserFeeOrder(target.value, (error: boolean) => {
     submitting.value = false
