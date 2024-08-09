@@ -77,6 +77,7 @@
       </q-item>
     </q-card>
   </q-dialog>
+  <GoodCoin />
 </template>
 
 <script setup lang='ts'>
@@ -85,6 +86,7 @@ import { computed, defineProps, ref, toRef, defineAsyncComponent } from 'vue'
 import { useI18n } from 'vue-i18n'
 
 const DateTimePicker = defineAsyncComponent(() => import('src/components/date/DateTimePicker.vue'))
+const GoodCoin = defineAsyncComponent(() => import('src/components/good/GoodCoin.vue'))
 
 // eslint-disable-next-line @typescript-eslint/unbound-method
 const { t } = useI18n({ useScope: 'global' })
