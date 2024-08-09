@@ -25,6 +25,7 @@ import { order, goodbase, sdk } from 'src/npoolstore'
 
 interface Props {
   orderId: string
+  userIds?: string[]
   orderTypes?: order.OrderType[]
   goodTypes?: Array<goodbase.GoodType>
   orderStates?: Array<order.OrderState>
@@ -32,13 +33,14 @@ interface Props {
 
 const props = defineProps<Props>()
 const orderId = toRef(props, 'orderId')
+const userIds = toRef(props, 'userIds')
 const orderTypes = toRef(props, 'orderTypes')
 const goodTypes = toRef(props, 'goodTypes')
 const orderStates = toRef(props, 'orderStates')
 
 const target = ref(orderId.value)
 
-const orders = computed(() => sdk.orders.value.filter((el) => {
+const orders = computed(() => Array.from(sdk.orders.value).filter((el) => {
   let display = true
   if (orderTypes.value !== undefined && orderTypes.value?.length > 0) {
     const index = orderTypes.value.findIndex((gl) => gl === el.OrderType)
@@ -52,7 +54,7 @@ const orders = computed(() => sdk.orders.value.filter((el) => {
     const index = orderStates.value.findIndex((gl) => gl === el.OrderState)
     display = display && (index > -1)
   }
-  return display
+  return display && (!userIds.value || userIds.value?.includes(el.UserID))
 }))
 
 const _orders = computed(() => Array.from(orders.value).map((el) => {
