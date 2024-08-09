@@ -1,10 +1,10 @@
 <template>
-  <Good />
+  <AppPowerRental />
 </template>
 
 <script setup lang='ts'>
 import { defineAsyncComponent } from 'vue'
-const Good = defineAsyncComponent(() => import('src/components/good/Good.vue'))
+const AppPowerRental = defineAsyncComponent(() => import('src/components/good/AppPowerRental.vue'))
 
 </script>
 

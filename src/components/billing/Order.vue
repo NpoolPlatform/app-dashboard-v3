@@ -76,7 +76,8 @@ const selectedOrderType = ref('ALL')
 const showSimulate = ref(false)
 const displayOrders = computed(() => orders.value.filter((el) => {
   const name = username.value?.toLowerCase()
-  let display = el.EmailAddress?.toLowerCase().includes(name) || el.PhoneNO?.toLowerCase()?.includes(name) || el.GoodID?.toLowerCase()?.includes(name) || el.EntID?.toLowerCase()?.includes(name)
+  let display = el.EmailAddress?.toLowerCase().includes(name) || el.PhoneNO?.toLowerCase()?.includes(name) || el.GoodID?.toLowerCase()?.includes(name) ||
+    el.EntID?.toLowerCase()?.includes(name) || el.AppGoodID?.toLowerCase()?.includes(name) || el.AppGoodName?.toLowerCase()?.includes(name)
   if (start.value.length) {
     display = display && (el.CreatedAt >= new Date(start.value).getTime() / 1000)
   }

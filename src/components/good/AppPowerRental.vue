@@ -2,13 +2,25 @@
   <q-table
     dense
     flat
-    :title='displayTitle'
+    :title='$t("MSG_APP_GOOD")'
     :rows='appPowerRentals'
     :columns='appPowerRentalsColumns'
     row-key='ID'
     :rows-per-page-options='[100]'
     @row-click='(evt, row, index) => onRowClick(row as apppowerrental.AppPowerRental)'
-  />
+  >
+    <template #top-right>
+      <div class='row indent flat'>
+        <q-input
+          dense
+          flat
+          class='small'
+          v-model='name'
+          :label='$t("MSG_GOOD_NAME")'
+        />
+      </div>
+    </template>
+  </q-table>
   <q-dialog
     v-model='showing'
     @hide='onMenuHide'
@@ -82,7 +94,7 @@
 
 <script setup lang='ts'>
 import { sdk, utils, goodbase, apppowerrental } from 'src/npoolstore'
-import { computed, defineProps, ref, toRef, defineAsyncComponent } from 'vue'
+import { computed, ref, defineAsyncComponent } from 'vue'
 import { useI18n } from 'vue-i18n'
 
 const DateTimePicker = defineAsyncComponent(() => import('src/components/date/DateTimePicker.vue'))
@@ -91,23 +103,10 @@ const GoodCoin = defineAsyncComponent(() => import('src/components/good/GoodCoin
 // eslint-disable-next-line @typescript-eslint/unbound-method
 const { t } = useI18n({ useScope: 'global' })
 
-interface Props {
-  goodTypes?: Array<goodbase.GoodType>
-  title?: string
-}
-
-const props = defineProps<Props>()
-const goodTypes = toRef(props, 'goodTypes')
-const title = toRef(props, 'title')
-const displayTitle = computed(() => title.value ? title.value : t('MSG_APP_GOODS'))
-
+const name = ref('')
 const appPowerRentals = computed(() => sdk.appPowerRental.appPowerRentals.value.filter((el) => {
-  let display = true
-  if (goodTypes.value !== undefined && goodTypes.value?.length > 0) {
-    const index = goodTypes.value.findIndex((gl) => gl === el.GoodType)
-    display = display && (index > -1)
-  }
-  return display
+  const _name = name.value?.toLowerCase()
+  return el.AppGoodName.toLowerCase()?.includes(_name) || el.AppGoodID.toLowerCase()?.includes(_name) || el.GoodID.toLowerCase()?.includes(_name)
 }))
 
 const showing = ref(false)
