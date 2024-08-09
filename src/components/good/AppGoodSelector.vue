@@ -28,11 +28,13 @@ interface Props {
   appGoodId: string | undefined
   goodTypes?: Array<goodbase.GoodType>
   disable?: boolean
+  goodIds?: string[]
   requiredAppGoodIds: Array<string>
 }
 
 const props = defineProps<Props>()
 const appGoodId = toRef(props, 'appGoodId')
+const goodIds = toRef(props, 'goodIds')
 const goodTypes = toRef(props, 'goodTypes')
 const requiredAppGoodIds = toRef(props, 'requiredAppGoodIds')
 const disable = toRef(props, 'disable')
@@ -49,7 +51,7 @@ const appGoods = computed(() => sdk.appGoods.value.filter((el) => {
     const index = requiredAppGoodIds.value.findIndex((gl) => gl === el.EntID)
     display = display && (index > -1)
   }
-  return display
+  return display && (!goodIds.value || goodIds.value.includes(el.GoodID))
 }))
 
 const goods = computed(() => Array.from(appGoods.value, (el) => {
