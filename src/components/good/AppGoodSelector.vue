@@ -30,6 +30,7 @@ interface Props {
   disable?: boolean
   goodIds?: string[]
   requiredAppGoodIds: Array<string>
+  excludeAppGoodIds?: string[]
 }
 
 const props = defineProps<Props>()
@@ -37,6 +38,7 @@ const appGoodId = toRef(props, 'appGoodId')
 const goodIds = toRef(props, 'goodIds')
 const goodTypes = toRef(props, 'goodTypes')
 const requiredAppGoodIds = toRef(props, 'requiredAppGoodIds')
+const excludeAppGoodIds = toRef(props, 'excludeAppGoodIds')
 const disable = toRef(props, 'disable')
 
 const target = ref(appGoodId.value)
@@ -51,13 +53,14 @@ const appGoods = computed(() => sdk.appGoods.value.filter((el) => {
     const index = requiredAppGoodIds.value.findIndex((gl) => gl === el.EntID)
     display = display && (index > -1)
   }
-  return display && (!goodIds.value || goodIds.value.includes(el.GoodID))
+  display = display && (!goodIds.value || goodIds.value?.includes(el.GoodID))
+  return display && (!excludeAppGoodIds.value || !excludeAppGoodIds.value?.includes(el.EntID))
 }))
 
 const goods = computed(() => Array.from(appGoods.value, (el) => {
   return {
     value: el.EntID,
-    label: `${el.AppGoodName} | ${el.EntID} | ${el.GoodType}`
+    label: `${el.AppGoodName} | ${el.EntID} | ${el.GoodType} | ${el.GoodID}`
   }
 }))
 const displayAppGoods = ref(goods.value)
