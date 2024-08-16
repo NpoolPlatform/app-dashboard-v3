@@ -189,6 +189,15 @@ const MainDrawerMenus = [
       children: []
     } as MenuItem, {
       menuId: uid(),
+      label: 'Fee商品',
+      caption: 'Fee商品管理',
+      icon: 'perm_identity',
+      target: '/app/fees',
+      level: 1,
+      sectionBegin: false,
+      children: []
+    } as MenuItem, {
+      menuId: uid(),
       label: '商品置顶',
       caption: '管理置顶商品',
       icon: 'perm_identity',
