@@ -112,7 +112,6 @@ onMounted(() => {
     sdk.getTopMosts(0, 0)
   }
 })
-
 const columns = computed(() => [
   {
     name: 'ID',
@@ -132,18 +131,7 @@ const columns = computed(() => [
     sortable: true,
     field: (row: topmost.TopMost) => row.AppID
   },
-  {
-    name: 'AppID',
-    label: 'MSG_APP_ID',
-    sortable: true,
-    field: (row: topmost.TopMost) => row.AppID
-  },
-  {
-    name: 'TopMostType',
-    label: 'MSG_TOP_MOST_TYPE',
-    sortable: true,
-    field: (row: topmost.TopMost) => row.TopMostType
-  },
+
   {
     name: 'Title',
     label: 'MSG_TITLE',
@@ -157,6 +145,18 @@ const columns = computed(() => [
     field: (row: topmost.TopMost) => row.Message
   },
   {
+    name: 'TargetUrl',
+    label: 'MSG_TARGET_URL',
+    sortable: true,
+    field: (row: topmost.TopMost) => row.TargetUrl
+  },
+  {
+    name: 'TopMostType',
+    label: 'MSG_TOP_MOST_TYPE',
+    sortable: true,
+    field: (row: topmost.TopMost) => row.TopMostType
+  },
+  {
     name: 'StartAt',
     label: 'MSG_START_AT',
     sortable: true,
@@ -167,12 +167,6 @@ const columns = computed(() => [
     label: 'MSG_END_AT',
     sortable: true,
     field: (row: topmost.TopMost) => utils.formatTime(row.EndAt, undefined)
-  },
-  {
-    name: 'Posters',
-    label: 'MSG_POSTERS',
-    sortable: true,
-    field: (row: topmost.TopMost) => row.Posters?.join(',')
   },
   {
     name: 'CreatedAt',
