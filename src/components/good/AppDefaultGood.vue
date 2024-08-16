@@ -157,10 +157,22 @@ const appDefaultGoodsColumns = computed(() => [
     field: (row: appdefaultgood.Default) => row.GoodID
   },
   {
+    name: 'GoodName',
+    label: t('MSG_GOOD_NAME'),
+    sortable: true,
+    field: (row: appdefaultgood.Default) => row.GoodName
+  },
+  {
     name: 'AppGoodID',
     label: t('MSG_APP_GOOD_ID'),
     sortable: true,
     field: (row: appdefaultgood.Default) => row.AppGoodID
+  },
+  {
+    name: 'AppGoodName',
+    label: t('MSG_APP_GOOD_NAME'),
+    sortable: true,
+    field: (row: appdefaultgood.Default) => row.AppGoodName
   },
   {
     name: 'CoinTypeID',
