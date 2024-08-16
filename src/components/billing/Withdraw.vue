@@ -53,15 +53,21 @@ const getAppWithdraws = (offset: number, limit: number) => {
 const withdrawColumns = computed(() => [
   {
     name: 'ID',
-    label: t('MSG_COINTYPE_ID'),
+    label: t('MSG_ID'),
     sortable: true,
     field: (row: ledgerwithdraw.Withdraw) => row.ID
   },
   {
     name: 'EntID',
-    label: t('MSG_COINTYPE_ID'),
+    label: t('MSG_ENT_ID'),
     sortable: true,
-    field: (row: ledgerwithdraw.Withdraw) => row.CoinTypeID
+    field: (row: ledgerwithdraw.Withdraw) => row.EntID
+  },
+  {
+    name: 'UserID',
+    label: t('MSG_USER_ID'),
+    sortable: true,
+    field: (row: ledgerwithdraw.Withdraw) => row.UserID
   },
   {
     name: 'CoinTypeID',
@@ -70,14 +76,8 @@ const withdrawColumns = computed(() => [
     field: (row: ledgerwithdraw.Withdraw) => row.CoinTypeID
   },
   {
-    name: 'Address',
-    label: t('MSG_ADDRESS'),
-    sortable: true,
-    field: (row: ledgerwithdraw.Withdraw) => row.Address
-  },
-  {
     name: 'CoinName',
-    label: t('MSG_COINNAME'),
+    label: t('MSG_COIN_NAME'),
     sortable: true,
     field: (row: ledgerwithdraw.Withdraw) => row.CoinName
   },
@@ -94,10 +94,16 @@ const withdrawColumns = computed(() => [
     field: (row: ledgerwithdraw.Withdraw) => row.CoinUnit
   },
   {
-    name: 'CreatedAt',
-    label: t('MSG_CREATEDAT'),
+    name: 'Address',
+    label: t('MSG_ADDRESS'),
     sortable: true,
-    field: (row: ledgerwithdraw.Withdraw) => utils.formatTime(row.CreatedAt)
+    field: (row: ledgerwithdraw.Withdraw) => row.Address
+  },
+  {
+    name: 'Amount',
+    label: t('MSG_AMOUNT'),
+    sortable: true,
+    field: (row: ledgerwithdraw.Withdraw) => row.Amount
   },
   {
     name: 'Message',
@@ -116,6 +122,12 @@ const withdrawColumns = computed(() => [
     label: t('MSG_LABEL'),
     sortable: true,
     field: (row: ledgerwithdraw.Withdraw) => row.AddressLabels?.join(',')
+  },
+  {
+    name: 'CreatedAt',
+    label: t('MSG_CREATEDAT'),
+    sortable: true,
+    field: (row: ledgerwithdraw.Withdraw) => utils.formatTime(row.CreatedAt)
   }
 ])
 
