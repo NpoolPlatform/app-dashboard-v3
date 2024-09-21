@@ -181,12 +181,12 @@ const onVerifyClick = () => {
       }
     }
   }, (error: boolean) => {
+    showVerifyDialog.value = false
     if (error) {
-      void router.push({ path: '/signin' })
+      verifyCode.value = ''
+      void router.push({ path: '/' })
       return
     }
-    _user.$reset()
-    showVerifyDialog.value = false
     void router.push({ path: '/' })
     if (!coin.coins(undefined).length) { getCoins(0, 500) }
   })
