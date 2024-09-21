@@ -167,7 +167,7 @@ onMounted(() => {
 })
 
 const onCancelOrder = () => {
-  sdk.powerRentalOrder.updatePowerRentalOrder(candidatePowerRentalOrder.value, undefined, true, (error: boolean) => {
+  sdk.powerRentalOrder.updateUserPowerRentalOrder(candidatePowerRentalOrder.value, undefined, true, (error: boolean) => {
     if (error) return
     onUpdateMenuHide()
   })
