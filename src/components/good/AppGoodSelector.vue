@@ -29,7 +29,7 @@ interface Props {
   goodTypes?: Array<goodbase.GoodType>
   disable?: boolean
   goodIds?: string[]
-  requiredAppGoodIds: Array<string>
+  requiredAppGoodIds?: Array<string>
   excludeAppGoodIds?: string[]
 }
 
@@ -49,7 +49,7 @@ const appGoods = computed(() => sdk.appGoods.value.filter((el) => {
     const index = goodTypes.value.findIndex((gl) => gl === el.GoodType)
     display = display && (index > -1)
   }
-  if (requiredAppGoodIds.value !== undefined) {
+  if (requiredAppGoodIds.value?.length) {
     const index = requiredAppGoodIds.value.findIndex((gl) => gl === el.EntID)
     display = display && (index > -1)
   }
