@@ -65,7 +65,7 @@
 
 <script setup lang='ts'>
 import saveAs from 'file-saver'
-import { notify, user, utils, app } from 'src/npoolstore'
+import { notify, user, utils, app, sdk } from 'src/npoolstore'
 import { computed, defineAsyncComponent, onMounted, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 
@@ -221,34 +221,14 @@ const onExport = () => {
 
 const userLoading = ref(false)
 onMounted(() => {
-  if (!_user.appUsers(undefined).length) {
+  if (_user.appUsers(undefined).length <= 1) {
     userLoading.value = true
-    getUsers(0, 500)
+    sdk.appUser.getUsers(0, 0)
   }
   if (!_app.app(undefined)) {
     getApplication()
   }
 })
-const getUsers = (offset: number, limit: number) => {
-  _user.getUsers({
-    Offset: offset,
-    Limit: limit,
-    Message: {
-      Error: {
-        Title: 'MSG_GET_USERS',
-        Message: 'MSG_GET_USERS_FAIL',
-        Popup: true,
-        Type: notify.NotifyType.Error
-      }
-    }
-  }, (error: boolean, rows?: Array<user.User>) => {
-    if (error || !rows?.length) {
-      userLoading.value = false
-      return
-    }
-    getUsers(offset + limit, limit)
-  })
-}
 
 const _app = app.useApplicationStore()
 const getApplication = () => {
