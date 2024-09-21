@@ -155,7 +155,9 @@ const onUpdateMenuHide = () => {
 }
 
 onMounted(() => {
-  sdk.powerRentalOrder.getPowerRentalOrders(0, 0)
+  if (!sdk.powerRentalOrder.powerRentalOrders().length) {
+    sdk.powerRentalOrder.getPowerRentalOrders(0, 0)
+  }
 })
 
 const onCancelOrder = () => {
