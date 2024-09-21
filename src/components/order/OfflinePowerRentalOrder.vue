@@ -11,8 +11,36 @@
   </div>
   <OrderPage
     :good-types='[goodbase.GoodType.PowerRental, goodbase.GoodType.LegacyPowerRental]'
-    :order-types='[OrderType.Offline, OrderType.Airdrop]'
+    :order-types='[OrderType.Offline, OrderType.Airdrop]' @order-selected='onOrderClick'
   />
+  <q-dialog
+    v-model='updatingPowerRentalOrder'
+    @hide='onUpdateMenuHide'
+    position='right'
+  >
+    <q-card>
+      <q-card-section>{{ $t('MSG_ORDER_INFO') }}</q-card-section>
+      <q-card-section>
+        <q-item-label>{{ $t('MSG_ORDER_ID') }}: {{ candidatePowerRentalOrder?.OrderID }}</q-item-label>
+        <q-item-label>{{ $t('MSG_USER_ID') }}: {{ candidatePowerRentalOrder?.UserID }}</q-item-label>
+        <q-item-label>{{ $t('MSG_EMAIL_ADDRESS') }}: {{ candidatePowerRentalOrder?.EmailAddress }}</q-item-label>
+        <q-item-label>{{ $t('MSG_PHONE_NO') }}: {{ candidatePowerRentalOrder?.PhoneNO }}</q-item-label>
+        <q-item-label>{{ $t('MSG_UNITS') }}: {{ candidatePowerRentalOrder?.Units }}</q-item-label>
+        <q-item-label>{{ $t('MSG_PAYMENT_AMOUNT') }}: {{ candidatePowerRentalOrder?.PaymentAmountUSD }} USD</q-item-label>
+        <q-item-label>{{ $t('MSG_CREATED_AT') }}: {{ candidatePowerRentalOrder?.CreatedAt }}</q-item-label>
+      </q-card-section>
+      <q-card-section>
+        <q-item-label>{{ $t('MSG_GOOD_NAME') }}: {{ candidatePowerRentalOrder?.AppGoodName }}</q-item-label>
+        <q-item-label>{{ $t('MSG_PERIOD_DAYS') }}: {{ Math.floor(candidatePowerRentalOrder?.DurationSeconds / 24 / 60 / 60) }}</q-item-label>
+        <q-item-label>{{ $t('MSG_ORDER_TYPE') }}: {{ candidatePowerRentalOrder?.OrderType }}</q-item-label>
+        <q-item-label>{{ $t('MSG_ORDER_STATE') }}: {{ candidatePowerRentalOrder?.OrderState }}</q-item-label>
+      </q-card-section>
+      <q-item class='row'>
+        <q-btn class='btn round' :loading='submitting' @click='onCancelOrder' :label='$t("MSG_CANCEL_ORDER")' />
+        <q-btn class='btn round' :label='$t("MSG_CANCEL")' @click='onCancelCancel' />
+      </q-item>
+    </q-card>
+  </q-dialog>
   <q-dialog
     v-model='showing'
     @hide='onMenuHide'
@@ -29,6 +57,7 @@
             goodbase.GoodType.PowerRental,
             goodbase.GoodType.LegacyPowerRental
           ]'
+          :required-app-good-ids='[]'
         />
         <AppUserSelector v-model:user-id='target.TargetUserID' />
         <q-input
@@ -63,7 +92,7 @@
 
 <script setup lang='ts'>
 import { order, powerrentalorder, sdk, goodbase } from 'src/npoolstore'
-import { defineAsyncComponent, computed, ref } from 'vue'
+import { defineAsyncComponent, computed, ref, onMounted } from 'vue'
 import { OrderType } from 'src/npoolstore/order/const'
 
 const OrderPage = defineAsyncComponent(() => import('src/components/billing/Order.vue'))
@@ -112,4 +141,32 @@ const onSubmit = () => {
     onMenuHide()
   })
 }
+
+const candidatePowerRentalOrder = ref(undefined as unknown as powerrentalorder.PowerRentalOrder)
+const updatingPowerRentalOrder = ref(false)
+
+const onOrderClick = (_order: order.Order) => {
+  candidatePowerRentalOrder.value = sdk.powerRentalOrder.powerRentalOrder(_order.EntID) as powerrentalorder.PowerRentalOrder
+  updatingPowerRentalOrder.value = true
+}
+
+const onUpdateMenuHide = () => {
+  updatingPowerRentalOrder.value = false
+}
+
+onMounted(() => {
+  sdk.powerRentalOrder.getPowerRentalOrders(0, 0)
+})
+
+const onCancelOrder = () => {
+  sdk.powerRentalOrder.updatePowerRentalOrder(candidatePowerRentalOrder.value, undefined, true, (error: boolean) => {
+    if (error) return
+    onUpdateMenuHide()
+  })
+}
+
+const onCancelCancel = () => {
+  onUpdateMenuHide()
+}
+
 </script>

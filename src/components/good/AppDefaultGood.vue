@@ -41,6 +41,7 @@
         <AppGoodSelector
           v-model:app-good-id='target.AppGoodID'
           :label='$t("MSG_APP_GOODS")'
+          :required-app-good-ids='[]'
         />
         <CoinPicker
           v-model:coin-type-id='target.CoinTypeID'
@@ -72,7 +73,7 @@ const { t } = useI18n({ useScope: 'global' })
 const CoinPicker = defineAsyncComponent(() => import('src/components/coin/CoinPicker.vue'))
 const AppGoodSelector = defineAsyncComponent(() => import('src/components/good/AppGoodSelector.vue'))
 
-const appDefaultGoods = sdk.appDefaultGoods
+const appDefaultGoods = sdk.appDefaultGood.appDefaultGoods
 
 const target = ref({} as appdefaultgood.Default)
 const coinTypeIDs = computed(() => {
@@ -113,14 +114,14 @@ const onSubmit = () => {
 }
 
 const createAppDefaultGood = () => {
-  sdk.createAppDefaultGood(target.value, (error: boolean) => {
+  sdk.appDefaultGood.createAppDefaultGood(target.value, (error: boolean) => {
     if (error) return
     onMenuHide()
   })
 }
 
 const updateAppDefaultGood = () => {
-  sdk.updateAppDefaultGood(target.value, (error: boolean) => {
+  sdk.appDefaultGood.updateAppDefaultGood(target.value, (error: boolean) => {
     if (error) return
     onMenuHide()
   })
@@ -128,12 +129,12 @@ const updateAppDefaultGood = () => {
 
 const selectedGoods = ref([] as Array<appdefaultgood.Default>)
 const onDelete = (row: appdefaultgood.Default) => {
-  sdk.deleteAppDefaultGood(row)
+  sdk.appDefaultGood.deleteAppDefaultGood(row)
 }
 
 onMounted(() => {
   if (appDefaultGoods.value?.length === 0) {
-    sdk.getAppDefaultGoods(0, 0)
+    sdk.appDefaultGood.getAppDefaultGoods(0, 0)
   }
 })
 

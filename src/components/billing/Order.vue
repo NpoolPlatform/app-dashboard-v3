@@ -8,6 +8,7 @@
     :rows-per-page-options='[100]'
     :loading='orderLoading'
     :columns='columns'
+    @row-click='(ev, row, index) => onOrderClick(row)'
   >
     <template #top-right>
       <select class='order-type' name='order-type' v-model='selectedOrderType'>
@@ -49,7 +50,7 @@
 
 <script setup lang='ts'>
 import { order, utils, sdk, goodbase, app, notify } from 'src/npoolstore'
-import { onMounted, ref, computed, defineProps, toRef } from 'vue'
+import { onMounted, ref, computed, defineProps, toRef, defineEmits } from 'vue'
 import { saveAs } from 'file-saver'
 import { useI18n } from 'vue-i18n'
 import { OrderType } from 'src/npoolstore/order/const'
@@ -164,6 +165,12 @@ const onExport = () => {
   const blob = new Blob([orderStr], { type: 'text/plain;charset=utf-8' })
   const filename = `${application.app()?.Name as string}-Orders-${utils.formatTime(new Date().getTime() / 1000)}.csv`
   saveAs(blob, filename)
+}
+
+const emit = defineEmits<{(ev: 'orderSelected', order: order.Order): void}>()
+
+const onOrderClick = (_order: order.Order) => {
+  emit('orderSelected', _order)
 }
 
 const columns = computed(() => [

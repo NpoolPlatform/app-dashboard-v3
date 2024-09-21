@@ -38,11 +38,11 @@
     <q-card class='popup-menu'>
       <q-card-section v-if='!updating'>
         <div>{{ $t('MSG_SELECT_MAIN_APP_GOOD') }}</div>
-        <AppGoodSelector v-model:app-good-id='target.MainAppGoodID' />
+        <AppGoodSelector v-model:app-good-id='target.MainAppGoodID' :required-app-good-ids='[]' />
       </q-card-section>
       <q-card-section v-if='!updating'>
         <div>{{ $t('MSG_SELECT_REQUIRED_APP_GOOD') }}</div>
-        <AppGoodSelector v-model:app-good-id='target.RequiredAppGoodID' :good-ids='requiredGoodID' :exclude-app-good-ids='[target.MainAppGoodID]' />
+        <AppGoodSelector v-model:app-good-id='target.RequiredAppGoodID' :good-ids='requiredGoodID' :exclude-app-good-ids='[target.MainAppGoodID]' :required-app-good-ids='[]' />
       </q-card-section>
       <q-card-section>
         <div><q-toggle dense v-model='target.Must' :label='$t("MSG_MUST")' /></div>
@@ -62,7 +62,7 @@ import { sdk, requiredappgood } from 'src/npoolstore'
 const AppGoodSelector = defineAsyncComponent(() => import('src/components/good/AppGoodSelector.vue'))
 // const Required = defineAsyncComponent(() => import('src/components/good/Required.vue'))
 
-const requiredAppGoods = sdk.requiredAppGoods
+const requiredAppGoods = sdk.requiredAppGood.requiredAppGoods
 const selectedAppGoodRequireds = ref([] as Array<requiredappgood.Required>)
 
 const requireds = sdk.requiredGoods
@@ -93,7 +93,7 @@ const onCancel = () => {
 
 const createRequiredGood = () => {
   submitting.value = true
-  sdk.createRequiredAppGood(target.value, (error:boolean) => {
+  sdk.requiredAppGood.createRequiredAppGood(target.value, (error:boolean) => {
     submitting.value = false
     if (error) return
     onMenuHide()
@@ -102,7 +102,7 @@ const createRequiredGood = () => {
 
 const updateRequiredGood = () => {
   submitting.value = true
-  sdk.updateRequiredAppGood(target.value, (error:boolean) => {
+  sdk.requiredAppGood.updateRequiredAppGood(target.value, (error:boolean) => {
     submitting.value = false
     if (error) return
     onMenuHide()
@@ -122,14 +122,14 @@ const onMenuHide = () => {
 }
 
 const onDelete = () => {
-  sdk.deleteRequiredAppGood(selectedAppGoodRequireds.value?.[0], () => {
+  sdk.requiredAppGood.deleteRequiredAppGood(selectedAppGoodRequireds.value?.[0], () => {
     // NOTHING TODO
   })
 }
 
 onMounted(() => {
   if (!requiredAppGoods.value.length) {
-    sdk.getRequiredAppGoods(0, 0)
+    sdk.requiredAppGood.getRequiredAppGoods(0, 0)
   }
   if (!requireds.value.length) {
     sdk.getRequiredGoods(0, 0)

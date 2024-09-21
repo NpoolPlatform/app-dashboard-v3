@@ -114,7 +114,7 @@ const onSubmit = () => {
   })
 }
 
-const requireds = sdk.requiredAppGoods
+const requireds = sdk.requiredAppGood.requiredAppGoods
 const requiredAppGoodIds = ref([] as Array<string>)
 
 watch(() => appOrder.value?.AppGoodID, () => {
@@ -128,7 +128,7 @@ watch(() => appOrder.value?.AppGoodID, () => {
 
 onMounted(() => {
   if (!requireds.value.length) {
-    sdk.getRequiredAppGoods(0, 0)
+    sdk.requiredAppGood.getRequiredAppGoods(0, 0)
   }
   if (!appFees.value.length) {
     sdk.getAppFees(0, 0)
