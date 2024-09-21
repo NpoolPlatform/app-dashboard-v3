@@ -58,7 +58,7 @@ const onUpdate = () => {
 
 onMounted(() => {
   if (!users.value?.length) {
-    sdk.getUsers(0, 0)
+    sdk.appUser.getUsers(0, 0)
   }
 })
 </script>

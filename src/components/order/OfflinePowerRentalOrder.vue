@@ -158,6 +158,12 @@ onMounted(() => {
   if (!sdk.powerRentalOrder.powerRentalOrders().length) {
     sdk.powerRentalOrder.getPowerRentalOrders(0, 0)
   }
+  if (!sdk.appPowerRental.appPowerRentals.value.length) {
+    sdk.appPowerRental.getAppPowerRentals(0, 0)
+  }
+  if (sdk.appUser.appUsers.value.length <= 1) {
+    sdk.appUser.getUsers(0, 0)
+  }
 })
 
 const onCancelOrder = () => {
